@@ -1,1 +1,0 @@
-from .scripts.sunstudy import *

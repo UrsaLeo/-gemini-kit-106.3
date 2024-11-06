@@ -1,0 +1,14 @@
+
+[package]
+    archivePath = "http://d4i3qtqj3r0z5.cloudfront.net/omni.services.streaming.manager-0.3.9.zip"
+    repository = "https://gitlab-master.nvidia.com/omniverse/kit-extensions/kit-livestream.git"
+
+    [package.publish]
+        kitVersion = "105.1+release.128038.eb44b1fc.tc"
+        date = 1696478001
+        buildNumber = "105.1+105.1.1047.583f17f4.tc"
+        repoName = "kit-livestream"
+        signed = 1
+
+    [package.authors]
+        0 = "Philippe Sawicki <psawicki@nvidia.com>"
