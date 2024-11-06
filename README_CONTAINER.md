@@ -7,9 +7,7 @@ nano tools/containers/entrypoint.sh.j2
 ```
 
 
-* Modify public url for turnserver: `turn:<public url>` for both TCP and UDP.
-* Run `./repo.sh build`
-* Copy dependencies from `modified/sunstudy_webrtc` to `_build/linux-x86_64/release/extscache`.
+* In entrypoint.sh.j2, modify public url for turnserver: `turn:<public url>` for both TCP and UDP.
 * Run `./repo.sh build`
 * Run `./repo.sh package --container --name container_name`
 * Install turnserver, if not installed.
@@ -31,7 +29,7 @@ max-port=65535
 ```
 * Launch turnserver: `turnserver -o -c turnserver.conf`
 * Check if it is running: `ps aux | grep turnserver`
-* Launch vncserver, if you need check streaming in localhost: `vncserver`
+* Launch vncserver, if you need to check streaming in localhost: `vncserver`
 
 * Run `./repo.sh launch --container`
 
@@ -47,6 +45,7 @@ Run `nano ./rtc.sh`. Paste there this code:
  --/exts/omni.services.streamclient.webrtc/ice_servers/1/urls/1="turn:<public_ip>:3478?transport=tcp" \
  --/exts/omni.services.streamclient.webrtc/ice_servers/1/username="admin" \
  --/exts/omni.services.streamclient.webrtc/ice_servers/1/credential="admin" \
+ --ext-folder ../../../modified/sunstudy_webrtc \
  --no-window \
  --allow-root
  ```
