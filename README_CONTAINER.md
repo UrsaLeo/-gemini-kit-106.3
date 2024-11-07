@@ -6,11 +6,10 @@ cd ./-gemini-kit-106.3
 nano tools/containers/entrypoint.sh.j2
 ```
 
-
-* In entrypoint.sh.j2, modify public url for turnserver: `turn:<public url>` for both TCP and UDP.
+* In entrypoint.sh.j2, modify public url for turnserver: `turn:<public ip>` for both TCP and UDP.
 * Run `./repo.sh build`
 * Run `./repo.sh package --container --name container_name`
-* Install turnserver, if not installed.
+* Install turnserver, if not installed: `sudo apt install coturn`
 * Configure it: `nano /etc/turnserver.conf`. Use this config:
 
 ```bash
@@ -29,7 +28,7 @@ max-port=65535
 ```
 * Launch turnserver: `turnserver -o -c turnserver.conf`
 * Check if it is running: `ps aux | grep turnserver`
-* Launch vncserver, if you need to check streaming in localhost: `vncserver`
+* Open ports 8011 and 3478 TCP and UDP.
 
 * Run `./repo.sh launch --container`
 
@@ -51,3 +50,33 @@ Run `nano ./rtc.sh`. Paste there this code:
  ```
 
  Then run `./rtc.sh`
+
+
+### INSTALL GUI ON LINUX AND SET UP VNC VIEWER
+
+* Run the following.
+
+```bash
+sudo apt update
+sudo apt install ubuntu-desktop
+sudo apt install tightvncserver
+sudo apt install gnome-panel gnome-settings-daemon
+```
+
+* Edit xstartup file: `~/.vnc/xstartup`.
+
+```bash
+#!/bin/bash
+xrdb $HOME/.Xresources
+gnome-session &
+```
+
+* Start vncserver: `vncserver`
+
+* Go to vnc viewer, for example you can download RealVNC. Type there `public_ip:1` and connect.
+
+* To check that turnserver is running, go to Trickle ICE website.
+
+Type URI, username and password: `turn:<public ip>:3478`, `admin`, `admin`.
+Press `Add server`, then - `Gather candidates`.
+If you see `relay` in `Type` column, turnserver runs correctly.

@@ -11,9 +11,6 @@ cd "$SCRIPT_DIR"
 
 # This block is used to move extensions from modified to extscache folder for the container to work.
 if [[ "$1" == "package" ]]; then
-    # Ensure that the _build directory exists and create the extscache directory
-
-    # Copy extensions from the 'modified' folder to '_build/extscache'
     if [ -d "${OMNI_REPO_ROOT}/modified" ]; then
         cp -r "modified/sunstudy_webrtc"/* "_build/linux-x86_64/release/extscache"
         echo "Extensions copied to _build/extscache."
