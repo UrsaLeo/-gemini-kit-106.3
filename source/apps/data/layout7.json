@@ -111,6 +111,30 @@
                     "title": "Model Exploder",
                     "visible": false,
                     "width": 449.0
+                  },
+                  {
+                    "dock_id": 6,
+                    "dock_tab_bar_enabled": true,
+                    "dock_tab_bar_visible": true,
+                    "height": 500.0,
+                    "position_x": 991.0,
+                    "position_y": 459.0,
+                    "selected_in_dock": true,
+                    "title": "Tablet AR",
+                    "visible": false,
+                    "width": 449.0
+                  },
+                  {
+                    "dock_id": 6,
+                    "dock_tab_bar_enabled": true,
+                    "dock_tab_bar_visible": true,
+                    "height": 500.0,
+                    "position_x": 991.0,
+                    "position_y": 459.0,
+                    "selected_in_dock": true,
+                    "title": "VR",
+                    "visible": false,
+                    "width": 449.0
                   }
                 ],
                 "dock_id": 6,

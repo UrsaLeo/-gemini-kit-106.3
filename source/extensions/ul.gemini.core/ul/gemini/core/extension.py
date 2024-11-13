@@ -18,7 +18,7 @@ from omni.kit.window.section.ui.section_tool_window import SectionToolWindow
 
 import omni.kit.commands
 from omni.kit.menu.utils import MenuLayout, MenuItemDescription
-from .utils import zoom_camera
+from .utils import get_local_transform_xform, zoom_camera, connectVRAPP
 
 
 import subprocess
@@ -44,6 +44,8 @@ from syntway.model_exploder.window import Window as ModelExploderWindow
 import omni.appwindow
 import carb.input
 from carb.input import KeyboardEventType
+
+
 
 
 # Any class derived from `omni.ext.IExt` in top level module (defined in `python.modules` of `extension.toml`) will be
@@ -193,6 +195,16 @@ class ULExtension(omni.ext.IExt):
                 [],
                 True,
             )
+            tb.extensionVisibilityAction(
+                "VR",
+                os.path.join(os.path.dirname(__file__), "data", "Icons", "vricon.png"),
+                "Virtual Reality",
+                connectVRAPP,
+                ["VR"],
+                ["Artifact"],
+                True
+            )
+
             if partner_secure_data["twinVersionId"] == "1b75f4cf-4855-453a-ac8d-fab23f9923bb":
                 # Used only for 1 twin now, so we just need to hard code it
                 tb.extensionVisibilityAction(
