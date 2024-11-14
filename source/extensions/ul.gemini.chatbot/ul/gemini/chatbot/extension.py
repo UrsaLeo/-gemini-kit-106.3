@@ -4,7 +4,7 @@ import asyncio
 import aiohttp
 from omni.ui import color as cl
 import os
-from .utils import open_windows
+from .utils import open_windows, get_chat_instance_id
 from .styles import response_style_welcome,bot_bubble_style_welcome,send_button_style
 import ul.gemini.services.artifact_services as artifact_services
 
@@ -197,8 +197,11 @@ class ChatBotWindow(ui.Window):
     async def get_response_from_api(self, message):
         #print("Fetching response from API...")
         async with aiohttp.ClientSession() as session:
-            url = "http://52.21.129.119:8000/core/api/document-response/"
+            url = "http://52.21.129.119:8200/core/api/document-response/"
+            chat_instance_id=get_chat_instance_id(self.partner_secure_data['twinVersionId'])
+            print(f"chat instance id is:{chat_instance_id}")
             data = {"query": message,
+                    "chat_instance_id":chat_instance_id,
                     "twin_version_id":self.partner_secure_data['twinVersionId']}
             print(f"data is :{data}")
             try:

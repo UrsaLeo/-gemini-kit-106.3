@@ -133,7 +133,7 @@ class Toolbar:
                         ui.Spacer()
                         with ui.HStack(spacing=5,style=style_system):
                             self.chatbot_label = ui.Label(
-                                "AI Assist: How can I help?",
+                                "AI Assist:\nHow can I help?",
                                 style={
                                     "color": cl.grey,
                                     "font_size": 16,
