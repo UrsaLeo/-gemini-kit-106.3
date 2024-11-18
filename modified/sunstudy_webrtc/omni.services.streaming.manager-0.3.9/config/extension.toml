@@ -1,0 +1,72 @@
+[package]
+# Semantic Versionning is used: https://semver.org/
+version = "0.3.9"
+
+# Lists people or organizations that are considered the "authors" of the package.
+authors = ["NVIDIA"]
+
+# The title and description fields are primarly for displaying extension info in UI
+title = "Streaming Extension Manager"
+description = "Manager for streaming extensions, ensuring only a single registered extension can be active at a time."
+
+# Path (relative to the root) or content of readme markdown file for UI.
+readme = "docs/README.md"
+
+# URL of the extension source repository.
+repository = ""
+
+# One of categories for UI.
+category = "services"
+
+# Keywords for the extension
+keywords = ["kit", "streaming", "manager"]
+
+# Location of change log file in target (final) folder of extension, relative to the root.
+# More info on writing changelog: https://keepachangelog.com/en/1.0.0/
+changelog = "docs/CHANGELOG.md"
+
+# Preview image and icon. Folder named "data" automatically goes in git lfs (see .gitattributes file).
+# Preview image is shown in "Overview" of Extensions window. Screenshot of an extension might be a good preview image.
+preview_image = "data/preview.png"
+
+# Icon is shown in Extensions window, it is recommended to be square, of size 256x256.
+icon = "data/icon.png"
+
+[dependencies]
+"omni.services.core" = {}
+"omni.services.transport.server.http" = {}
+"omni.kit.menu.utils" = {}
+"omni.kit.pipapi" = {}
+"omni.ui" = {}
+
+# Main python module this extension provides, it will be publicly available as "import omni.services.streaming.manager".
+[[python.module]]
+name = "omni.services.streaming.manager"
+
+[settings.exts."omni.services.streaming.manager"]
+# Prefix of the router for the available API services:
+routerPrefix = "/streaming"
+
+# Duration (in seconds) during which to cache the response from the healthcheck API, in order to minimize the risk of
+# having over-zealous requests degrade the performance of the User experience when performing a self-diagnosis.
+#
+# This duration should be relatively short, so that a healthcheck moving from "unhealthy" to "healthy" surfaces the new
+# state within a short amount of time.
+healthCheckCacheDuration = 20.0
+
+[[test]]
+# Work around issue with `AsyncEngineDriver` not shutting down properly on
+# Windows, by providing a unique HTTP port for the test runners:
+args = [
+    "--/exts/omni.services.transport.server.http/port=8047",
+]
+dependencies = [
+    "omni.services.client",
+    "omni.services.transport.client.base",
+    "omni.services.transport.client.http_async",
+]
+stdoutFailPatterns.include = []
+stdoutFailPatterns.exclude = [
+    "*<class 'omni.kit.async_engine.async_engine._AsyncEngineDriver'>: extension object is still alive*",
+    "*[error]*",  # Exclude until Kit 104.0 SDK issue is fixed.
+]
