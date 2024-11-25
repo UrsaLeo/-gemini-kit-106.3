@@ -7,8 +7,8 @@
             "children": [
               {
                 "dock_id": 3,
-                "dock_tab_bar_enabled": true,
-                "dock_tab_bar_visible": true,
+                "dock_tab_bar_enabled": false,
+                "dock_tab_bar_visible": false,
                 "height": 814.0,
                 "position_x": 0.0,
                 "position_y": 24.0,

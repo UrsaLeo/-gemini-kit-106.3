@@ -23,7 +23,8 @@ RUN echo "ubuntu ALL=(ALL:ALL) NOPASSWD: ALL" | tee /etc/sudoers.d/ubuntu
 
 # Copy the staged fat package into the /app directory
 COPY --chown=ubuntu:ubuntu package /app/
-
+#COPY --chown=ubuntu:ubuntu /modified /app/
+#ADD --chown=ubuntu:ubuntu ../../modified /app/
 USER ubuntu
 WORKDIR /app
 
