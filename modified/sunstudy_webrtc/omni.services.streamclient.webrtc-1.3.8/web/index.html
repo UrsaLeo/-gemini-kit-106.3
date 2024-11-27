@@ -30,9 +30,13 @@
                 display: flex;
                 position: relative;
                 box-shadow: 0 1rem 2rem rgb(0 0 0 / 50%);
+                width: 100vw;
+                /* height: 100vh; */
             }
             #stream {
                 margin: 0 auto;
+                width: 100vw;
+                height: 100vh;
             }
             #overlay {
                 display: block !important;
@@ -74,17 +78,52 @@
             .invalid-server code {
                 display: contents;
             }
+
+
+            #remote-video::-webkit-media-controls {
+                display: none !important;
+            }
+
+            #remote-video::-webkit-media-controls-panel {
+                display: none !important;
+            }
+
+            #remote-video::-webkit-media-controls-overlay-play-button {
+                display: none !important;
+            }
+
+            #remote-video::-webkit-media-controls-timeline {
+                display: none !important;
+            }
+
+            #remote-video::-webkit-media-controls-time-remaining-display {
+                display: none !important;
+            }
+
+            #remote-video::-webkit-media-controls-current-time-display {
+                display: none !important;
+            }
         </style>
     </head>
     <body class="bg-dark text-light text-center">
         <div id="stream">
             <div id="video-container">
-                <video id="remote-video" width="1280" height="720" playsinline tabindex="-1"></video>
+                <video
+                    id="remote-video"
+                    width="1920"
+                    height="1080"
+                    style="width: 1920px !important; height: 1080px !important;"
+                    playsinline tabindex="-1"
+                    controls="false"
+                    >
+                </video>
                 <audio id="remote-audio"></audio>
             </div>
             <div id="streamtransition" class="bottom-bar">
                 <input type="button" value="◼ &nbsp;Stop" id="stop" class="btn btn-secondary" disabled />
+                <input type="button" value="Full screen" id="fullscreen" class="btn btn-secondary" />
             </div>
+
         </div>
         <div id="overlay">
             <input type="button" value="▷" id="play" class="btn btn-danger btn-lg" disabled />
@@ -212,6 +251,22 @@
                         }
                         isPlaying = !isPlaying;
                     });
+
+                    var elem = document.getElementById("remote-video");
+                    function openFullscreen() {
+                        if (elem && elem.requestFullscreen) {
+                            elem.requestFullscreen();
+                        } else if (elem && elem.webkitRequestFullscreen) { /* Safari */
+                            elem.webkitRequestFullscreen();
+                        } else if (elem && elem.msRequestFullscreen) { /* IE11 */
+                            elem.msRequestFullscreen();
+                        } else {
+                            console.error("Fullscreen API is not supported or element is null.");
+                        }
+                    }
+
+                    // Attach the event listener to the fullscreen button
+                    document.getElementById('fullscreen').onclick = openFullscreen;
                 });
             })();
         </script>

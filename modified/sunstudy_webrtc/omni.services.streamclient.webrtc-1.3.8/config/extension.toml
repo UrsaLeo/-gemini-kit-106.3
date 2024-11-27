@@ -25,6 +25,9 @@ name = "omni.services.streamclient.webrtc"
 app.livestream.proto = "ws"
 app.window.drawMouse = false
 
+#exts."omni.services.streamclient.webrtc".window.width = 1280
+#exts."omni.services.streamclient.webrtc".window.height = 1020
+
 [settings.exts."omni.services.streamclient.webrtc"]
 # List of available STUN and TURN servers to use when negotiating a WebRTC connection.
 #

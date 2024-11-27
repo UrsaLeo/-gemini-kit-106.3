@@ -44,7 +44,7 @@ template_name = "kit_base_editor"
 "omni.kit.tool.collect" = {} # USD Collect tool
 "omni.kit.viewport.legacy_gizmos" = {}  # Load the legacy grid and gizmo drawing for now
 "omni.kit.viewport.menubar.camera" = {}  # Load the view-from-camera menu
-"omni.kit.viewport.menubar.display" = {}  # Load the display type menu
+#"omni.kit.viewport.menubar.display" = {}  # Load the display type menu
 "omni.kit.viewport.menubar.lighting" = {}  # Load the viewport settings menu
 "omni.kit.viewport.menubar.render" = {}  # Load the renderer selection menu
 "omni.kit.viewport.menubar.settings" = {}  # Load the viewport settings menu
@@ -110,17 +110,16 @@ persistent.app.viewport.Viewport.Viewport0.hud.deviceMemory.visible = false
 persistent.app.viewport.Viewport.Viewport0.hud.hostMemory.visible = false
 persistent.app.viewport.Viewport.Viewport0.hud.renderFPS.visible = false
 
-
 #[settings.app]
 #content.emptyStageOnStart = true
 font.file = "${fonts}/OpenSans-SemiBold.ttf"
 font.size = 16
 hangDetector.enabled = true
 hangDetector.timeout = 120
-renderer.skipWhileMinimized = true
+#renderer.skipWhileMinimized = true
 window.title = "My Editor"
 
-################
+
 #exts."omni.kit.viewport.window".startup.windowName = "Viewport"
 #exts."omni.kit.renderer.core".compatibilityMode = true #original is false
 # # here you can choose what renderers are enabled
@@ -131,6 +130,17 @@ window.fullscreen = true
 window.x = -1
 window.y = -1
 window.displayModeLock = true
+
+window.scaleToMonitor = false
+window.dpiScaleOverride = 1.0
+livestream.allowResize = true
+window.height = 1080
+window.width = 1920
+renderer.resolution.height = 1080
+renderer.resolution.width = 1920
+exts."omni.kit.viewport.window".window.width = 1920
+exts."omni.kit.viewport.window".window.height = 1080
+
 
 #window.displayModeLock = false
 window.showStatusBar = false
@@ -145,8 +155,6 @@ viewport.grid.enabled = false
 viewport.outline.enabled = true
 viewport.boundingBoxes.hideWhenManipulating = true
 
-
-########
 "omni.kit.markup.core".show_icons = false
 "omni.kit.waypoint.core".show_icons = false
 "omni.kit.markup.core".enable_hotkeys = true
@@ -154,9 +162,6 @@ viewport.boundingBoxes.hideWhenManipulating = true
 "omni.kit.tool.measure".enable_hotkeys = true
 "omni.kit.viewport.navigation.markup".visible = false
 
-
-
-#############
 
 #exts."omni.kit.material.library".ui_show_list = ["OmniPBR", "OmniGlass", "OmniSurface", "USD Preview Surface"]
 #exts."omni.rtx.window.settings".window_menu = "Window" # Where to put the render settings menuitem
