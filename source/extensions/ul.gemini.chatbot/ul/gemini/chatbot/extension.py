@@ -4,7 +4,7 @@ import asyncio
 import aiohttp
 from omni.ui import color as cl
 import os
-from .utils import open_windows
+from .utils import open_windows, get_chat_instance_id
 from .styles import response_style_welcome,bot_bubble_style_welcome,send_button_style
 import ul.gemini.services.artifact_services as artifact_services
 
@@ -12,7 +12,7 @@ class ChatBotWindow(ui.Window):
     def __init__(self, title: str, **kwargs) -> None:
         super().__init__(title, **kwargs)
         self.frame.set_build_fn(self._build_fn)
-        self.font_size = 16
+        self.font_size = 26
         self.partner_secure_data =  artifact_services.get_partner_secure_data()
 
     def _build_fn(self):
@@ -52,7 +52,7 @@ class ChatBotWindow(ui.Window):
                     with ui.ZStack():
                         ui.Rectangle(width=ui.Percent(100), height=ui.Percent(100), style={"background_color": background_colour})
                         with ui.HStack(height=ui.Percent(100), spacing=5, width=ui.Percent(100)):
-                            self.chat_input = ui.StringField(height=ui.Percent(100), width=ui.Percent(85),multiline=True ,style={"background_color":background_colour, "color": cl("#A9A9A9")})
+                            self.chat_input = ui.StringField(height=ui.Percent(100), width=ui.Percent(85),multiline=True ,style={"background_color":background_colour, "color": cl("#A9A9A9"),"font_size":self.font_size})
                             self.chat_input.model.set_value(self.placeholder_text)  # Set initial placeholder
                             self.chat_input.model.add_begin_edit_fn(self.on_input_edit)
                             self.chat_input.model.add_end_edit_fn(self.input_change)
@@ -197,8 +197,11 @@ class ChatBotWindow(ui.Window):
     async def get_response_from_api(self, message):
         #print("Fetching response from API...")
         async with aiohttp.ClientSession() as session:
-            url = "http://52.21.129.119:8000/core/api/document-response/"
+            url = "http://52.21.129.119:8200/core/api/document-response/"
+            chat_instance_id=get_chat_instance_id(self.partner_secure_data['twinVersionId'])
+            print(f"chat instance id is:{chat_instance_id}")
             data = {"query": message,
+                    "chat_instance_id":chat_instance_id,
                     "twin_version_id":self.partner_secure_data['twinVersionId']}
             print(f"data is :{data}")
             try:
@@ -242,7 +245,7 @@ class ChatBotWindow(ui.Window):
                         with ui.VStack():
                             with ui.HStack():
                                 with ui.ZStack():
-                                    ui.Rectangle(style=bot_bubble_style, width=ui.Pixel(240), alignment=ui.Alignment.LEFT)
+                                    ui.Rectangle(style=bot_bubble_style, width=ui.Pixel(340), alignment=ui.Alignment.LEFT)
                                     ui.Label(f"{response_content}", word_wrap=True, style=response_style2)
                                 ui.Spacer()
                         ui.Spacer()
