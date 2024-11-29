@@ -277,9 +277,9 @@ class ULExtension(omni.ext.IExt):
         # Asynchronously open the USD stage
 
         asyncio.ensure_future(self.loading_screen())
-        # partner_secure_data = gdn_services.get_partner_secure_data()
-        model_path = core_services.read_api_data_to_temp_file()
-        file_path = f"{model_path}/Building.usd"
+
+        file_path = core_services.get_usd_path()
+        #file_path = core_services.get_nucleus_usd_path()
 
         print(f"Attempting to load USD file: {file_path}")
 
