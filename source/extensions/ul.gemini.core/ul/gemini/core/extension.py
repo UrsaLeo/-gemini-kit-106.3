@@ -45,6 +45,7 @@ import omni.appwindow
 import carb.input
 from carb.input import KeyboardEventType
 
+from .inactivity_detector import InactivityTracker
 
 
 
@@ -144,6 +145,15 @@ class ULExtension(omni.ext.IExt):
         # MeasurePanel()
 
         with Toolbar() as tb:
+            # tb.simpleClickAction("Cameras", "Perspective.png", "Change Cameras", lambda : self._camera_changer.change_camera())
+            tb.extensionVisibilityAction(
+                "Waypoints",
+                os.path.join(os.path.dirname(__file__), "data", "Icons", "Waypoint.png"),
+                "Waypoints",
+                lambda: WaypointListWindow(),
+                ["Waypoints"],
+                [],
+            )
             tb.extensionVisibilityAction(
                 "Markups",
                 os.path.join(os.path.dirname(__file__), "data", "Icons", "AnnotationIcon.png"),
@@ -176,15 +186,6 @@ class ULExtension(omni.ext.IExt):
                 None,
                 ["Sensors"],
                 ["Attachment"],
-            )
-            # tb.simpleClickAction("Cameras", "Perspective.png", "Change Cameras", lambda : self._camera_changer.change_camera())
-            tb.extensionVisibilityAction(
-                "Waypoints",
-                os.path.join(os.path.dirname(__file__), "data", "Icons", "Waypoint.png"),
-                "Waypoints",
-                lambda: WaypointListWindow(),
-                ["Waypoints"],
-                [],
             )
             tb.extensionVisibilityAction(
                 "Model Exploder",
@@ -244,6 +245,8 @@ class ULExtension(omni.ext.IExt):
             window = ui.Workspace.get_window("Property")
             if window:
                 window.visible = False
+
+            self._detector = InactivityTracker(30)
 
             #NOTE! Add commands, since persistent settings in kit file don't work
             def remove_persistent_settings(val):
