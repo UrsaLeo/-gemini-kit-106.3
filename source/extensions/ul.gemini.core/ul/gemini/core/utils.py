@@ -56,7 +56,7 @@ def zoom_camera():
 
 
 def show_auth_code(auth_code):
-    # Create the popup dialog 
+    # Create the popup dialog
     popup = PopupDialog(
         title="Authentication Code",
         width=900
@@ -64,13 +64,33 @@ def show_auth_code(auth_code):
 
     # Display the auth code in the popup's window frame
     with popup.window.frame:
+        def on_click():
+                import os
+                file_path = r"C:\Users\Administrator\Desktop\omniverse-vr\download_icon_clicked.txt"
+                # Create a text file with a message
+                with open(file_path, "w") as f:
+                    f.write("clicked")
+                # Open the APK link
         with ui.VStack(alignment=ui.Alignment.CENTER, spacing=20, style={"padding": 20}):
             ui.Label("To get started, install the ConnectMe VR app on your headset.", style={"font_size": 24})
+            #link_label = ui.Label("Download the APK here", style={"font_size": 24, "color": "blue", "cursor": "pointer", "text_decoration": "underline"})
+            ui.Button(
+                "Download the APK here",
+                clicked_fn=on_click,
+                style={
+                    "font_size": 24,
+                    "color": "blue",
+                    "text_decoration": "underline",
+                    "background_color": "transparent",
+                    "border_color": "transparent",
+                    "cursor": "pointer"
+                }
+            )
             ui.Label("Your Authentication Code is:", style={"font_size": 36})  # Larger font size
             ui.Label(auth_code, style={"font_size": 96, "font_weight": "bold"})  # Increased font size
             ui.Label("Enter this code on your headset.", style={"font_size": 24})
-            ui.Label("Once connected, come back to your PC and press 'Start VR' to enter! or 'Stop VR' to exit!", style={"font_size": 24})
-            ui.Label("Enjoy your VR experience! 😊", style={"font_size": 24})
+            ui.Label("Once connected, come back to your Ursaleo and press 'Start VR' to enter! or 'Stop VR' to exit!", style={"font_size": 24})
+            ui.Label("Enjoy your VR experience!", style={"font_size": 24})
             ui.Label("__________________________________________________________________________________________", style={"font_size": 24})
 
     # Show the popup

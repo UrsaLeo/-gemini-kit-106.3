@@ -317,6 +317,24 @@
         "sensor_camera": "/World/Twins/Building/Sensors/Cameras/sCam2"
     },
     {
+        "twinVersionId": "eff7b45b-f65d-4050-8b7f-d9bacafedb48",
+        "deviceId": "sdsf",
+        "deviceType": "type",
+        "sensorName": "temperature",
+        "path": "/World/Twins/Building/Sensors/sensor_01",
+        "default_camera": "/World/Twins/Building/Camera",
+        "sensor_camera": "/World/Twins/Building/Sensors/Cameras/sCam1"
+    },
+    {
+        "twinVersionId": "eff7b45b-f65d-4050-8b7f-d9bacafedb48",
+        "deviceId": "sdsf",
+        "deviceType": "type",
+        "sensorName": "humidity",
+         "path": "/World/Twins/Building/Sensors/sensor_02",
+        "default_camera": "/World/Twins/Building/Camera",
+        "sensor_camera": "/World/Twins/Building/Sensors/Cameras/sCam2"
+    },
+    {
         "twinVersionId": "50f54285-1daa-4c09-86c7-ba720fff4448",
         "deviceId": "sdsf",
         "deviceType": "type",

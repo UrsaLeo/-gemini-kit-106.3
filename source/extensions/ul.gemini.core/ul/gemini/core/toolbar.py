@@ -9,6 +9,7 @@ from omni.ui import color as cl
 from .styles import style_system, style_system_show_window
 from .utils import get_public_ip_from_turnserver_conf
 import requests
+from .utils import connectVRAPP
 
 base_path = os.path.join(os.path.dirname(__file__), "data", "Icons")
 
@@ -186,6 +187,39 @@ class Toolbar:
     # A Shortcut to add the quit application action
     def quitApplicationAction(self):
         self._actions.append(SimpleClickAction("Quit", os.path.join(base_path, "Quit.png"), "Quit Application", self._quit_application))
+
+    def startVRAction(self):
+    # Define a single button for VR action
+        self._actions.append(
+            SimpleClickAction(
+                "VR",
+                os.path.join(base_path, "vricon.png"),
+                "Virtual Reality",
+                self._toggle_vr_extension
+            )
+        )
+
+    def _toggle_vr_extension(self):
+    # Function to toggle the visibility of the VR extension
+        vr_window = ui.Workspace.get_window("VR")
+        if vr_window:
+            # If the VR window is found, toggle its visibility
+            vr_window.visible = not vr_window.visible
+            if vr_window.visible:
+                #print("VR extension is now visible.")
+                connectVRAPP()  # Initialize VR functionality when visible
+            else:
+                print("")
+        else:
+            # If the VR window is not found, initialize and show it
+            #print("VR window not found, initializing extension...")
+            connectVRAPP()  # Ensure the VR extension is initialized
+            vr_window = ui.Workspace.get_window("VR")
+            if vr_window:
+                vr_window.visible = True
+                #print("VR extension is now visible.")
+
+
 
     def _quit_application(self):
         def on_confirm_quit():
