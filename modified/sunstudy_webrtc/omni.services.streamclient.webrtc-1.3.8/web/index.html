@@ -98,6 +98,7 @@
         </div>
         <div id="streamtransition" class="bottom-bar">
             <input type="button" value="◼ &nbsp;Stop" id="stop" class="btn btn-secondary hidden" disabled />
+            <input type="button" value="Full screen" id="fullscreen" class="btn btn-secondary" />
         </div>
     </div>
     <div id="overlay">
@@ -274,13 +275,32 @@
                     isPlaying = !isPlaying;
                 });
 
+                const fullscreenButton = document.getElementById('fullscreen');
+                const videoContainer = document.getElementById('video-container');
+
+                // Fullscreen handler for the container
+                function openFullscreen() {
+                    if (videoContainer.requestFullscreen) {
+                        videoContainer.requestFullscreen();
+                    } else if (videoContainer.webkitRequestFullscreen) { /* Safari */
+                        videoContainer.webkitRequestFullscreen();
+                    } else if (videoContainer.msRequestFullscreen) { /* IE11 */
+                        videoContainer.msRequestFullscreen();
+                    } else {
+                        console.error("Fullscreen API is not supported or element is null.");
+                    }
+                }
+
+                // Attach event to the fullscreen button
+                fullscreenButton.addEventListener('click', openFullscreen);
             });
+
             window.addEventListener("beforeunload", (event) => {
                     console.log("Window close attempt detected.");
                     const confirmationMessage = "Are you sure you want to quit?";
                     event.returnValue = confirmationMessage;
                     return confirmationMessage;
-                });
+            });
         })();
     </script>
 </body>
