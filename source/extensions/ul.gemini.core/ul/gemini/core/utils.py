@@ -56,45 +56,91 @@ def zoom_camera():
 
 
 def show_auth_code(auth_code):
-    # Create the popup dialog
-    popup = PopupDialog(
-        title="Authentication Code",
-        width=900
+    def on_download():
+        """Logic to handle the download action."""
+        import os
+        file_path = r"C:\Users\Administrator\Desktop\omniverse-vr\download_icon_clicked.txt"
+        with open(file_path, "w") as f:
+            f.write("clicked")
+        print("Download initiated.")  # Placeholder for actual download logic
+
+    def on_close():
+        """Logic to handle the close action."""
+        print("Popup closed.")
+        dialog_window.visible = False  # Close the dialog
+
+    # Create the dialog window
+    dialog_window = ui.Window(
+        "Authentication Code",
+        width=800,
+        height=400,
+        visible=True,
+        position=(200, 300)  # Set the position on the screen
     )
 
-    # Display the auth code in the popup's window frame
-    with popup.window.frame:
-        def on_click():
-                import os
-                file_path = r"C:\Users\Administrator\Desktop\omniverse-vr\download_icon_clicked.txt"
-                # Create a text file with a message
-                with open(file_path, "w") as f:
-                    f.write("clicked")
-                # Open the APK link
-        with ui.VStack(alignment=ui.Alignment.CENTER, spacing=20, style={"padding": 20}):
-            ui.Label("To get started, install the ConnectMe VR app on your headset.", style={"font_size": 24})
-            #link_label = ui.Label("Download the APK here", style={"font_size": 24, "color": "blue", "cursor": "pointer", "text_decoration": "underline"})
-            ui.Button(
-                "Download the APK here",
-                clicked_fn=on_click,
-                style={
-                    "font_size": 24,
-                    "color": "blue",
-                    "text_decoration": "underline",
-                    "background_color": "transparent",
-                    "border_color": "transparent",
-                    "cursor": "pointer"
-                }
+    with dialog_window.frame:
+        with ui.VStack(alignment=ui.Alignment.CENTER, spacing=10, style={"padding": 5}):  # Reduced spacing in VStack
+            # Header message
+            ui.Label(
+                "Get Started with ConnectMe VR",
+                alignment=ui.Alignment.CENTER,
+                style={"font_size": 20, "font_weight": "bold", "margin_bottom": 5}
             )
-            ui.Label("Your Authentication Code is:", style={"font_size": 36})  # Larger font size
-            ui.Label(auth_code, style={"font_size": 96, "font_weight": "bold"})  # Increased font size
-            ui.Label("Enter this code on your headset.", style={"font_size": 24})
-            ui.Label("Once connected, come back to your Ursaleo and press 'Start VR' to enter! or 'Stop VR' to exit!", style={"font_size": 24})
-            ui.Label("Enjoy your VR experience!", style={"font_size": 24})
-            ui.Label("__________________________________________________________________________________________", style={"font_size": 24})
 
-    # Show the popup
-    popup.show()
+            # Instructional text
+            ui.Label(
+                "To begin, download and install the ConnectMe VR app on your headset.",
+                alignment=ui.Alignment.CENTER,
+                style={"font_size": 16, "margin_bottom": 5}
+            )
+
+            # Display authentication code
+            ui.Label(
+                "Your Authentication Code:",
+                alignment=ui.Alignment.CENTER,
+                style={"font_size": 18, "margin_bottom": 5}
+            )
+            ui.Label(
+                auth_code,
+                alignment=ui.Alignment.CENTER,
+                style={"font_size": 36, "font_weight": "bold", "color": "#333", "margin_bottom": 5}
+            )
+
+            # Footer instructions
+            ui.Label(
+                "Enter this code on your headset and return to Ursaleo.\n"
+                "Click 'Start VR' to enter or 'Stop VR' to exit.",
+                alignment=ui.Alignment.CENTER,
+                style={"font_size": 16, "margin_bottom": 5}
+            )
+
+            # Add "Download" and "Close" buttons
+            with ui.HStack(alignment=ui.Alignment.CENTER, height=50, spacing=20):
+                ui.Button(
+                    "Download ConnectME VR APK",
+                    clicked_fn=on_download,
+                    style={
+                        "font_size": 16,
+                        "color": "white",
+                        "background_color": "#007BFF",  # Light blue button
+                        "padding": "10px 20px",
+                        "border_radius": 8
+                    }
+                )
+                ui.Button(
+                    "Close",
+                    clicked_fn=on_close,
+                    style={
+                        "font_size": 16,
+                        "color": "white",
+                        "background_color": "#DC3545",  # Light red button
+                        "padding": "10px 20px",
+                        "border_radius": 8
+                    }
+                )
+
+    # Show the dialog window
+    dialog_window.visible = True
 
 def connectVRAPP():
         partner_secure_data =  artifact_services.get_partner_secure_data()
