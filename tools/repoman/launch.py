@@ -308,10 +308,6 @@ def run_selected_image(image_id: str, dev_bundle: bool, extra_args: List[str], v
 # ]
 
 
-
-
-
-
     import subprocess
     import re
     import time
@@ -354,7 +350,6 @@ def run_selected_image(image_id: str, dev_bundle: bool, extra_args: List[str], v
         except subprocess.CalledProcessError as e:
             print(f"Error reading the .kit file from the container: {e}")
             return None
-
 
     def prepare_docker_run_command(kit_file_path="apps/my_company.my_editor.kit"):
         timestamp = time.strftime("%Y%m%d-%H%M%S")
@@ -400,18 +395,6 @@ def run_selected_image(image_id: str, dev_bundle: bool, extra_args: List[str], v
         print("Docker command:", " ".join(docker_run_cmd))
 
     prepare_docker_run_command()
-
-
-
-
-
-# EXPOSE 47995-48012/udp \
-#        47995-48012/tcp \
-#        49000-49007/udp \
-#        49000-49007/tcp \
-#        8211/tcp \
-#        8111/tcp \
-#        49100/tcp
 
 
     # Set repo_diagnostic to map in stdin to prevent docker run from complaining.

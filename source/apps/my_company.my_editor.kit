@@ -64,10 +64,6 @@ template_name = "kit_base_editor"
 "omni.usd.schema.metrics.assembler" = {}
 "omni.warp.core" = {} # Warp support
 
-
-
-
-
 "omni.rtx.shadercache.vulkan" = {}
 "omni.kit.viewport.bundle" ={}
 "omni.kit.tool.markup" = {}
@@ -75,13 +71,10 @@ template_name = "kit_base_editor"
 "omni.kit.variant.presenter" = {}
 "syntway.model_exploder" = {} # Extension for exploring models(Comunity)
 "omni.kit.manipulator.viewport" = {} # For syntway to work
-
-
 "omni.kit.uiapp" = {}
 "omni.kit.quicklayout" = {}
 "omni.kit.viewport.rtx" = {}
 "omni.app.setup" = {}
-
 
 "omni.kit.environment.sunstudy" = {}
 "omni.services.streamclient.webrtc" = {}
@@ -97,13 +90,13 @@ template_name = "kit_base_editor"
 "omni.kit.xr.profile.vr" = {}
 
 
-
 [settings]
-########
+app.livestream.port = 49400
+exts."omni.services.transport.server.http".port = 8511
+
 app.extensions.installUntrustedExtensions = true
 app.layout.default = "${app}/data/layout7.json"
 app.kit.editor.setup = true
-app.livestream.port = 49300
 default_layout = "${app}/data/layout7.json"
 
 persistent.app.viewport.Viewport.Viewport0.hud.renderResolution.visible = false
@@ -111,42 +104,46 @@ persistent.app.viewport.Viewport.Viewport0.hud.deviceMemory.visible = false
 persistent.app.viewport.Viewport.Viewport0.hud.hostMemory.visible = false
 persistent.app.viewport.Viewport.Viewport0.hud.renderFPS.visible = false
 
+app.window.dpiScaleOverride=1.0
+app.livestream.allowResize=true
+app.window.scaleToMonitor=false
+app.window.width=1920
+app.window.height=1080
+app.window.x = -1
+app.window.y = -1
+app.window.displayModeLock = true
+app.window.fullscreen = true
+
+app.font.file = "${fonts}/OpenSans-SemiBold.ttf"
+app.font.size = 20
+app.renderer.enabled = "rtx"
+app.renderer.active = "rtx"
+
+
+exts."omni.kit.markup.core".show_icons = false
+exts."omni.kit.waypoint.core".show_icons = false
+exts."omni.kit.markup.core".enable_hotkeys = true
+exts."omni.kit.waypoint.core".enable_hotkeys = true
+exts."omni.kit.tool.measure".enable_hotkeys = true
+exts."omni.kit.viewport.navigation.markup".visible = false
+
+
+rtx.directLighting.sampledLighting.enabled = true
+rtx.sceneDb.ambientLightIntensity = 0.5
+rtx-transient.scenedb.useUniformsReindexing = true
+
+
 #[settings.app]
-#content.emptyStageOnStart = true
-font.file = "${fonts}/OpenSans-SemiBold.ttf"
-font.size = 16
 hangDetector.enabled = true
 hangDetector.timeout = 120
 #renderer.skipWhileMinimized = true
 window.title = "My Editor"
 
+#renderer.resolution.height = 1080
+#renderer.resolution.width = 1920
+#exts."omni.kit.viewport.window".window.width = 1920
+#exts."omni.kit.viewport.window".window.height = 1080
 
-#exts."omni.kit.viewport.window".startup.windowName = "Viewport"
-#exts."omni.kit.renderer.core".compatibilityMode = true #original is false
-# # here you can choose what renderers are enabled
-renderer.enabled = "rtx"
-renderer.active = "rtx"
-exts."omni.services.transport.server.http".port = 8411
-
-
-
-window.fullscreen = true
-window.x = -1
-window.y = -1
-window.displayModeLock = true
-
-window.scaleToMonitor = false
-window.dpiScaleOverride = 1.0
-livestream.allowResize = true
-window.height = 1080
-window.width = 1920
-renderer.resolution.height = 1080
-renderer.resolution.width = 1920
-exts."omni.kit.viewport.window".window.width = 1920
-exts."omni.kit.viewport.window".window.height = 1080
-
-
-#window.displayModeLock = false
 window.showStatusBar = false
 viewport.showSettingMenu = false
 viewport.showCameraMenu = false
@@ -166,18 +163,13 @@ viewport.boundingBoxes.hideWhenManipulating = true
 "omni.kit.tool.measure".enable_hotkeys = true
 "omni.kit.viewport.navigation.markup".visible = false
 
-
-#exts."omni.kit.material.library".ui_show_list = ["OmniPBR", "OmniGlass", "OmniSurface", "USD Preview Surface"]
-#exts."omni.rtx.window.settings".window_menu = "Window" # Where to put the render settings menuitem
-##exts."omni.kit.viewport.menubar.lighting".defaultRigIgnorePattern = "" # Allows auto light rig with anon layers
 exts."omni.kit.viewport.window".windowMenu.entryCount = 1
-#exts."omni.kit.viewport.window".windowMenu.label="" # Put Viewport menuitem under Window menu
 renderer.gpuEnumeration.glInterop.enabled = false # Improves startup speed.
 renderer.asyncInit = true # Don't block while renderer inits
 rtx.ecoMode.enabled = true
 #rtx.hydra.mdlMaterialWarmup = true # start loading the MDL shaders needed before any delegate is actually created.
 
-########
+
 [settings.persistent.exts]
 "omni.kit.viewport.menubar.render".visible = false
 "omni.kit.viewport.menubar.display".visible = false
@@ -187,32 +179,10 @@ rtx.ecoMode.enabled = true
 "omni.kit.manipulator.camera".moveSpeed.2 = 0.08
 "omni.kit.viewport.menubar.settings".visible = false
 
-#[settings.exts]
-"omni.kit.markup.core".show_icons = false
-"omni.kit.waypoint.core".show_icons = false
-"omni.kit.markup.core".enable_hotkeys = true
-"omni.kit.waypoint.core".enable_hotkeys = true
-"omni.kit.tool.measure".enable_hotkeys = true
-
-"omni.kit.viewport.navigation.markup".visible = false
-###########
-
-
-
-#####
-#[settings.rtx]
-directLighting.sampledLighting.enabled = true
-sceneDb.ambientLightIntensity = 0.5
-
-#[settings.rtx-transient]
-scenedb.useUniformsReindexing = true
-
 
 #[settings.app.settings]
-persistent = false
-dev_build = false
-
-#####
+#persistent = false
+#dev_build = false
 
 
 [settings.app.exts]
@@ -223,11 +193,8 @@ folders.'++' = [  # Search paths for extensions.
 ]
 
 
-
 [settings.app."omni.usd"]
 getRenderablePaths.parallel = 4  # Enable parallel mode for selection performance
-###############
-
 
 
 [settings.telemetry]
