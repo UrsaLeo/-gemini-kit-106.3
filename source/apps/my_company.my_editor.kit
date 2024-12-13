@@ -103,6 +103,7 @@ template_name = "kit_base_editor"
 app.extensions.installUntrustedExtensions = true
 app.layout.default = "${app}/data/layout7.json"
 app.kit.editor.setup = true
+app.livestream.port = 49300
 default_layout = "${app}/data/layout7.json"
 
 persistent.app.viewport.Viewport.Viewport0.hud.renderResolution.visible = false
@@ -125,6 +126,9 @@ window.title = "My Editor"
 # # here you can choose what renderers are enabled
 renderer.enabled = "rtx"
 renderer.active = "rtx"
+exts."omni.services.transport.server.http".port = 8411
+
+
 
 window.fullscreen = true
 window.x = -1
