@@ -65,3 +65,7 @@ args = [
 stdoutFailPatterns.exclude = [
     "*Failed to initialize the symbol handler*",
 ]
+
+[python.pipapi]
+requirements = ["pyperclip", "requests"]
+use_online_index = true

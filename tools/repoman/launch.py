@@ -207,23 +207,195 @@ def run_selected_image(image_id: str, dev_bundle: bool, extra_args: List[str], v
     # and always map those in? Or should this be configurable via CLI args/toml file?
     nvda_kit_args = os.environ.get("NVDA_KIT_ARGS", "")
     nvda_kit_nucleus = os.environ.get("NVDA_KIT_NUCLEUS", "")
+    # docker_run_cmd = [
+    #     "docker",
+    #     "run",
+    #     "--gpus=all",
+    #     "--env",
+    #     f"OM_KIT_VERBOSE={1 if verbose else 0}",
+    #     "--env",
+    #     f"NVDA_KIT_ARGS={nvda_kit_args}",
+    #     "--env",
+    #     f"NVDA_KIT_NUCLEUS={nvda_kit_nucleus}",
+    #     "--mount",  # RTX Shader Cache
+    #     "type=volume,src=omniverse_shader_cache,dst=/home/ubuntu/.cache/ov,volume-driver=local",
+    #     "--mount",  # Kit Extension Cache
+    #     "type=volume,src=omniverse_extension_cache,dst=/home/ubuntu/.local/share/ov,volume-driver=local",
+    #     "--network=host",  # Host networking to simplify local testing of app streaming.
+    #     image_id,
+    # ]
+#     docker_run_cmd = [
+#     "docker",
+#     "run",
+#     "--gpus=all",
+#     "--memory=16g",
+#     "--cpus=4",
+#     "--env", f"OM_KIT_VERBOSE={1 if verbose else 0}",
+#     "--env", f"NVDA_KIT_ARGS={nvda_kit_args}",
+#     "--env", f"NVDA_KIT_NUCLEUS={nvda_kit_nucleus}",
+#     "--mount",  # RTX Shader Cache
+#     "type=volume,src=omniverse_shader_cache,dst=/home/ubuntu/.cache/ov,volume-driver=local",
+#     "--mount",  # Kit Extension Cache
+#     "type=volume,src=omniverse_extension_cache,dst=/home/ubuntu/.local/share/ov,volume-driver=local",
+#     "--network=bridge",  # Host networking to simplify local testing of app streaming.
+#     "-p", "50000-50017:47995-48012/udp",  # Map UDP ports to host ports for first stream
+#     "-p", "50000-50017:47995-48012/tcp",  # Map TCP ports for first stream
+#     "-p", "51000-51007:49000-49007/udp",  # Map second stream's UDP ports
+#     "-p", "51000-51007:49000-49007/tcp",  # Map second stream's TCP ports
+#     "-p", "8211:8211/tcp",  # Map port 8211
+#     #"-p", "8111:8111/tcp",  # Map port 8111
+#     "-p", "49100:49100/tcp",  # Map port 49100
+#     image_id,
+# ]
+
+    # docker_run_cmd = [
+    #     "docker",
+    #     "run",
+    #     "--gpus=all",
+    #     "--memory=16g",
+    #     "--cpus=4",
+    #     "--env", f"OM_KIT_VERBOSE={1 if verbose else 0}",
+    #     "--env", f"NVDA_KIT_ARGS={nvda_kit_args}",
+    #     "--env", f"NVDA_KIT_NUCLEUS={nvda_kit_nucleus}",
+    #     "--mount",  # RTX Shader Cache
+    #     "type=volume,src=omniverse_shader_cache,dst=/home/ubuntu/.cache/ov,volume-driver=local",
+    #     "--mount",  # Kit Extension Cache
+    #     "type=volume,src=omniverse_extension_cache,dst=/home/ubuntu/.local/share/ov,volume-driver=local",
+    #     "--network=bridge",  # Host networking to simplify local testing of app streaming.
+
+    #     # Second stream's port mappings
+    #     "-p", "52000-52017:47995-48012/udp",  # Map UDP ports for second stream
+    #     "-p", "52000-52017:47995-48012/tcp",  # Map TCP ports for second stream
+    #     "-p", "53000-53007:49000-49007/udp",  # Map UDP ports for second stream's extended range
+    #     "-p", "53000-53007:49000-49007/tcp",  # Map TCP ports for second stream's extended range
+
+    #     # Additional ports that might be needed for other services
+    #     "-p", "8011:8011/tcp",  # Map port 8211
+    #     #"-p", "8311:8111/tcp",  # Map port 8111
+    #     "-p", "49200:49200/tcp",  # Map port 49100
+
+    #     image_id,
+    # ]
+
+#     docker_run_cmd = [
+#     "docker",
+#     "run",
+#     "--gpus=all",
+#    "--memory=16g",
+#     "--cpus=4",
+#     "--gpus=all",
+#     "--env", f"OM_KIT_VERBOSE={1 if verbose else 0}",
+#     "--env", f"NVDA_KIT_ARGS={nvda_kit_args}",
+#     "--env", f"NVDA_KIT_NUCLEUS={nvda_kit_nucleus}",
+#     "--mount",  # RTX Shader Cache
+#     "type=volume,src=omniverse_shader_cache,dst=/home/ubuntu/.cache/ov,volume-driver=local",
+#     "--mount",  # Kit Extension Cache
+#     "type=volume,src=omniverse_extension_cache,dst=/home/ubuntu/.local/share/ov,volume-driver=local",
+#     "--network=bridge",  # Host networking to simplify local testing of app streaming.
+
+#     # Third stream's port mappings
+#     # "-p", "54000-54017:47995-48012/udp",  # Map UDP ports for third stream
+#     # "-p", "54000-54017:47995-48012/tcp",  # Map TCP ports for third stream
+#     # "-p", "55000-55007:49000-49007/udp",  # Map UDP extended range for third stream
+#     # "-p", "55000-55007:49000-49007/tcp",  # Map TCP extended range for third stream
+
+#     # Additional ports
+#     "-p", "8411:8011/tcp",  # Map port 8211
+#     #"-p", "8111:8111/tcp",  # Map port 8111
+#     "-p", "49300:49300/tcp",  # Map port 49100
+
+#     image_id,
+# ]
+
+
+    import subprocess
+    import re
+    import time
+
     docker_run_cmd = [
         "docker",
         "run",
         "--gpus=all",
-        "--env",
-        f"OM_KIT_VERBOSE={1 if verbose else 0}",
-        "--env",
-        f"NVDA_KIT_ARGS={nvda_kit_args}",
-        "--env",
-        f"NVDA_KIT_NUCLEUS={nvda_kit_nucleus}",
-        "--mount",  # RTX Shader Cache
-        "type=volume,src=omniverse_shader_cache,dst=/home/ubuntu/.cache/ov,volume-driver=local",
-        "--mount",  # Kit Extension Cache
-        "type=volume,src=omniverse_extension_cache,dst=/home/ubuntu/.local/share/ov,volume-driver=local",
-        "--network=host",  # Host networking to simplify local testing of app streaming.
-        image_id,
+        "--env", f"OM_KIT_VERBOSE={1}",
+        "--env", f"NVDA_KIT_ARGS={nvda_kit_args}",
+        "--env", f"NVDA_KIT_NUCLEUS={nvda_kit_nucleus}",
+        "--mount", "type=volume,src=omniverse_shader_cache,dst=/home/ubuntu/.cache/ov,volume-driver=local",
+        "--mount", "type=volume,src=omniverse_extension_cache,dst=/home/ubuntu/.local/share/ov,volume-driver=local",
+        "--network=bridge",
     ]
+
+    def extract_port_from_container(container_name, kit_file_path, pattern, port_name, default_message):
+        """
+        Extracts a port value from a .kit file inside a running container.
+        """
+        try:
+            # Command to read the .kit file content inside the running container
+            result = subprocess.run(
+                ["docker", "exec", container_name, "cat", kit_file_path],
+                stdout=subprocess.PIPE,
+                stderr=subprocess.PIPE,
+                check=True
+            )
+            content = result.stdout.decode()
+
+            # Regex to find the port
+            match = re.search(pattern, content)
+            if match:
+                port = match.group(1)
+                print(f"{port_name} Port: {port}")
+                return port
+            else:
+                print(default_message)
+                return None
+        except subprocess.CalledProcessError as e:
+            print(f"Error reading the .kit file from the container: {e}")
+            return None
+
+    def prepare_docker_run_command(kit_file_path="apps/my_company.my_editor.kit"):
+        timestamp = time.strftime("%Y%m%d-%H%M%S")
+        container_name = f"temp_container_for_port_extraction_{timestamp}"
+
+        subprocess.run([
+            "docker", "run", "--name", container_name, "-d", image_id
+        ])
+
+        # Extract HTTP port
+        http_port = extract_port_from_container(
+            container_name=container_name,
+            kit_file_path=kit_file_path,
+            pattern=r'exts\."omni\.services\.transport\.server\.http"\.port\s*=\s*(\d+)',
+            port_name="HTTP Server",
+            default_message=(
+                "HTTP port not found in the my_company.my_editor.kit file inside the container.\n"
+                "Please add port there, i.e. exts.'omni.services.transport.server.http'.port = 8211"
+            )
+        )
+
+        # Extract WebRTC port
+        webrtc_port = extract_port_from_container(
+            container_name=container_name,
+            kit_file_path=kit_file_path,
+            pattern=r"app\.livestream\.port\s*=\s*(\d+)",
+            port_name="WebRTC",
+            default_message=(
+                "WebRTC port not found in the .kit file inside the container.\n"
+                "Please add port there, i.e. app.livestream.port = 49300"
+            )
+        )
+
+        if http_port and webrtc_port:
+            docker_run_cmd.extend([
+                "-p", f"{http_port}:{http_port}/tcp", 
+                "-p", f"{webrtc_port}:{webrtc_port}/tcp",
+                image_id
+            ])
+        else:
+            print("Ports are not properly defined. Docker command will not include port bindings.")
+
+        print("Docker command:", " ".join(docker_run_cmd))
+
+    prepare_docker_run_command()
+
 
     # Set repo_diagnostic to map in stdin to prevent docker run from complaining.
     os.environ["repo_diagnostic"] = "1"

@@ -64,9 +64,9 @@ twin_to_chat_instance = {
     "9332e77d-fb20-4221-8cf2-9a2c8ef80e22": "40",  # Canon
     "ff87718d-63d9-4ceb-bd82-c2da9c8eca0a": "41",  # Flogistix (Veterans Building)
     "bb748cd5-cf5f-4bd3-80e5-e10965c24841": "42",  # NV5
-    "50f54285-1daa-4c09-86c7-ba720fff4448": "42",  # Demo Client NV5 (copy of ...841)
     "bb9da2c6-4a1d-4efa-8c0f-222b44bbf136": "43",   # Esamur (Water Plant)
-    "afc3e440-0798-4ac3-bfcf-206bc3eef3f3": "43"   # Esamur (Water Plant)
+    "54469e4a-2dae-4892-b72e-2a51e3588538": "44",   # Cannon(Cannon client)
+    "50f54285-1daa-4c09-86c7-ba720fff4448": "45"    # NV5 (Test drive)
 }
 
 # Function to retrieve the chat instance ID for a given twin version ID

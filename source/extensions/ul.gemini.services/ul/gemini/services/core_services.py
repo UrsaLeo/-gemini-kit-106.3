@@ -3,6 +3,7 @@ import requests
 import json
 import zipfile
 import logging
+import omni.client
 
 from ul.gemini.services.gdn_services import get_partner_secure_data, make_get_secure_call
 
@@ -79,3 +80,22 @@ def read_api_data_to_temp_file():
         except requests.exceptions.RequestException as e:
             raise SystemExit(f"Error fetching data from API: {e}") from e
     return model_path
+
+nucleus_initialized=False
+nucleus_base = "omniverse://nucleus.ursaleo.com:443/Projects/Twins"
+
+def get_usd_path():
+    global partner_secure_data
+    global model_path
+    global extract_dir
+    twin_version_id = partner_secure_data['twinVersionId']
+    if (twin_version_id == None):
+        raise SystemExit("twinVersionId must be provided")
+
+    usd_file_path = os.path.join(extract_dir, twin_version_id,"Building.usd")
+    if os.path.exists(usd_file_path):
+        return usd_file_path
+    else:
+        os.environ["OMNI_USER"] = "$omni-api-token"
+        os.environ["OMNI_PASS"] = partner_secure_data['nuclesToken']
+        return  f"{nucleus_base}/{twin_version_id}/Building.usd"

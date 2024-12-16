@@ -7,6 +7,8 @@ import ul.gemini.chatbot as chatbot
 from .styles import style_system, style_system_show_window
 from omni.ui import color as cl
 from .styles import style_system, style_system_show_window
+from .utils import get_public_ip_from_turnserver_conf
+import requests
 
 base_path = os.path.join(os.path.dirname(__file__), "data", "Icons")
 
@@ -186,7 +188,65 @@ class Toolbar:
         self._actions.append(SimpleClickAction("Quit", os.path.join(base_path, "Quit.png"), "Quit Application", self._quit_application))
 
     def _quit_application(self):
-        print(ui.Workspace.get_windows())
-        omniverse_processes = ["Kit.exe", "kit.exe"]
-        for process in omniverse_processes:
-            subprocess.call(["taskkill", "/f", "/im", process])
+        def on_confirm_quit():
+            """Logic to execute when user confirms quitting."""
+            config_file_path = r"C:\cygwin64\home\Administrator\turnserver\turnserver.conf"
+            public_ip = get_public_ip_from_turnserver_conf(config_file_path)
+            print(f"Public IP is: {public_ip}")
+
+            twin_server_url = "http://3.15.101.114:8080/shutdown"
+
+            try:
+                # Post request for shutting down the instance
+                response = requests.post(
+                    twin_server_url,
+                    json={"public_ip": public_ip},
+                    timeout=5  # Optional: Add a timeout to avoid hanging indefinitely
+                )
+
+                if response.status_code == 200:
+                    print("Shutdown the instance successfully")
+                else:
+                    print(f"Failed to shutdown. Status code: {response.status_code}")
+
+            except requests.exceptions.RequestException as e:
+                print(f"Request failed: {e}")
+
+            finally:
+                # Always kill the Omniverse processes, even if the request fails
+                omniverse_processes = ["Kit.exe", "kit.exe"]
+                for process in omniverse_processes:
+                    subprocess.call(["taskkill", "/f", "/im", process])
+
+        def on_cancel_quit():
+            """Logic to execute when user cancels quitting."""
+            print("Quit operation canceled by user.")
+            dialog_window.visible = False  # Close the dialog
+
+        def confirm_and_close():
+            """Helper to handle confirmation and closing."""
+            on_confirm_quit()
+            dialog_window.visible = False  # Close the dialog
+
+        dialog_window = ui.Window(
+            "Confirm Quit",
+            width=800,
+            height=200,
+            visible=True,
+            position=(200, 300)  # Set the x and y coordinates for the window's position
+        )
+
+        with dialog_window.frame:
+            with ui.VStack():
+                # Add confirmation message with increased font size
+                ui.Label(
+                    "Are you sure you want to quit?\n\n"
+                    "Note: If you press Yes, the connection will close, and you will see a black screen within 20 seconds.",
+                    alignment=ui.Alignment.CENTER,
+                    style={"font_size": 18}  # Set font size
+                )
+
+                # Add buttons for "Yes" and "No"
+                with ui.HStack(height=30, spacing=10):
+                    ui.Button("Yes", clicked_fn=confirm_and_close)
+                    ui.Button("No", clicked_fn=on_cancel_quit)

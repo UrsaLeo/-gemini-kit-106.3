@@ -55,21 +55,23 @@ def zoom_camera():
         )
 
 
-def show_auth_code_popup(auth_code):
-    # Create the popup dialog
+def show_auth_code(auth_code):
+    # Create the popup dialog 
     popup = PopupDialog(
         title="Authentication Code",
-        width=250,
-
+        width=900
     )
 
     # Display the auth code in the popup's window frame
     with popup.window.frame:
-        with ui.VStack(alignment=ui.Alignment.CENTER):
-            ui.Label("Your Authentication Code is:", style={"font_size": 18})
-            ui.Label(auth_code, style={"font_size": 48, "font_weight": "bold"})
-            ui.Label("Enter this code in you app\n\n", style={"font_size": 18})
-            ui.Label("After you connect press Start VR\n\n", style={"font_size": 18})
+        with ui.VStack(alignment=ui.Alignment.CENTER, spacing=20, style={"padding": 20}):
+            ui.Label("To get started, install the ConnectMe VR app on your headset.", style={"font_size": 24})
+            ui.Label("Your Authentication Code is:", style={"font_size": 36})  # Larger font size
+            ui.Label(auth_code, style={"font_size": 96, "font_weight": "bold"})  # Increased font size
+            ui.Label("Enter this code on your headset.", style={"font_size": 24})
+            ui.Label("Once connected, come back to your PC and press 'Start VR' to enter! or 'Stop VR' to exit!", style={"font_size": 24})
+            ui.Label("Enjoy your VR experience! 😊", style={"font_size": 24})
+            ui.Label("__________________________________________________________________________________________", style={"font_size": 24})
 
     # Show the popup
     popup.show()
@@ -104,12 +106,12 @@ def connectVRAPP():
             print(f"Failed to retrieve authentication code. Status code: {response.status_code}")
 
         if  os.path.exists(steam_vr_path):
-            show_auth_code_popup(auth_code)
-            #nm.post_notification(f"Authentication Code: {auth_code}",hide_after_timeout=False,duration=10,status=nm.NotificationStatus.INFO,button_infos=[ok_button, cancel_button])
+            show_auth_code(auth_code)
+            #nm.post_notification(f"Enter this code on your headset : {auth_code}",hide_after_timeout=False,duration=10,status=nm.NotificationStatus.INFO,button_infos=[ok_button, cancel_button])
             if(SVROpen):
                 subprocess.Popen([steam_vr_path])
                 print("SteamVR is starting...")
-                nm.post_notification("Starting Streaming VR Please Wait",hide_after_timeout=True,duration=10,status=nm.NotificationStatus.INFO,button_infos=[ok_button, cancel_button])
+                #nm.post_notification("Starting Streaming VR Please Wait",hide_after_timeout=True,duration=10,status=nm.NotificationStatus.INFO,button_infos=[ok_button, cancel_button])
 
             else:
                 nm.post_notification("Process Already Started",hide_after_timeout=True,duration=3,status=nm.NotificationStatus.INFO,button_infos=[ok_button, cancel_button])
