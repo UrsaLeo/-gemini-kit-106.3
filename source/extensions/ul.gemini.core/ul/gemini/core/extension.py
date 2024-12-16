@@ -86,166 +86,25 @@ class ULExtension(omni.ext.IExt):
     ]
     omni.kit.menu.utils.add_layout(_menu_layout)
 
-    #########################################################################################
-
     async def loading_screen(self):
-
-        main_window_width = int(ui.Workspace.get_main_window_width())
-        main_window_height = int(ui.Workspace.get_main_window_height())
-
-            #CR: Combine all start up UI settings
-
         window_flags = ui.WINDOW_FLAGS_NO_RESIZE
         window_flags |= ui.WINDOW_FLAGS_NO_SCROLLBAR
         window_flags |= ui.WINDOW_FLAGS_MODAL
         window_flags |= ui.WINDOW_FLAGS_NO_CLOSE
         window_flags |= ui.WINDOW_FLAGS_NO_MOVE
 
-#######################################################################
-    #viewport_interface = omni.kit.viewport.get_viewport_interface()
-    #viewport_window = viewport_interface.get_viewport_window()
-
-        # viewport_window = get_active_viewport_window()
-
-
-        # viewport_width = viewport_window.width
-        # viewport_height = viewport_window.height
-
-        # # Dynamically calculate the central position
-        # # window_width = main_window_height * 0.95# Assuming square shape
-        # # window_height = main_window_height * 0.95
-        # window_width = 800
-        # window_height = 800
-        # right_panel_width = 449
-
-        # # position_x = (viewport_width - right_panel_width) / 2 - window_width / 2
-        # # position_y = viewport_height / 2 - window_height / 2
-        # position_x = (viewport_width - 590) / 2  - window_width / 2
-        # position_y = (viewport_height - 175) / 2 - window_height / 2
-
-        # # Create the UI Window
-        # self._window = ui.Window(
-        #     "Rendering the Digital Twin here",
-        #     width=window_width,
-        #     height=window_height,
-        #     flags=window_flags,
-        #     position_x=position_x,
-        #     position_y=position_y,
-        # )
-
-        # with self._window.frame:
-        #     with ui.VStack():
-        #         self.image = ui.Image(
-        #             loading_screen_path,
-        #             fill_policy=ui.FillPolicy.STRETCH,
-        #             width=window_width,
-        #             height=window_height,
-        #         )
-        #         ui.Spacer()
-        # self._window.visible = True
-
-        # import omni.kit.viewport
-        # self._window = ui.Window(
-        #     "Rendering the Digital Twin here",
-        #     width=main_window_height*.75,
-        #     height=(main_window_height*.75),
-        #     flags=window_flags,
-        #     position_x=125,
-        #     position_y=65,
-        # )
-        # print(f"main_window_width is : {main_window_width}")
-        # print(f"main_window_heigth is : {main_window_height}")
-        # with self._window.frame:
-        #     with ui.VStack():
-        #         self.image = ui.Image(loading_screen_path, fill_policy=ui.FillPolicy.STRETCH,width=main_window_height,height=(main_window_height*.75))
-        #         ui.Spacer()
-        # self._window.visible = True
-
-        # Get the active viewport
-        # viewport_interface = omni.kit.viewport.get_viewport_interface()
-        # viewport_window = viewport_interface.get_viewport_window()
-        # viewport_window = get_active_viewport_window()
-
-
-        # viewport_width = viewport_window.width
-        # viewport_height = viewport_window.height
-
-        # # Dynamically calculate the central position
-        # window_width = main_window_height * 0.75
-        # window_height = main_window_height * 0.75
-        # right_panel_width = 449
-
-        # position_x = (viewport_width - 570) / 2  - window_width / 2
-        # position_y = (viewport_height - 170) / 2 - window_height / 2
-
-        # # Create the UI Window
-        # self._window = ui.Window(
-        #     "Rendering the Digital Twin here",
-        #     width=window_height * 0.75,
-        #     height=window_height * 0.75,
-        #     flags=window_flags,
-        #     position_x=0,
-        #     position_y=0,
-        # )
-
-        # print(f"Viewport Width: {viewport_width}, Height: {viewport_height}")
-        # print(f"Window Position X: {position_x}, Y: {position_y}")
-
-        # with self._window.frame:
-        #     with ui.VStack():
-        #         self.image = ui.Image(
-        #             loading_screen_path,
-        #             fill_policy=ui.FillPolicy.STRETCH,
-        #             width=window_width,
-        #             height=window_height,
-        #         )
-        #         ui.Spacer()
-        # self._window.visible = True
-
-    #     viewport_interface = get_active_viewport()
-    #     viewport_interface2 = get_active_viewport_window()
-    #     viewport_window = viewport_interface2
-    #     print("wwidth",viewport_interface2.height)
-    #     print("hheight",viewport_interface2.width)
-
-
-    #     if viewport_window:
-    #         viewport_width = viewport_window.width
-    #         viewport_height = viewport_window.height
-    #         print(f"Viewport Width: {viewport_width}, Height: {viewport_height}")
-    #     else:
-    #         print("No active viewport found.")
-    # #########################
-    #     self._window = ui.Window(
-    #         "Rendering the Digital Twin here",
-    #         width=main_window_height*.75,
-    #         height=(main_window_height*.75),
-    #         flags=window_flags,
-    #         position_x=viewport_interface2.width / 2 - 449 + main_window_height,
-    #         position_y=viewport_interface2.width / 2 - main_window_height,
-    #     )
-    #     print(f"main_window_width is : {main_window_width}")
-    #     print(f"main_window_heigth is : {main_window_height}")
-    #     with self._window.frame:
-    #         with ui.VStack():
-    #             self.image = ui.Image(loading_screen_path, fill_policy=ui.FillPolicy.STRETCH,width=main_window_height,height=(main_window_height))
-    #             ui.Spacer()
-    #     self._window.visible = True
-
         viewport_window = get_active_viewport_window()
-        position_x = viewport_window.width / 2 - 700
-        position_y = viewport_window.height / 2 - 475
+        position_x = viewport_window.width / 2 - viewport_window.width * .37
+        position_y = viewport_window.height / 2 - viewport_window.height * .44
 
         self._window = ui.Window(
             "Rendering the Digital Twin",
-            # width=main_window_width, height=main_window_height,
             width=viewport_window.height * 0.75,
             height=viewport_window.height * 0.75,
+
             flags=window_flags,
             position_x=position_x,
             position_y=position_y,
-            # position_x=0,
-            # position_y=0,
         )
         with self._window.frame:
             with ui.VStack():
