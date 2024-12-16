@@ -45,5 +45,8 @@ modified/isaac-050/
 source/**/Characters/
 source/**/Anims/
 templates/
+my_temp/
+
+**/Nav_Loading2.png
 
 **/.usd
