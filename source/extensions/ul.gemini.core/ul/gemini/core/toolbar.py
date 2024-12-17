@@ -12,6 +12,12 @@ import requests
 
 base_path = os.path.join(os.path.dirname(__file__), "data", "Icons")
 
+import carb
+import omni
+import omni.kit.app
+
+
+
 
 # Used to add a simple button with the given clicked_fn to the toolbar
 class SimpleClickAction:
@@ -48,6 +54,9 @@ class ExtensionVisibilityAction:
 
     def __init__(self, name, icon, tooltip, init_fn, show_windows, hide_windows, init_on_click=False):
         self.extension_visible_in_progress = False
+        self._stage_subscription = omni.usd.get_context().get_stage_event_stream().create_subscription_to_pop(
+            self.on_mouse_event, name="MyExtensionOnStageEvent2"
+        )
 
         self.name = name
         self.show_windows = show_windows
@@ -59,6 +68,26 @@ class ExtensionVisibilityAction:
             init_fn()
             self.initialized = True
 
+
+
+
+
+    def on_mouse_event(event, *_):
+        # import omni
+
+
+        input = carb.input.acquire_input_interface()
+        mouse = omni.appwindow.get_default_app_window().get_mouse()
+
+        val = input.get_mouse_value(mouse, carb.input.MouseInput.LEFT_BUTTON)
+        if val: print(f"LEFT_BUTTON: {val}")
+        # input_interface = carb.input.acquire_input_interface()
+        # mouse = omni.appwindow.get_default_app_window().get_mouse()
+        # if event.type == carb.input.MouseEventType.BUTTON_DOWN:
+        #     left_button_value = input_interface.get_mouse_value(mouse, carb.input.MouseInput.LEFT_BUTTON)
+        #     if left_button_value:
+        #         print("LEFT_BUTTON pressed!")
+
     async def async_init(self):
         self.init_fn()
 
@@ -66,6 +95,11 @@ class ExtensionVisibilityAction:
         asyncio.ensure_future(self.async_init())
 
     def build(self):
+        # win = ui.Workspace.get_window("Model Exploder")
+        # print("win_init", win)
+        # if win and win.visible:
+        #     win.visible = False
+
         global base_path
         self.toolbarButton=ui.Button(
             "",
@@ -78,39 +112,98 @@ class ExtensionVisibilityAction:
         )
 
 
+
+
+    # def clicked_fn(self):
+    #     # Initialize the extension if not done already
+    #     if not self.initialized and self.init_fn:
+    #         self.init_fn()
+    #         self.initialized = True
+
+    #     # Check which windows are currently visible on the stage
+    #     current_open_windows = []
+    #     for window_name in self.show_windows:
+    #         window = ui.Workspace.get_window(window_name)
+    #         print("win_visible", window, window.visible)
+    #         if window and window.visible:
+    #             current_open_windows.append(window_name)
+
+    #     # Now handle the visibility logic based on current open windows
+    #     if self.extension_visible:
+    #         window.visible = False
+    #         # If the extension is visible, hide any window not in the current open list
+    #         # for window_name in self.show_windows:
+    #         #     window = ui.Workspace.get_window(window_name)
+    #         #     if window_name not in current_open_windows:
+    #         #         if window and window.visible:
+    #         #             window.visible = False
+    #         self.hide_extension_windows()
+
+    #         self.extension_visible = False  # Set the extension as not visible
+
+    #     else:
+    #         self.show_extension_windows()
+            # Show current extension's windows and hide others
+            # for window_name in self.show_windows:
+            #     window = ui.Workspace.get_window(window_name)
+            #     if window:
+            #         window.visible = True
+            # self.extension_visible = True  # Set the extension as visible
+
     def clicked_fn(self):
-        # Initialize the extension if not done already
+        # input = carb.input.acquire_input_interface()
+        # mouse = omni.appwindow.get_default_app_window().get_mouse()
+
+        # val = input.get_mouse_value(mouse, carb.input.MouseInput.LEFT_BUTTON)
+        # if val: print(f"LEFT_BUTTON1: {val}")
+
         if not self.initialized and self.init_fn:
             self.init_fn()
             self.initialized = True
 
-        # Check which windows are currently visible on the stage
-        current_open_windows = []
-        for window_name in self.show_windows:
-            window = ui.Workspace.get_window(window_name)
-            if window and window.visible:
-                current_open_windows.append(window_name)
+        win = ui.Workspace.get_window("Model Exploder")
+        print("win_init", win)
+        if win and win.visible:
+            print("trrue", True)
+            win.visible = False
 
-        # Now handle the visibility logic based on current open windows
-        if self.extension_visible:
-            # If the extension is visible, hide any window not in the current open list
-            for window_name in self.show_windows:
-                window = ui.Workspace.get_window(window_name)
-                if window_name not in current_open_windows:
-                    if window and window.visible:
-                        window.visible = False
-                        self.hide_extension_windows(window_name)
 
-            self.extension_visible = False  # Set the extension as not visible
 
+        any_visible = any(
+            ui.Workspace.get_window(window).visible
+            for window in self.show_windows
+            if ui.Workspace.get_window(window) is not None
+        )
+
+
+
+        if any_visible:
+            print("any_visible", any_visible)
+            self.hide_extension_windows()
         else:
             self.show_extension_windows()
-            # Show current extension's windows and hide others
-            for window_name in self.show_windows:
-                window = ui.Workspace.get_window(window_name)
-                if window:
-                    window.visible = True
-            self.extension_visible = True  # Set the extension as visible
+
+        # if self.extension_visible:
+        #     self.hide_extension_windows()
+
+        # else:
+        #     self.show_extension_windows()
+
+        # for window_name in ["Markups", "Sensors", "Measure", "Waypoints"]:
+        #     window = ui.Workspace.get_window(window_name)
+        #     print("win_visible", window, window.visible, self.extension_visible)
+
+
+        # import omni
+        # import carb
+
+        # input = carb.input.acquire_input_interface()
+        # mouse = omni.appwindow.get_default_app_window().get_mouse()
+
+        # val = input.get_mouse_value(mouse, carb.input.MouseInput.LEFT_BUTTON)
+        # if val: print(f"LEFT_BUTTON: {val}")
+
+
 
     # def clicked_fn(self):
 
@@ -129,11 +222,25 @@ class ExtensionVisibilityAction:
     #     # else:
     #     #     self.show_extension_windows()
 
-    #     if self.extension_visible:
-    #         self.hide_extension_windows()
+    #     # if self.extension_visible:
+    #     #     self.hide_extension_windows()
 
-    #     else:
-    #         self.show_extension_windows()
+    #     # else:
+    #     #     self.show_extension_windows()
+    #     #if not self.extension_visible:
+    #     self.show_extension_windows()
+
+    #     for window_name in ["Markups", "Sensors", "Measure", "Waypoints"]:
+    #         window = ui.Workspace.get_window(window_name)
+    #         print("win_visible", window, window.visible, self.extension_visible)
+
+
+            # if window.visible:
+            #     window.visible = False
+            # elif not window.visible:
+            #     window.visible = True
+
+
 
     # def show_extension_windows(self):
     #     # Define the three main windows
@@ -206,10 +313,10 @@ class ExtensionVisibilityAction:
                 window.visible = True
 
         # Hide windows listed in hide_windows
-        for window_name in self.hide_windows:
-            window = ui.Workspace.get_window(window_name)
-            if window and window.visible:
-                window.visible = False
+        # for window_name in self.hide_windows:
+        #     window = ui.Workspace.get_window(window_name)
+        #     if window and window.visible:
+        #         window.visible = False
 
         # Ensure the current extension is marked as visible
         self.extension_visible = True
