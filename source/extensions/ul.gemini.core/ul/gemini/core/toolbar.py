@@ -88,17 +88,24 @@ class ExtensionVisibilityAction:
             self.show_extension_windows()
 
     def show_extension_windows(self):
+        # Hide other extensions
+        for action in Toolbar._actions:
+            if isinstance(action, ExtensionVisibilityAction) and action != self:
+                action.hide_extension_windows()
+                action.extension_visible = False
+
+        # Show current extension's windows
         for window in self.show_windows:
             window = ui.Workspace.get_window(window)
             if window:
                 window.visible = True
 
-        # hide other windows
+        # Hide windows listed in hide_windows
         for window in self.hide_windows:
             window = ui.Workspace.get_window(window)
-            if window:
-                if window.visible:
-                    window.visible = False
+            if window and window.visible:
+                window.visible = False
+
         self.extension_visible = True
 
     def hide_extension_windows(self):
