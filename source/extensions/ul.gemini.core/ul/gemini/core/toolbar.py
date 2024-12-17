@@ -88,22 +88,7 @@ class ExtensionVisibilityAction:
         else:
             self.show_extension_windows()
 
-    # def show_extension_windows(self):
-    #     for window in self.show_windows:
-    #         window = ui.Workspace.get_window(window)
-    #         if window:
-    #             window.visible = True
-
-    #     # hide other windows
-    #     for window in self.hide_windows:
-    #         window = ui.Workspace.get_window(window)
-    #         if window:
-    #             if window.visible:
-    #                 window.visible = False
-    #     self.extension_visible = True
-
     def show_extension_windows(self):
-        # Define the three main windows
         main_windows = ["Markups", "Sun Study", "Waypoints"]
 
         # Hide the other two windows in 'main_windows' and reset their visibility states
@@ -147,7 +132,6 @@ class ExtensionVisibilityAction:
         self.extension_visible = False
 
 class Toolbar:
-
     _simple_toolbar = None
 
     _actions = []

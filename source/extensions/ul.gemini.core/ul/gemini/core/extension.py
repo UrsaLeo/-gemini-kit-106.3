@@ -89,8 +89,7 @@ class ULExtension(omni.ext.IExt):
     #########################################################################################
 
     async def loading_screen(self):
-
-            #CR: Combine all start up UI settings
+        #CR: Combine all start up UI settings
 
         window_flags = ui.WINDOW_FLAGS_NO_RESIZE
         window_flags |= ui.WINDOW_FLAGS_NO_SCROLLBAR
@@ -116,27 +115,10 @@ class ULExtension(omni.ext.IExt):
                 self.image = ui.Image(loading_screen_path, fill_policy=ui.FillPolicy.STRETCH)
         self._window.visible = True
 
-#######################################################################
-        # self._window = ui.Window(
-        #     "Rendering the Digital Twin",
-        #     width=800,
-        #     height=800,
-        #     flags=window_flags,
-        #     position_x=125,
-        #     position_y=65,
-        # )
-        # with self._window.frame:
-        #     with ui.VStack():
-        #         self.image = ui.Image(loading_screen_path, fill_policy=ui.FillPolicy.STRETCH)
-        # self._window.visible = True
 
-
-#######################################################################################
-
-#CR: Is this needed, Remove or Put it in to KIT file
+        #CR: Is this needed, Remove or Put it in to KIT file
         settings = carb.settings.get_settings()
         settings.set("/app/viewport/content.emptyStageOnStart", True)
-#########################################################################################
 
     def setup_viewport_settings(self):
         win = ui.Workspace.get_window("Main ToolBar")
