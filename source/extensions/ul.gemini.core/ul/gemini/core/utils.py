@@ -91,7 +91,7 @@ def show_auth_code(auth_code):
             ui.Label(
                 "To begin, download and install the ConnectMe VR app on your headset.",
                 alignment=ui.Alignment.CENTER,
-                style={"font_size": 16, "margin_bottom": 5}
+                style={"font_size": 18, "margin_bottom": 5}
             )
 
             # Display authentication code
@@ -108,10 +108,10 @@ def show_auth_code(auth_code):
 
             # Footer instructions
             ui.Label(
-                "Enter this code on your headset and return to Ursaleo.\n"
+                "Enter this code on your headset and return to Ursaleo.\n\n"
                 "Click 'Start VR' to enter or 'Stop VR' to exit.",
                 alignment=ui.Alignment.CENTER,
-                style={"font_size": 16, "margin_bottom": 5}
+                style={"font_size": 18, "margin_bottom": 5}
             )
 
             # Add "Download" and "Close" buttons
@@ -120,7 +120,7 @@ def show_auth_code(auth_code):
                     "Download ConnectME VR APK",
                     clicked_fn=on_download,
                     style={
-                        "font_size": 16,
+                        "font_size": 18,
                         "color": "white",
                         "background_color": "#007BFF",  # Light blue button
                         "padding": "10px 20px",
@@ -131,7 +131,7 @@ def show_auth_code(auth_code):
                     "Close",
                     clicked_fn=on_close,
                     style={
-                        "font_size": 16,
+                        "font_size": 18,
                         "color": "white",
                         "background_color": "#DC3545",  # Light red button
                         "padding": "10px 20px",

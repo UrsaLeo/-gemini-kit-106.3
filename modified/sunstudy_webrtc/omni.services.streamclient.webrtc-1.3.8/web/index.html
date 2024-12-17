@@ -121,12 +121,12 @@
 
             async function checkDownloadStatus() {
                 try {
-                    const response = await fetch('http://3.7.115.208:3000/status'); // Use your public IP address here
+                    const response = await fetch('http://18.119.121.12:3000/status'); // Use your public IP address here
                     const data = await response.json();
                     console.log("Data is :", data);
                     if (data.fileStatus === 'clicked') {
                         // Open a new tab to start the download
-                        window.open('http://3.7.115.208:3000/download-apk', '_blank');
+                        window.open('http://18.119.121.12:3000/download-apk', '_blank');
                     }
                 } catch (error) {
                     console.error('Error checking the download status:', error);

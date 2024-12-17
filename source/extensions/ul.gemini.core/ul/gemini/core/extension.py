@@ -238,7 +238,7 @@ class ULExtension(omni.ext.IExt):
             if window:
                 window.visible = False
 
-            self._detector = InactivityTracker(30)
+            self._detector = InactivityTracker(900)
 
             #NOTE! Add commands, since persistent settings in kit file don't work
             def remove_persistent_settings(val):
