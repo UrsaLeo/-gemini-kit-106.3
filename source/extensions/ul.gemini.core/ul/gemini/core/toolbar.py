@@ -81,6 +81,17 @@ class ExtensionVisibilityAction:
             self.init_fn()
             self.initialized = True
 
+        # any_visible = any(
+        #     ui.Workspace.get_window(window).visible
+        #     for window in self.show_windows
+        #     if ui.Workspace.get_window(window) is not None
+        # )
+
+        # if any_visible:
+        #     self.hide_extension_windows()
+        # else:
+        #     self.show_extension_windows()
+
         if self.extension_visible:
             self.hide_extension_windows()
 
@@ -88,25 +99,54 @@ class ExtensionVisibilityAction:
             self.show_extension_windows()
 
     def show_extension_windows(self):
-        # Hide other extensions
-        for action in Toolbar._actions:
-            if isinstance(action, ExtensionVisibilityAction) and action != self:
-                action.hide_extension_windows()
-                action.extension_visible = False
+        # Define the three main windows
+        main_windows = ["Markups", "Sun Study", "Waypoints"]
 
-        # Show current extension's windows
-        for window in self.show_windows:
-            window = ui.Workspace.get_window(window)
+        # Hide the other two windows in 'main_windows' and reset their visibility states
+        for window_name in main_windows:
+            window = ui.Workspace.get_window(window_name)
+            if window:
+                if window_name in self.show_windows:
+                    # Show the current window
+                    window.visible = True
+                    self.extension_visible = True  # Set current extension as visible
+                else:
+                    # Hide other windows from the main group only
+                    window.visible = False
+                    # Reset extension_visible state for the other two windows
+                    for action in Toolbar._actions:
+                        if isinstance(action, ExtensionVisibilityAction) and action.show_windows == [window_name]:
+                            action.extension_visible = False
+
+        # Show the windows specific to the current extension
+        for window_name in self.show_windows:
+            window = ui.Workspace.get_window(window_name)
             if window:
                 window.visible = True
 
         # Hide windows listed in hide_windows
-        for window in self.hide_windows:
-            window = ui.Workspace.get_window(window)
+        for window_name in self.hide_windows:
+            window = ui.Workspace.get_window(window_name)
             if window and window.visible:
                 window.visible = False
 
+        # Ensure the current extension is marked as visible
         self.extension_visible = True
+
+
+    # def show_extension_windows(self):
+    #     for window in self.show_windows:
+    #         window = ui.Workspace.get_window(window)
+    #         if window:
+    #             window.visible = True
+
+    #     # hide other windows
+    #     for window in self.hide_windows:
+    #         window = ui.Workspace.get_window(window)
+    #         if window:
+    #             if window.visible:
+    #                 window.visible = False
+    #     self.extension_visible = True
 
     def hide_extension_windows(self):
         if not self.show_windows:
