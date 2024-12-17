@@ -10,7 +10,7 @@ from omni.ui import color as cl
 import omni.usd
 from pxr import Usd, UsdGeom, Sdf, Gf
 from omni.usd import get_context
-from omni.kit.viewport.utility import get_active_viewport
+from omni.kit.viewport.utility import get_active_viewport, get_active_viewport_window
 from omni.kit.markup.core.widgets.list_window import MarkupListWindow
 from omni.kit.window.section.ui.section_tool_window import SectionToolWindow
 
@@ -98,19 +98,37 @@ class ULExtension(omni.ext.IExt):
         window_flags |= ui.WINDOW_FLAGS_NO_CLOSE
         window_flags |= ui.WINDOW_FLAGS_NO_MOVE
 
-#######################################################################
+        viewport_window = get_active_viewport_window()
+        position_x = viewport_window.width / 2 - viewport_window.width * .37
+        position_y = viewport_window.height / 2 - viewport_window.height * .44
+
         self._window = ui.Window(
             "Rendering the Digital Twin",
-            width=800,
-            height=800,
+            width=viewport_window.height * 0.75,
+            height=viewport_window.height * 0.75,
+
             flags=window_flags,
-            position_x=125,
-            position_y=65,
+            position_x=position_x,
+            position_y=position_y,
         )
         with self._window.frame:
             with ui.VStack():
                 self.image = ui.Image(loading_screen_path, fill_policy=ui.FillPolicy.STRETCH)
         self._window.visible = True
+
+#######################################################################
+        # self._window = ui.Window(
+        #     "Rendering the Digital Twin",
+        #     width=800,
+        #     height=800,
+        #     flags=window_flags,
+        #     position_x=125,
+        #     position_y=65,
+        # )
+        # with self._window.frame:
+        #     with ui.VStack():
+        #         self.image = ui.Image(loading_screen_path, fill_policy=ui.FillPolicy.STRETCH)
+        # self._window.visible = True
 
 
 #######################################################################################
