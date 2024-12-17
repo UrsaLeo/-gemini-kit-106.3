@@ -47,6 +47,8 @@ source/**/Anims/
 templates/
 my_temp/
 
+
+**/toolbar copy.py
 **/Nav_Loading2.png
 
 **/.usd
