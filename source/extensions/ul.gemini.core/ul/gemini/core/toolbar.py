@@ -83,13 +83,16 @@ class ExtensionVisibilityAction:
             self.initialized = True
 
         global button_click_count
-        button_click_count += 1
+        if "Model Exploder" in self.show_windows:
+            button_click_count += 1
 
+        print("button_click_count", button_click_count)
         # Change visibility for Model Exploder to avoid double click issue, since it is initially visible
         if button_click_count == 1:
             window = ui.Workspace.get_window("Model Exploder")
             if window:
                 window.visible = False
+                button_click_count += 1
 
         any_visible = any(
             ui.Workspace.get_window(window).visible

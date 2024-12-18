@@ -24,6 +24,19 @@ from .utils import get_local_transform_xform, zoom_camera, connectVRAPP
 import subprocess
 import asyncio   #CR: Duplicate
 import time
+####################################################################################
+from omni.kit.manipulator.camera import ViewportCameraManipulator
+import omni.ui.scene
+
+from omni.kit.widget.viewport import ViewportWidget
+
+
+
+
+# viewport_api = ViewportWidget.viewport_api
+# if viewport_api is not None:
+#     usd_context_name = viewport_api.camera_path
+###############################################################
 
 import ul.gemini.services.gdn_services as gdn_services  # import get_partner_secure_data,get_integration_entity_type_list,get_rfi_details,get_submittals_details,get_procore_document_structure,get_source_list,should_open_artifact_window
 import ul.gemini.services.artifact_services as artifact_services
@@ -61,11 +74,31 @@ loading_screen_path = os.path.join(base_path, "../../../data/Nav_Loading.png")
 partner_secure_data = None
 
 
+
+
 class ULExtension(omni.ext.IExt):
 
     _camera_changer = CameraChanger() #CR: Remove
     _stage_subscription = None
 
+
+    #################################################################################
+    # def __init__(self):
+    #     super().__init__()
+
+    #     viewport_api = get_active_viewport_window().viewport_api
+
+    #     self.__scene_view = omni.ui.scene.SceneView()
+    #     self.__camera_manip = ViewportCameraManipulator(viewport_api)
+    #     with self.__scene_view.scene:
+    #         self.__scene_view.model = self.__camera_manip.model
+
+    #     zoom_speed_z = 0.1
+    #     self.__scene_view.model.set_floats('world_speed', [1.0, 1.0, zoom_speed_z])
+
+    #     fly_speed_x_y = 0.3
+    #     fly_speed_z = 0.1
+    #     self.__scene_view.model.set_floats('fly_speed', [fly_speed_x_y, fly_speed_x_y, fly_speed_z])
 
 
     ########################################################################################
@@ -166,7 +199,7 @@ class ULExtension(omni.ext.IExt):
                 os.path.join(os.path.dirname(__file__), "data", "Icons", "Measurement.png"),
                 "Take Measurements on the Digital Twin",
                 None,
-                ["Measure"],
+                ["Measure", "Markups"],
                 ["Property", "Attachment"],
                 True,
             )
@@ -239,8 +272,15 @@ class ULExtension(omni.ext.IExt):
             self._stage_subscription = None
             self._window.visible = False
 
+            measure_window = ui.Workspace.get_window("Measure")
+            markup_window = ui.Workspace.get_window("Markups")
+
+            if measure_window and markup_window:
+                print("stage_window and markup_window")
+                markup_window.dock_in(measure_window, ui.DockPosition.BOTTOM, 0.3)
+
             # we are doing this after asset is loaded to avoid the "render context changed" message
-            init_measure()
+            #init_measure()
             window = ui.Workspace.get_window("Property")
             if window:
                 window.visible = False
