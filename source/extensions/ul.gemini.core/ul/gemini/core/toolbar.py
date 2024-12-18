@@ -13,6 +13,8 @@ from .utils import connectVRAPP
 
 base_path = os.path.join(os.path.dirname(__file__), "data", "Icons")
 
+button_click_count = 0
+
 
 # Used to add a simple button with the given clicked_fn to the toolbar
 class SimpleClickAction:
@@ -77,14 +79,27 @@ class ExtensionVisibilityAction:
         )
 
     def clicked_fn(self):
-
         if not self.initialized and self.init_fn:
             self.init_fn()
             self.initialized = True
 
-        if self.extension_visible:
-            self.hide_extension_windows()
+        global button_click_count
+        button_click_count += 1
 
+        # Change visibility for Model Exploder to avoid double click issue, since it is initially visible
+        if button_click_count == 1:
+            window = ui.Workspace.get_window("Model Exploder")
+            if window:
+                window.visible = False
+
+        any_visible = any(
+            ui.Workspace.get_window(window).visible
+            for window in self.show_windows
+            if ui.Workspace.get_window(window) is not None
+        )
+
+        if any_visible:
+            self.hide_extension_windows()
         else:
             self.show_extension_windows()
 
@@ -96,11 +111,9 @@ class ExtensionVisibilityAction:
             window = ui.Workspace.get_window(window_name)
             if window:
                 if window_name in self.show_windows:
-                    # Show the current window
                     window.visible = True
-                    self.extension_visible = True  # Set current extension as visible
+                    self.extension_visible = True
                 else:
-                    # Hide other windows from the main group only
                     window.visible = False
                     # Reset extension_visible state for the other two windows
                     for action in Toolbar._actions:
@@ -113,13 +126,6 @@ class ExtensionVisibilityAction:
             if window:
                 window.visible = True
 
-        # Hide windows listed in hide_windows
-        for window_name in self.hide_windows:
-            window = ui.Workspace.get_window(window_name)
-            if window and window.visible:
-                window.visible = False
-
-        # Ensure the current extension is marked as visible
         self.extension_visible = True
 
     def hide_extension_windows(self):
@@ -237,8 +243,6 @@ class Toolbar:
             if vr_window:
                 vr_window.visible = True
                 #print("VR extension is now visible.")
-
-
 
     def _quit_application(self):
         def on_confirm_quit():
