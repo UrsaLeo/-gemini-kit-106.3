@@ -50,14 +50,12 @@
                   },
                   {
                     "dock_id": 5,
-                    "dock_tab_bar_enabled": true,
-                    "dock_tab_bar_visible": true,
                     "height": 431.0,
                     "position_x": 991.0,
                     "position_y": 24.0,
                     "selected_in_dock": true,
                     "title": "Measure",
-                    "visible": false,
+                    "visible": true,
                     "width": 449.0
                   },
 
@@ -272,16 +270,7 @@
     "visible": false,
     "width": 1.0
   },
-  {
-    "dock_id": 0,
-    "height": 1.0,
-    "position_x": -2.0,
-    "position_y": -2.0,
-    "selected_in_dock": true,
-    "title": "Markups",
-    "visible": false,
-    "width": 1.0
-  },
+
   {
     "dock_id": 0,
     "height": 0.0,

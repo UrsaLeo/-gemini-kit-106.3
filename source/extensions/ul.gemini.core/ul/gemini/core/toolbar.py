@@ -106,7 +106,7 @@ class ExtensionVisibilityAction:
             self.show_extension_windows()
 
     def show_extension_windows(self):
-        main_windows = ["Markups", "Sun Study", "Waypoints"]
+        main_windows = ["Sun Study", "Waypoints"]
 
         # Hide the other two windows in 'main_windows' and reset their visibility states
         for window_name in main_windows:

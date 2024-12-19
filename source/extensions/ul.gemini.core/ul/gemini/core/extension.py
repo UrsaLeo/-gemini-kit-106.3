@@ -199,7 +199,9 @@ class ULExtension(omni.ext.IExt):
                 os.path.join(os.path.dirname(__file__), "data", "Icons", "Measurement.png"),
                 "Take Measurements on the Digital Twin",
                 None,
+                #lambda: MarkupListWindow(),
                 ["Measure", "Markups"],
+                #["Measure"],
                 ["Property", "Attachment"],
                 True,
             )
@@ -272,15 +274,21 @@ class ULExtension(omni.ext.IExt):
             self._stage_subscription = None
             self._window.visible = False
 
-            measure_window = ui.Workspace.get_window("Measure")
+            stage_window = ui.Workspace.get_window("Measure")
             markup_window = ui.Workspace.get_window("Markups")
 
-            if measure_window and markup_window:
-                print("stage_window and markup_window")
-                markup_window.dock_in(measure_window, ui.DockPosition.BOTTOM, 0.3)
+            if stage_window and markup_window:
+                markup_window.dock_in(stage_window, ui.DockPosition.RIGHT)
+                markup_window.visible = True
+                # print("stage_window and markup_window")
+                # print(f"Stage Window: {stage_window}")
+                # print(f"Markup Window: {markup_window}")
+                # print(f"Stage Window Dockable: {stage_window.docked}")
+                # print(f"Markup Window Dockable: {markup_window.docked}")
+                # markup_window.dock_in(stage_window, ui.DockPosition.BOTTOM, 0.3)
 
             # we are doing this after asset is loaded to avoid the "render context changed" message
-            #init_measure()
+            init_measure()
             window = ui.Workspace.get_window("Property")
             if window:
                 window.visible = False
@@ -317,6 +325,22 @@ class ULExtension(omni.ext.IExt):
 
     async def load_usd_to_viewport(self):
         # Asynchronously open the USD stage
+
+        # viewport_api = get_active_viewport_window().viewport_api
+
+        # self.__scene_view = omni.ui.scene.SceneView()
+        # self.__camera_manip = ViewportCameraManipulator(viewport_api)
+        # with self.__scene_view.scene:
+        #     self.__scene_view.model = self.__camera_manip.model
+
+        # zoom_speed_z = 0.1
+        # self.__scene_view.model.set_floats('world_speed', [1.0, 1.0, zoom_speed_z])
+
+        # fly_speed_x_y = 0.3
+        # fly_speed_z = 0.1
+        # self.__scene_view.model.set_floats('fly_speed', [fly_speed_x_y, fly_speed_x_y, fly_speed_z])
+
+        # self.__scene_view.model.set_floats('move', [30, 60, 90])
 
         asyncio.ensure_future(self.loading_screen())
 
