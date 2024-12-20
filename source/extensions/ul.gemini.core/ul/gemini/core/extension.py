@@ -170,6 +170,10 @@ class ULExtension(omni.ext.IExt):
         settings.set(TransformButtonGroup.TRANSFORM_MOVE_MODE_SETTING, "local")
         settings.set(TransformButtonGroup.TRANSFORM_MOVE_MODE_SETTING, "global")
 
+
+    def set_workspace_visible():
+        ui.Workspace.get_window("Measure").visible = True
+
     def create_new_toolbar(self):
         # def init_measure():
         # manager = omni.kit.app.get_app().get_extension_manager()
@@ -195,13 +199,14 @@ class ULExtension(omni.ext.IExt):
                 [],
             )
             tb.extensionVisibilityAction(
-                "Measure",
+                "Annotation",
                 os.path.join(os.path.dirname(__file__), "data", "Icons", "Measurement.png"),
                 "Take Measurements on the Digital Twin",
+                # lambda: self.set_workspace_visible(),
                 None,
                 #lambda: MarkupListWindow(),
-                ["Measure", "Markups"],
-                #["Measure"],
+                #["Measure", "Markups"],
+                ["Annotation"],
                 ["Property", "Attachment"],
                 True,
             )
@@ -274,21 +279,40 @@ class ULExtension(omni.ext.IExt):
             self._stage_subscription = None
             self._window.visible = False
 
-            stage_window = ui.Workspace.get_window("Measure")
-            markup_window = ui.Workspace.get_window("Markups")
-
-            if stage_window and markup_window:
-                markup_window.dock_in(stage_window, ui.DockPosition.RIGHT)
-                markup_window.visible = True
-                # print("stage_window and markup_window")
-                # print(f"Stage Window: {stage_window}")
-                # print(f"Markup Window: {markup_window}")
-                # print(f"Stage Window Dockable: {stage_window.docked}")
-                # print(f"Markup Window Dockable: {markup_window.docked}")
-                # markup_window.dock_in(stage_window, ui.DockPosition.BOTTOM, 0.3)
 
             # we are doing this after asset is loaded to avoid the "render context changed" message
             init_measure()
+
+
+            measure_window = ui.Workspace.get_window("Annotation")
+            markup_window = ui.Workspace.get_window("Markups")
+
+            if measure_window and markup_window:
+                print("both win2")
+                #markup_window.undock()
+                # if measure_window.visible:
+                #     markup_window.visible = True
+                markup_window.dock_in(measure_window, ui.DockPosition.BOTTOM)
+
+                #markup_window.dock_tab_bar_visible = True
+                #markup_window.dock_tab_bar_enabled = True
+                print(f"Markup Window Docked: {markup_window.docked}")
+
+            # workspace = ui.Workspace.get_current_workspace()
+            # parent_window = workspace.create_dockable_window("Parent Window", width=800, height=600)
+
+            # markup_window = ui.Workspace.get_window("Markups")
+            # measure_window = ui.Workspace.get_window("Measure")
+
+            # if markup_window and measure_window:
+            #     markup_window.dock_in(parent_window, ui.DockPosition.TOP, 0.5)
+            #     measure_window.dock_in(parent_window, ui.DockPosition.BOTTOM, 0.5)
+
+
+                # if markup_window.docked:
+                #     markup_window.visible = True
+
+
             window = ui.Workspace.get_window("Property")
             if window:
                 window.visible = False
@@ -396,6 +420,7 @@ class ULExtension(omni.ext.IExt):
         self.loading_stage = False  # Flag to indicate if a stage loading operation is in progress
 
         partner_secure_data = gdn_services.get_partner_secure_data()
+
 
         self.create_new_toolbar()
         self.stage_stream = omni.usd.get_context().get_stage_event_stream()

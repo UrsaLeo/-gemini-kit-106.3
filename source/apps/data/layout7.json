@@ -45,32 +45,34 @@
                     "position_y": 24.0,
                     "selected_in_dock": true,
                     "title": "Sensors",
-                    "visible": false,
-                    "width": 449.0
-                  },
-                  {
-                    "dock_id": 5,
-                    "height": 431.0,
-                    "position_x": 991.0,
-                    "position_y": 24.0,
-                    "selected_in_dock": true,
-                    "title": "Measure",
                     "visible": true,
                     "width": 449.0
                   },
-
                   {
                     "dock_id": 5,
-                    "height": 431.0,
                     "dock_tab_bar_enabled": true,
                     "dock_tab_bar_visible": true,
+                    "height": 431.0,
                     "position_x": 991.0,
                     "position_y": 24.0,
                     "selected_in_dock": true,
-                    "title": "Markup Export",
+                    "title": "Annotation",
+                    "visible": true,
+                    "width": 449.0
+                  },
+                  {
+                    "dock_id": 5,
+                    "dock_tab_bar_enabled": true,
+                    "dock_tab_bar_visible": true,
+                    "height": 431.0,
+                    "position_x": 991.0,
+                    "position_y": 24.0,
+                    "selected_in_dock": false,
+                    "title": "Markups",
                     "visible": false,
                     "width": 449.0
                   }
+
                 ],
                 "dock_id": 5,
                 "position": "TOP"
@@ -249,6 +251,16 @@
     "title": "Options",
     "visible": false,
     "width": 220.0
+  },
+  {
+    "dock_id": 0,
+    "height": 600.0,
+    "position_x": 3.4028234663852886e+38,
+    "position_y": 3.4028234663852886e+38,
+    "selected_in_dock": true,
+    "title": "Markup Export",
+    "visible": false,
+    "width": 400.0
   },
   {
     "dock_id": 0,
