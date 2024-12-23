@@ -105,6 +105,10 @@ class ExtensionVisibilityAction:
         else:
             self.show_extension_windows()
 
+        if "Waypoints" in self.show_windows:
+            sensor_window = ui.Workspace.get_window("Sensors")
+            sensor_window.visible = False
+
     def show_extension_windows(self):
         main_windows = ["Markups", "Sun Study", "Waypoints"]
 
