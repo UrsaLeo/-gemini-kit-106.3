@@ -79,6 +79,8 @@ class MeasurePanel(ui.Window):
         self.set_width_changed_fn(self._width_changed)
         self.set_height_changed_fn(self._height_changed)
 
+
+
         StateMachine().add_tool_state_changed_fn(self._on_tool_state_changed)
 
         self._viewport_handle = get_active_viewport_window()
@@ -109,6 +111,12 @@ class MeasurePanel(ui.Window):
         else:
             markup_window.visible = not markup_window.visible
 
+    def _on_close_button_clicked(self):
+        markup_window = ui.Workspace.get_window("Markups")
+
+        markup_window.focused = False
+        markup_window.visible = False
+
     def _build_content(self):
         with self.frame:
             with ui.ScrollingFrame(style={"ScrollingFrame": {"background_color": 0}}):
@@ -120,14 +128,25 @@ class MeasurePanel(ui.Window):
                     self._pn_manage = ManagePanel()
                     #self._pn_markup = MarkupPanel()
 
-
+                    #with ui.HStack(spacing = 10):
                     ui.Button(
-                        tooltip="markup",
-                        text="Open/Close Markup",
+                        tooltip="open",
+                        text="Open Markup",
                         width=50, height=50,
                         clicked_fn=lambda: self._on_markup_button_clicked()
                         #clicked_fn=lambda: MarkupListWindow(),
                     )
+                        # ui.Button(
+                        #     tooltip="close",
+                        #     text="Close Markup",
+                        #     width=50, height=50,
+                        #     clicked_fn=lambda: self._on_close_button_clicked()
+                        #     #clicked_fn=lambda: MarkupListWindow(),
+                        # )
+                    # with ui.Frame():
+                    #     MarkupListWindow()
+
+
 
         # Attach to global callbacks
         self._pn_global.add_measure_selected_fn(self._on_measure_selected)
@@ -237,7 +256,6 @@ class MeasurePanel(ui.Window):
             markup_window.visible = True
 
 
-
             # current_time = time.time()
             # if current_time - self.last_focus_change_time < 1:
             #     return  # Avoid too frequent focus change handling
@@ -262,7 +280,24 @@ class MeasurePanel(ui.Window):
             HotkeyManager().remove_hotkey_context(MEASURE_WINDOW_VISIBLE_CONTEXT)
 
         elif not focused:
-            pass
+            #pass
+
+           ######################
+            self.stage_window = ui.Window("Stage")
+            if self.stage_window:
+
+                self.stage_window.set_focused_changed_fn(self.__stage_on_focused_changed)
+
+            self.sensor_window = ui.Window("Sensors")
+            if self.sensor_window:
+                self.sensor_window.set_focused_changed_fn(self.__stage_on_focused_changed)
+
+            ###########################
+            if focused:
+                markup_window.visible = True
+
+
+
             # markup_window.visible = False
             #markup_ext = MarkupExtension()
             #markup_ext.on_shutdown()
@@ -279,6 +314,10 @@ class MeasurePanel(ui.Window):
             #     markup_window.visible = False
 
 
+    def __stage_on_focused_changed(self, focused: bool):
+        if focused:
+            markup_window = ui.Workspace.get_window("Markups")
+            markup_window.visible = False
 
 
     def __on_panel_selected_changed(self, selected: bool):

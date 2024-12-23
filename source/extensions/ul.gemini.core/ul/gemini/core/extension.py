@@ -315,6 +315,10 @@ class ULExtension(omni.ext.IExt):
             self._stage_subscription = None
             self._window.visible = False
 
+            # sensor_window = ui.Window("Sensors")
+            # sensor_window.selected_in_dock = False
+            # sensor_window.visible = False
+
 
             # we are doing this after asset is loaded to avoid the "render context changed" message
             init_measure()

@@ -43,7 +43,7 @@
                     "dock_tab_bar_visible": true,
                     "position_x": 991.0,
                     "position_y": 24.0,
-                    "selected_in_dock": false,
+                    "selected_in_dock": true,
                     "title": "Sensors",
                     "visible": true,
                     "width": 449.0

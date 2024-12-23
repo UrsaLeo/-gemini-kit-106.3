@@ -258,6 +258,7 @@ class MarkupListWindow(ui.Window):
             raster_policy=ui.RasterPolicy.NEVER,
         )
 
+
         # ui.Window(
         #     "Markups",
         #     width=MarkupListWindow.WINDOW_WIDTH,
@@ -433,6 +434,8 @@ class MarkupListWindow(ui.Window):
             try:
                 import omni.kit.hotkeys.core
                 self._hotkey_context = omni.kit.hotkeys.core.get_hotkey_context()
+                markup_window = ui.Workspace.get_window("Markups")
+                markup_window.visible = True
             except: # pragma: no cover
                 return
         from ..extension import MARKUP_WINDOW_FOCUS_CONTEXT
@@ -446,7 +449,8 @@ class MarkupListWindow(ui.Window):
                 self._remove_hotkey_context(MARKUP_WINDOW_FOCUS_CONTEXT)
 
             markup_window = ui.Workspace.get_window("Markups")
-            markup_window.visible = False
+            # if not markup_window.focused:
+            #     markup_window.visible = False
 
     def _remove_hotkey_context(self, context: str):
         if self.__hotkey_context_future is not None and not self.__hotkey_context_future.done():
@@ -495,7 +499,10 @@ class MarkupListWindow(ui.Window):
                     self.__play_bar = PlayBar()
                     self.__play_bar.bind_widget(self)
                     ui.Separator(height=5)
+
+
                 self.__scroll_field = ui.ScrollingFrame(vertical_scrollbar_policy=ui.ScrollBarPolicy.SCROLLBAR_AS_NEEDED)
+
                 self._build_widget()
 
     def _build_widget(self):

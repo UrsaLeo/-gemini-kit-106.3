@@ -36,6 +36,7 @@ from .markup_usd import MarkupUsd
 from .style import ICON_PATH
 from .viewport_markup import ViewportMarkup
 
+
 LOCK_CAMERA_ATTR = "omni:kit:cameraLock"
 LOCK_EDIT_ATTR = "omni:LiveEditLock"
 
@@ -87,6 +88,10 @@ class MarkupChangeCallbacks:
         self.on_markup_deleted = on_markup_deleted
         self.on_markup_changed = on_markup_changed
         self.on_reset = on_reset
+
+
+        ###################
+        #self.set_focused_changed_fn(self._on_focused_changed)
 
 
 class MarkupExtension(omni.ext.IExt):
@@ -162,6 +167,21 @@ class MarkupExtension(omni.ext.IExt):
         g_singleton = self
         self.__dirty_paths: "set[Sdf.Path]" = set()
         asyncio.ensure_future(self.deferred_startup())
+
+
+        # with ui.Window("Parent", width=400, height=400) as parent_window:
+        #     with ui.VStack(spacing=10):
+        #         # Add the main markup window
+        #         with ui.Frame():
+        #             ui.Label("Additional Information1", alignment=ui.Alignment.CENTER)
+
+        #             # from omni.kit.markup.core.widgets.list_window import MarkupListWindow
+        #             # win = MarkupListWindow()
+        #             # win._build_widget()  # Embed the markup window
+        #         # Add another widget (e.g., additional controls or a status bar)
+        #         ui.Label("Additional Information", alignment=ui.Alignment.CENTER)
+
+        #self.parent_window = parent_window
 
     def __init_hotkeys(self):
         self._hotkey_reg = None
@@ -422,6 +442,18 @@ class MarkupExtension(omni.ext.IExt):
     def load_markups(self) -> None:
         self._refresh_markups()
 
+    def _on_focused_changed(self, focused: bool):
+
+        if focused:
+            markup_window = ui.Workspace.get_window("Markups")
+            markup_window.visible = False
+
+
+        markup_window = ui.Workspace.get_window("Markups")
+        if focused:
+            markup_window.visible = True
+
+
     def create_markup(
         self,
         new_markup_path: str = "",
@@ -443,6 +475,10 @@ class MarkupExtension(omni.ext.IExt):
         self._prim_icon.add_prim_icon(self._markup_path, icon_url)
         self._prim_icon.set_icon_click_fn(self._markup_path, icon_click or self._recall_markup_from_prim_path)
         self._set_markup_icon_visibility()
+
+        # #####################
+        # markup_window = ui.Window("Markups")
+        # markup_window.set_focused_changed_fn(self._on_focused_changed)
 
     def begin_edit_markup(self, markup: ViewportMarkup, set_editing_markup=True) -> bool:
 
@@ -519,6 +555,17 @@ class MarkupExtension(omni.ext.IExt):
                         cb()
 
                     markup.refresh_thumbnail(_cb)
+
+             ##########
+            markup_window = ui.Workspace.get_window("Markups")
+            annot_window = ui.Workspace.get_window("Annotation")
+            # annot_window.focus()
+            # print("annot.window.selected_in_dock", annot_window.selected_in_dock)
+            # markup_window.visible = True
+            # annot_window.selected_in_dock = True
+            # from omni.kit.tool.measure.interface.panel import MeasurePanel
+            # win = MeasurePanel()
+            # win._on_markup_button_clicked()
         else:
             if self.__sidecar_data: # pragma: no cover
                 if not self.__sidecar_data.read_only:
@@ -558,8 +605,18 @@ class MarkupExtension(omni.ext.IExt):
 
         self._remove_markup_edit_hotkeys()
         window = ui.Workspace.get_window("Markups")
-        if window is not None and window.visible: # pragma: no cover
-            window.focus()
+        window_annot = ui.Workspace.get_window("Annotation")
+        window_annot.visible = True
+        print("window_annot", window_annot)
+        # if window is not None and window.visible: # pragma: no cover
+        #     window.focus()
+        # if window is not None and not window.visible:
+        #     window.focus()
+        #     window.visible = True
+        window_annot.focus()
+
+        print("isfocused",window_annot.is_selected_in_dock(), window_annot.focused)
+
 
     def delete_markup(self, markup: Optional[ViewportMarkup]) -> None:
         if self.__sidecar_data and self.__sidecar_data.read_only: # pragma: no cover
@@ -1246,7 +1303,14 @@ def _create_markup():
 def _apply_markup():
     markups = get_instance()
     if markups and markups.current_markup:
+        window_annot = ui.Workspace.get_window("Annotation")
         markups.end_edit_markup(markups.current_markup, save=True)
+
+        print("window_annot2", window_annot)
+        window_annot.focus()
+
+
+
 
 
 def _deselect_markup():
