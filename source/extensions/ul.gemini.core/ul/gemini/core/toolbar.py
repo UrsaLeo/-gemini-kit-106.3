@@ -112,6 +112,18 @@ class ExtensionVisibilityAction:
             markup_window = ui.Workspace.get_window("Markups")
             markup_window.visible = True
 
+            # annot_window = ui.Workspace.get_window("Annotation")
+            # annot_window.visible = True
+            # annot_window.dock_id = 5
+            # annot_window.selected_in_dock = True
+
+
+        # if "Sensors" in self.show_windows:
+        #     sensors_window = ui.Workspace.get_window("Sensors")
+        #     sensors_window.visible = not sensors_window.visible
+        #     sensors_window.dock_id = 5
+        #     sensors_window.selected_in_dock = True
+
 
 
         # Change visibility for Model Exploder to avoid double click issue, since it is initially visible
