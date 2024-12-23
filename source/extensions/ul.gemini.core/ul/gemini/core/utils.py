@@ -72,8 +72,8 @@ def show_auth_code(auth_code):
     # Create the dialog window
     dialog_window = ui.Window(
         "Authentication Code",
-        width=800,
-        height=400,
+        width=920,
+        height=600,
         visible=True,
         position=(200, 300)  # Set the position on the screen
     )

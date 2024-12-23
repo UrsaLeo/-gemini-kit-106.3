@@ -289,7 +289,7 @@ class Toolbar:
 
         dialog_window = ui.Window(
             "Confirm Quit",
-            width=800,
+            width=920,
             height=200,
             visible=True,
             position=(200, 300)  # Set the x and y coordinates for the window's position
