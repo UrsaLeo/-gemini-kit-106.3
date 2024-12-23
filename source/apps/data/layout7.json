@@ -52,24 +52,22 @@
                     "dock_id": 5,
                     "dock_tab_bar_enabled": true,
                     "dock_tab_bar_visible": true,
-                    "height": 431.0,
                     "position_x": 991.0,
                     "position_y": 24.0,
                     "selected_in_dock": true,
-                    "title": "Annotation",
                     "visible": true,
+                    "title": "Markups",
                     "width": 449.0
                   },
                   {
                     "dock_id": 5,
                     "dock_tab_bar_enabled": true,
                     "dock_tab_bar_visible": true,
-                    "height": 431.0,
                     "position_x": 991.0,
                     "position_y": 24.0,
-                    "selected_in_dock": false,
-                    "title": "Markups",
-                    "visible": false,
+                    "selected_in_dock": true,
+                    "visible": true,
+                    "title": "Annotation",
                     "width": 449.0
                   }
 

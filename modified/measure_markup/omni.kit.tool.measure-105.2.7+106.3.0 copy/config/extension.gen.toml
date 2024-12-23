@@ -1,0 +1,15 @@
+
+[package]
+    archivePath = "https://d4i3qtqj3r0z5.cloudfront.net/omni.kit.tool.measure-105.2.7%2B106.3.0.zip"
+
+    [package.target]
+
+        [package.target.kit]
+            0 = "106.3.0"
+
+    [package.publish]
+        kitVersion = "106.3.0+master.144802.a00102b0.gl"
+        date = 1728074301
+        buildNumber = "105.2.0+master.513.f4d326b5.gl"
+        repoName = "Measure-Tool"
+        signed = 1

@@ -82,9 +82,20 @@ class ULExtension(omni.ext.IExt):
     _stage_subscription = None
 
 
+
+
     #################################################################################
     # def __init__(self):
     #     super().__init__()
+
+    #     self.markup_window = ui.Workspace.get_window("Markups")
+    #     self.annotation_window = ui.Window("Annotation")
+    #     self.last_focus_change_time = 0
+
+    #     # Check focus changes
+    #     self.annotation_window.set_focused_changed_fn(self._on_focused_changed)
+    #     measure_window = ui.Window("Annotation")
+    #     measure_window.set_focused_changed_fn(self._on_focused_changed)
 
     #     viewport_api = get_active_viewport_window().viewport_api
 
@@ -119,6 +130,18 @@ class ULExtension(omni.ext.IExt):
     ]
     omni.kit.menu.utils.add_layout(_menu_layout)
 
+    # def _on_focused_changed(self, focused: bool):
+    #     current_time = time.time()
+    #     if current_time - self.last_focus_change_time < 0.2:
+    #         return  # Avoid too frequent focus change handling
+
+    #     self.last_focus_change_time = current_time
+
+    #     if focused:
+    #         self.markup_window.visible = True
+    #     else:
+    #         self.markup_window.visible = False
+
     async def loading_screen(self):
         window_flags = ui.WINDOW_FLAGS_NO_RESIZE
         window_flags |= ui.WINDOW_FLAGS_NO_SCROLLBAR
@@ -147,9 +170,22 @@ class ULExtension(omni.ext.IExt):
 
 #######################################################################################
 
-#CR: Is this needed, Remove or Put it in to KIT file
         settings = carb.settings.get_settings()
         settings.set("/app/viewport/content.emptyStageOnStart", True)
+        # settings.set("/app/frameRateLimit", 60)
+        # # Enable vsync for smoother rendering
+        # settings.set("/renderer/vsync", True)
+        # settings.set("/rtx/enabled", True)
+        # settings.set("/rtx/pathtracing/enable", False)
+        # settings.set("/rtx/aa/samples", 2)
+        # settings.set("/rtx/shadows/maxDistance", 50)
+        # settings.set("/renderer/textures/maxTextureResolution", 1024)
+        # settings.set("/renderer/resolutionScale", 0.75)
+        # print("Performance settings applied successfully!")
+
+#CR: Is this needed, Remove or Put it in to KIT file
+        # settings = carb.settings.get_settings()
+        # settings.set("/app/viewport/content.emptyStageOnStart", True)
 #########################################################################################
 
     def setup_viewport_settings(self):
@@ -283,9 +319,38 @@ class ULExtension(omni.ext.IExt):
             # we are doing this after asset is loaded to avoid the "render context changed" message
             init_measure()
 
+            from omni.ui import DockPosition
+
+            # Get references to the target windows
+            #measure_window = ui.Workspace.get_window("Annotation")
+
+            # measure_window = ui.Window("Annotation")
+            # markup_window = ui.Window("Markups")
+
+            # # def _on_focused_changed(focused: bool):
+            # #     if not focused:
+            # #         print("not infocus")
+            # #         markup_window.visible = False
+
+            # # Ensure both windows are available
+            # if measure_window and markup_window:
+            #     #measure_window.set_focused_changed_fn(_on_focused_changed)
+            #     print("Both windows are available.")
+            #     print(f"Annotation Window Docked: {measure_window.docked}")
+            #     print(f"Markup Window Docked: {markup_window.docked}")
+
+            #     # Use the dock_in_window method to dock "Markups" relative to "Annotation"
+            #     success = markup_window.dock_in_window("Annotation", DockPosition.BOTTOM, ratio=0.5)
+
+            #     if success:
+            #         print("Markup window successfully docked below the Annotation window.")
+            #     else:
+            #         print("Failed to dock the Markup window.")
+
 
             measure_window = ui.Workspace.get_window("Annotation")
             markup_window = ui.Workspace.get_window("Markups")
+
 
             if measure_window and markup_window:
                 print("both win2")
@@ -334,18 +399,34 @@ class ULExtension(omni.ext.IExt):
                 value=False
             )
 
-            remove_right_corner_settings("renderResolution")
-            remove_right_corner_settings("deviceMemory")
-            remove_right_corner_settings("hostMemory")
-            remove_right_corner_settings("renderFPS")
+            # remove_right_corner_settings("renderResolution")
+            # remove_right_corner_settings("deviceMemory")
+            # remove_right_corner_settings("hostMemory")
+            # remove_right_corner_settings("renderFPS")
 
-            remove_persistent_settings("render")
-            remove_persistent_settings("display")
-            remove_persistent_settings("camera")
-            remove_persistent_settings("framerate")
-            remove_persistent_settings("lighting")
-            remove_persistent_settings("settings")
-            remove_persistent_settings("waypoint")
+            # remove_persistent_settings("render")
+            # remove_persistent_settings("display")
+            # remove_persistent_settings("camera")
+            # remove_persistent_settings("framerate")
+            # remove_persistent_settings("lighting")
+            # remove_persistent_settings("settings")
+            # remove_persistent_settings("waypoint")
+
+
+
+        if event.type == int(omni.usd.StageEventType.SELECTION_CHANGED):
+            all_windows = ui.Workspace.get_windows()
+            print("all win,", all_windows)
+            window_markup = ui.Workspace.get_window("Markups")
+            window_annotation = ui.Workspace.get_window("Annotation")
+
+            # Iterate through all windows
+            for wind in all_windows:
+                dock_id = wind.dock_id  # Get the dock ID of the window
+                print("dock_id", dock_id)
+                selected_index = ui.Workspace.get_selected_window_index(dock_id)
+                print("clickedd", selected_index)
+
 
     async def load_usd_to_viewport(self):
         # Asynchronously open the USD stage

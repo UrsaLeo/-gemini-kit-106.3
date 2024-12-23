@@ -82,9 +82,37 @@ class ExtensionVisibilityAction:
             self.init_fn()
             self.initialized = True
 
+
+
+        # Get all windows and Markup/Annotation references
+        # all_windows = ui.Workspace.get_windows()
+        # window_markup = ui.Workspace.get_window("Markups")
+        # window_annotation = ui.Workspace.get_window("Annotation")
+
+        # # Iterate through all windows
+        # for wind in all_windows:
+        #     dock_id = wind.dock_id  # Get the dock ID of the window
+        #     selected_index = ui.Workspace.get_selected_window_index(dock_id)
+        #     print("clickedd")
+
+            # Check if the active window is not Annotation
+            # if wind.title != "Annotation" and selected_index == all_windows.index(wind):
+            #     window_markup.visible = False
+            #     print(f"{wind.title} is active, hiding Markups window.")
+            #     break
+            # elif wind.title == "Annotation":
+            #     window_markup.visible = True
+            #     print("Annotation is active, showing Markups window.")
+
         global button_click_count
         if "Model Exploder" in self.show_windows:
             button_click_count += 1
+
+        if "Annotation" in self.show_windows:
+            markup_window = ui.Workspace.get_window("Markups")
+            markup_window.visible = True
+
+
 
         # Change visibility for Model Exploder to avoid double click issue, since it is initially visible
         if button_click_count == 1:
@@ -121,6 +149,8 @@ class ExtensionVisibilityAction:
                         if isinstance(action, ExtensionVisibilityAction) and action.show_windows == [window_name]:
                             action.extension_visible = False
 
+
+
         # Show the windows specific to the current extension
         for window_name in self.show_windows:
             window = ui.Workspace.get_window(window_name)
@@ -138,6 +168,10 @@ class ExtensionVisibilityAction:
             if window and window.visible:
                 window.visible = False
         self.extension_visible = False
+
+        if "Annotation" in self.show_windows:
+            markup_window = ui.Workspace.get_window("Markups")
+            markup_window.visible = False
 
 
 class Toolbar:
