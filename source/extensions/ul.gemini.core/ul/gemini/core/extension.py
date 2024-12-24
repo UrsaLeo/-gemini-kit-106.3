@@ -309,19 +309,48 @@ class ULExtension(omni.ext.IExt):
 
 
         if event.type == int(omni.usd.StageEventType.ASSETS_LOADED):
+            # import os
+
+            # # Define the source folder (the actual folder you want to link)
+            # source_folder = "c:/Users/anastasiia.sukhanova/AppData/Local/ov/data/exts/v2/omni.kit.markup.core-1.2.20"
+
+            # # Define the target path (location in the _build folder)
+            # build_folder = "c:/Anastasia/106-3/_build/windows-x86_64/release/extscache"
+            # symlink_path = os.path.join(build_folder, "omni.kit.markup.core-1.2.20")
+
+            # try:
+            #     # Check if the symlink already exists
+            #     if os.path.islink(symlink_path) or os.path.exists(symlink_path):
+            #         print(f"Symlink already exists: {symlink_path}")
+            #     else:
+            #         # Create the symbolic link
+            #         os.symlink(source_folder, symlink_path)
+            #         print(f"Symlink created: {symlink_path} -> {source_folder}")
+            # except OSError as e:
+            #     print(f"Failed to create symlink: {e}")
+
+
+
+
+
             print("I am clossing since asset is loaded !!")
             # self._window.visible = False
             self._stage_subscription.unsubscribe()
             self._stage_subscription = None
             self._window.visible = False
 
-            # sensor_window = ui.Window("Sensors")
-            # sensor_window.selected_in_dock = False
-            # sensor_window.visible = False
+            sensor_window = ui.Workspace.get_window("Sensors")
+            sensor_window.visible = False
+
+            annotation_window = ui.Workspace.get_window("Annotation")
+            annotation_window.visible = False
+
+            markup_window = ui.Workspace.get_window("Markups")
+            markup_window.visible = False
 
 
             # we are doing this after asset is loaded to avoid the "render context changed" message
-            init_measure()
+            #init_measure()
 
             from omni.ui import DockPosition
 
@@ -358,6 +387,7 @@ class ULExtension(omni.ext.IExt):
 
             if measure_window and markup_window:
                 print("both win2")
+
                 #markup_window.undock()
                 # if measure_window.visible:
                 #     markup_window.visible = True

@@ -105,7 +105,19 @@ class MeasurePanel(ui.Window):
 
     def _on_markup_button_clicked(self):
         markup_window = ui.Workspace.get_window("Markups")
-        #self.markup_window = ui.Workspace.get_window("Markups")
+        attachment_window = ui.Workspace.get_window("Attachment")
+        if attachment_window and attachment_window.visible:
+            attachment_window.visible = False
+
+        exploder_window = ui.Workspace.get_window("Model Exploder")
+        if exploder_window and exploder_window.visible:
+            exploder_window.visible = False
+
+        vr_window = ui.Workspace.get_window("VR")
+        if vr_window and vr_window.visible:
+            vr_window.visible = False
+
+
         if not markup_window:
             MarkupListWindow()  # Create the window if it doesn't exist
         else:
@@ -130,10 +142,11 @@ class MeasurePanel(ui.Window):
 
                     #with ui.HStack(spacing = 10):
                     ui.Button(
-                        tooltip="open",
-                        text="Open Markup",
-                        width=50, height=50,
-                        clicked_fn=lambda: self._on_markup_button_clicked()
+                        tooltip="Toggle Markup Window",
+                        text="Open/Close Markup Window",
+                        width=70, height=50,
+                        clicked_fn=lambda: self._on_markup_button_clicked(),
+                        alignment=ui.Alignment.CENTER
                         #clicked_fn=lambda: MarkupListWindow(),
                     )
                         # ui.Button(
@@ -252,8 +265,10 @@ class MeasurePanel(ui.Window):
         #         print("Annotation lost focus, hiding Markups window.")
         #         markup_window.visible = False
         markup_window = ui.Workspace.get_window("Markups")
+        attachment_window = ui.Workspace.get_window("Attachment")
         if focused:
-            markup_window.visible = True
+            if not attachment_window.visible:
+                markup_window.visible = True
 
 
             # current_time = time.time()
@@ -288,9 +303,9 @@ class MeasurePanel(ui.Window):
 
                 self.stage_window.set_focused_changed_fn(self.__stage_on_focused_changed)
 
-            self.sensor_window = ui.Window("Sensors")
-            if self.sensor_window:
-                self.sensor_window.set_focused_changed_fn(self.__stage_on_focused_changed)
+            # self.sensor_window = ui.Workspace.get_window("Sensors")
+            # if self.sensor_window:
+            #     self.sensor_window.set_focused_changed_fn(self.__stage_on_focused_changed)
 
             ###########################
             if focused:

@@ -8,12 +8,12 @@ set OMNI_REPO_ROOT="%~dp0"
 
 if "%1" == "build" (
     echo Checking if 'modified' folder exists in: %OMNI_REPO_ROOT%\modified
-    if exist "%OMNI_REPO_ROOT%\modified" (
+    if exist "%OMNI_REPO_ROOT%modified" (
         echo 'modified' folder found. Checking contents of measure_markup...
-        dir "%OMNI_REPO_ROOT%\modified\measure_markup"
-        if exist "%OMNI_REPO_ROOT%\modified\measure_markup\*" (
+        dir "%OMNI_REPO_ROOT%modified\measure_markup"
+        if exist "%OMNI_REPO_ROOT%modified\measure_markup\*" (
             echo Files found. Copying files...
-            copy /y "%OMNI_REPO_ROOT%\modified\measure_markup\*" "%OMNI_REPO_ROOT%\_build\windows-x86_64\release\extscache"
+            copy /y "%OMNI_REPO_ROOT%modified\measure_markup\*" "%OMNI_REPO_ROOT%_build\windows-x86_64\release\extscache"
             if %errorlevel% neq 0 (
                 echo Error copying files.
             ) else (

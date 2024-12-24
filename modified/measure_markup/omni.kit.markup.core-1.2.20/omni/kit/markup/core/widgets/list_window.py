@@ -217,7 +217,7 @@ class MarkupListWindow(ui.Window):
     SPACING = 9
 
     def __init__(self):
-        print("init local3")
+        print("init local8")
         self._settings = carb.settings.get_settings()
         self._markup_instance = cast("MarkupExtension ", get_markup_extension_instance())
         self._markup_count = 0
@@ -276,8 +276,18 @@ class MarkupListWindow(ui.Window):
         self.frame.set_style(LIST_WINDOW_STYLES)
         self.set_visibility_changed_fn(self._on_visibility_changed)
         self.set_focused_changed_fn(self._on_focused_changed)
+
+        #########################3333
+        # self.sensor_window = ui.Workspace.get_window("Sensors")
+        # if self.sensor_window:
+        #     self.sensor_window.set_focused_changed_fn(self.__stage_on_focused_changed)
+
+
+
         self._hotkey_context = None
         self._build_ui()
+
+
 
         def on_vp_width_changed(width: float, _self=weakref.ref(self)):
             if (self := _self()):
@@ -336,6 +346,11 @@ class MarkupListWindow(ui.Window):
     @property
     def widgets(self) -> "list[MarkupEntryWidget]":
         return self._widgets[:]
+
+    def __stage_on_focused_changed(self, focused: bool):
+        if focused:
+            markup_window = ui.Workspace.get_window("Markups")
+            self.visible = False
 
     def destroy(self):
         if self._hotkey_context:
@@ -448,8 +463,9 @@ class MarkupListWindow(ui.Window):
             if active_markup is None or active_markup == "":
                 self._remove_hotkey_context(MARKUP_WINDOW_FOCUS_CONTEXT)
 
-            markup_window = ui.Workspace.get_window("Markups")
-            # if not markup_window.focused:
+            # markup_window = ui.Workspace.get_window("Markups")
+            # annot_window = ui.Workspace.get_window("Annotation")
+            # if not annot_window.focused:
             #     markup_window.visible = False
 
     def _remove_hotkey_context(self, context: str):

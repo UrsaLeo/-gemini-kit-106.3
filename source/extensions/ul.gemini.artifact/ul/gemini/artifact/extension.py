@@ -1009,6 +1009,10 @@ class MyExtension(omni.ext.IExt):
             else:
                 create_window_model()
             self._artifacts_window.visible = True
+##########################
+            markup_window = ui.Workspace.get_window("Markups")
+            if markup_window and markup_window.visible:
+                markup_window.visible = False
         window_context()
 
     def on_startup(self, ext_id):

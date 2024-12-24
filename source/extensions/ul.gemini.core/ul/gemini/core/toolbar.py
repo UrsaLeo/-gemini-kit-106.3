@@ -108,9 +108,9 @@ class ExtensionVisibilityAction:
         if "Model Exploder" in self.show_windows:
             button_click_count += 1
 
-        if "Annotation" in self.show_windows:
-            markup_window = ui.Workspace.get_window("Markups")
-            markup_window.visible = True
+        # if "Annotation" in self.show_windows:
+        #     markup_window = ui.Workspace.get_window("Markups")
+        #     markup_window.visible = True
 
             # annot_window = ui.Workspace.get_window("Annotation")
             # annot_window.visible = True
@@ -143,6 +143,25 @@ class ExtensionVisibilityAction:
             self.hide_extension_windows()
         else:
             self.show_extension_windows()
+
+        if "Sensors" in self.show_windows:
+            annotation_window = ui.Workspace.get_window("Annotation")
+            if annotation_window.visible:
+                annotation_window.visible = False
+            markup_window = ui.Workspace.get_window("Markups")
+            if markup_window.visible:
+                markup_window.visible = False
+
+        if "Annotation" in self.show_windows:
+            sensor_window = ui.Workspace.get_window("Sensors")
+            if sensor_window.visible:
+                sensor_window.visible = False
+
+        if any(item in self.show_windows for item in ["VR", "Model Exploder"]):
+
+            markup_window = ui.Workspace.get_window("Markups")
+            if markup_window.visible:
+                markup_window.visible = False
 
     def show_extension_windows(self):
         main_windows = ["Sun Study", "Waypoints"]
@@ -181,9 +200,9 @@ class ExtensionVisibilityAction:
                 window.visible = False
         self.extension_visible = False
 
-        if "Annotation" in self.show_windows:
-            markup_window = ui.Workspace.get_window("Markups")
-            markup_window.visible = False
+        # if "Annotation" in self.show_windows:
+        #     markup_window = ui.Workspace.get_window("Markups")
+        #     markup_window.visible = False
 
 
 class Toolbar:
