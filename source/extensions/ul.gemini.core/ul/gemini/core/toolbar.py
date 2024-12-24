@@ -200,9 +200,10 @@ class ExtensionVisibilityAction:
                 window.visible = False
         self.extension_visible = False
 
-        # if "Annotation" in self.show_windows:
-        #     markup_window = ui.Workspace.get_window("Markups")
-        #     markup_window.visible = False
+        if "Annotation" in self.show_windows:
+            markup_window = ui.Workspace.get_window("Markups")
+            if markup_window.visible:
+                markup_window.visible = False
 
 
 class Toolbar:
@@ -260,12 +261,17 @@ class Toolbar:
 
     def show_chatbot_window(self):
         windows = ui.Workspace.get_windows()
+        print("allwin", windows)
         # Check if "AI Assist" window already exists
         window_name = "Gemini AI"
         ai_assist_window = next((window for window in windows if window.title == window_name), None)
 
         if ai_assist_window:
             ai_assist_window.visible = True
+
+            markup_window = ui.Workspace.get_window("Markups")
+            if markup_window and markup_window.visible:
+                markup_window.visible = False
 
         else:
             # If the window does not exist, create a new one

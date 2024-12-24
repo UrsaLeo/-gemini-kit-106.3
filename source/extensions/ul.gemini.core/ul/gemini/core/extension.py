@@ -211,6 +211,9 @@ class ULExtension(omni.ext.IExt):
         ui.Workspace.get_window("Measure").visible = True
 
     def create_new_toolbar(self):
+        #Initialize Markup here, since corresponding Tollbar button was removed
+        markup_window = MarkupListWindow()
+        markup_window.visible = True
         # def init_measure():
         # manager = omni.kit.app.get_app().get_extension_manager()
         # manager.set_extension_enabled_immediate("omni.kit.tool.measure", True)
@@ -226,14 +229,14 @@ class ULExtension(omni.ext.IExt):
                 ["Waypoints"],
                 [],
             )
-            tb.extensionVisibilityAction(
-                "Markups",
-                os.path.join(os.path.dirname(__file__), "data", "Icons", "AnnotationIcon.png"),
-                "Collaborate with the Markup Tool",
-                lambda: MarkupListWindow(),
-                ["Markups"],
-                [],
-            )
+            # tb.extensionVisibilityAction(
+            #     "Markups",
+            #     os.path.join(os.path.dirname(__file__), "data", "Icons", "AnnotationIcon.png"),
+            #     "Collaborate with the Markup Tool",
+            #     lambda: MarkupListWindow(),
+            #     ["Markups"],
+            #     [],
+            # )
             tb.extensionVisibilityAction(
                 "Annotation",
                 os.path.join(os.path.dirname(__file__), "data", "Icons", "Measurement.png"),

@@ -217,7 +217,7 @@ class MarkupListWindow(ui.Window):
     SPACING = 9
 
     def __init__(self):
-        print("init local8")
+        print("init local9")
         self._settings = carb.settings.get_settings()
         self._markup_instance = cast("MarkupExtension ", get_markup_extension_instance())
         self._markup_count = 0
@@ -254,7 +254,7 @@ class MarkupListWindow(ui.Window):
             flags=flags,
             padding_x=2,
             padding_y=2,
-            visible=False,
+            visible=True,
             raster_policy=ui.RasterPolicy.NEVER,
         )
 
@@ -485,7 +485,7 @@ class MarkupListWindow(ui.Window):
             with ui.VStack(style=WINDOW_STYLE.copy()):
                 self._container = ui.VStack(height=0)
                 with self._container:
-                    self._build_title()
+                    #self._build_title()
                     ui.Spacer(height=8)
                     with ui.HStack(height=36):
                         ui.Spacer()

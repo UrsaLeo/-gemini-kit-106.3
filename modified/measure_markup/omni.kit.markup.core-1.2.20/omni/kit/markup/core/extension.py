@@ -608,12 +608,12 @@ class MarkupExtension(omni.ext.IExt):
         window_annot = ui.Workspace.get_window("Annotation")
         window_annot.visible = True
         print("window_annot", window_annot)
-        # if window is not None and window.visible: # pragma: no cover
-        #     window.focus()
+        if window is not None and window.visible: # pragma: no cover
+            window.focus()
         # if window is not None and not window.visible:
         #     window.focus()
         #     window.visible = True
-        window_annot.focus()
+        #window_annot.focus()
 
         print("isfocused",window_annot.is_selected_in_dock(), window_annot.focused)
 
