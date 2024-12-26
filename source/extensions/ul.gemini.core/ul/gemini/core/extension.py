@@ -10,8 +10,9 @@ from omni.ui import color as cl
 import omni.usd
 from pxr import Usd, UsdGeom, Sdf, Gf
 from omni.usd import get_context
-from omni.kit.viewport.utility import get_active_viewport
-from omni.kit.markup.core.widgets.list_window import MarkupListWindow
+from omni.kit.viewport.utility import get_active_viewport, create_viewport_window, get_active_viewport_window
+#from omni.kit.markup.core.widgets.list_window import MarkupListWindow
+from ul.gemini.markup.widgets.list_window import MarkupListWindow
 from omni.kit.window.section.ui.section_tool_window import SectionToolWindow
 
 # from omni.kit.tool.measure.interface.panel import MeasurePanel
@@ -24,6 +25,11 @@ from .utils import get_local_transform_xform, zoom_camera, connectVRAPP
 import subprocess
 import asyncio   #CR: Duplicate
 import time
+####################################################################################
+from omni.kit.manipulator.camera import ViewportCameraManipulator
+import omni.ui.scene
+
+from omni.kit.widget.viewport import ViewportWidget
 
 import ul.gemini.services.gdn_services as gdn_services  # import get_partner_secure_data,get_integration_entity_type_list,get_rfi_details,get_submittals_details,get_procore_document_structure,get_source_list,should_open_artifact_window
 import ul.gemini.services.artifact_services as artifact_services
@@ -61,14 +67,12 @@ loading_screen_path = os.path.join(base_path, "../../../data/Nav_Loading.png")
 partner_secure_data = None
 
 
+
+
 class ULExtension(omni.ext.IExt):
 
     _camera_changer = CameraChanger() #CR: Remove
     _stage_subscription = None
-
-
-
-    ########################################################################################
 
     #CR: Combine all start up UI settings
 
@@ -86,39 +90,33 @@ class ULExtension(omni.ext.IExt):
     ]
     omni.kit.menu.utils.add_layout(_menu_layout)
 
-    #########################################################################################
-
     async def loading_screen(self):
-
-            #CR: Combine all start up UI settings
-
         window_flags = ui.WINDOW_FLAGS_NO_RESIZE
         window_flags |= ui.WINDOW_FLAGS_NO_SCROLLBAR
         window_flags |= ui.WINDOW_FLAGS_MODAL
         window_flags |= ui.WINDOW_FLAGS_NO_CLOSE
         window_flags |= ui.WINDOW_FLAGS_NO_MOVE
 
-#######################################################################
+        viewport_window = get_active_viewport_window()
+        position_x = viewport_window.width / 2 - viewport_window.width * .37
+        position_y = viewport_window.height / 2 - viewport_window.height * .44
+
         self._window = ui.Window(
             "Rendering the Digital Twin",
-            width=800,
-            height=800,
+            width=viewport_window.height * 0.75,
+            height=viewport_window.height * 0.75,
+
             flags=window_flags,
-            position_x=125,
-            position_y=65,
+            position_x=position_x,
+            position_y=position_y,
         )
         with self._window.frame:
             with ui.VStack():
                 self.image = ui.Image(loading_screen_path, fill_policy=ui.FillPolicy.STRETCH)
         self._window.visible = True
 
-
-#######################################################################################
-
-#CR: Is this needed, Remove or Put it in to KIT file
         settings = carb.settings.get_settings()
         settings.set("/app/viewport/content.emptyStageOnStart", True)
-#########################################################################################
 
     def setup_viewport_settings(self):
         win = ui.Workspace.get_window("Main ToolBar")
@@ -138,14 +136,16 @@ class ULExtension(omni.ext.IExt):
         settings.set(TransformButtonGroup.TRANSFORM_MOVE_MODE_SETTING, "local")
         settings.set(TransformButtonGroup.TRANSFORM_MOVE_MODE_SETTING, "global")
 
+
+    def set_workspace_visible():
+        ui.Workspace.get_window("Measure").visible = True
+
     def create_new_toolbar(self):
-        # def init_measure():
-        # manager = omni.kit.app.get_app().get_extension_manager()
-        # manager.set_extension_enabled_immediate("omni.kit.tool.measure", True)
-        # MeasurePanel()
+        #Initialize Markup here, since corresponding Tollbar button was removed
+        markup_window = MarkupListWindow()
+        markup_window.visible = True
 
         with Toolbar() as tb:
-            # tb.simpleClickAction("Cameras", "Perspective.png", "Change Cameras", lambda : self._camera_changer.change_camera())
             tb.extensionVisibilityAction(
                 "Waypoints",
                 os.path.join(os.path.dirname(__file__), "data", "Icons", "Waypoint.png"),
@@ -155,19 +155,11 @@ class ULExtension(omni.ext.IExt):
                 [],
             )
             tb.extensionVisibilityAction(
-                "Markups",
-                os.path.join(os.path.dirname(__file__), "data", "Icons", "AnnotationIcon.png"),
-                "Collaborate with the Markup Tool",
-                lambda: MarkupListWindow(),
-                ["Markups"],
-                [],
-            )
-            tb.extensionVisibilityAction(
-                "Measure",
+                "Annotation",
                 os.path.join(os.path.dirname(__file__), "data", "Icons", "Measurement.png"),
-                "Take Measurements on the Digital Twin",
+                "Take Measurements and Add Markups",
                 None,
-                ["Measure"],
+                ["Annotation"],
                 ["Property", "Attachment"],
                 True,
             )
@@ -222,67 +214,46 @@ class ULExtension(omni.ext.IExt):
         def init_measure():
             self._manager.set_extension_enabled_immediate("omni.kit.tool.measure", True)
 
-        # if (not self._window.visible):
-        #     print("I am getting in to asset loading...")
-        #     if  event.type == int(omni.usd.StageEventType.ASSETS_LOADING):
-        #         self._stage_subscription.unsubscribe()
-
-        #         self._window.visible = True
-        #         self._stage_subscription = self.stage_stream.create_subscription_to_pop(
-        #         self.on_stage_event, name="MyExtensionOnStageEvent"
-        # )
-
 
         if event.type == int(omni.usd.StageEventType.ASSETS_LOADED):
             print("I am clossing since asset is loaded !!")
-            # self._window.visible = False
             self._stage_subscription.unsubscribe()
             self._stage_subscription = None
             self._window.visible = False
 
+            sensor_window = ui.Workspace.get_window("Sensors")
+            if sensor_window:
+                sensor_window.visible = False
+
+            annotation_window = ui.Workspace.get_window("Annotation")
+            if annotation_window:
+                annotation_window.visible = False
+
+            markup_window = ui.Workspace.get_window("Markups")
+            if markup_window:
+                markup_window.visible = False
+
             # we are doing this after asset is loaded to avoid the "render context changed" message
-            init_measure()
+            #init_measure()
+
+            #Docking markup
+            measure_window = ui.Workspace.get_window("Annotation")
+            markup_window = ui.Workspace.get_window("Markups")
+
+            if measure_window and markup_window:
+                markup_window.dock_in(measure_window, ui.DockPosition.BOTTOM)
+
             window = ui.Workspace.get_window("Property")
             if window:
                 window.visible = False
 
             self._detector = InactivityTracker(30)
 
-            #NOTE! Add commands, since persistent settings in kit file don't work
-            def remove_persistent_settings(val):
-                omni.kit.commands.execute(
-                'ChangeSettingCommand',
-                path=f"/persistent/exts/omni.kit.viewport.menubar.{val}/visible",
-                value=False
-            )
-
-            def remove_right_corner_settings(val):
-                omni.kit.commands.execute(
-                'ChangeSettingCommand',
-                path=f"/persistent/app/viewport/Viewport/Viewport0/hud/{val}/visible",
-                value=False
-            )
-
-            remove_right_corner_settings("renderResolution")
-            remove_right_corner_settings("deviceMemory")
-            remove_right_corner_settings("hostMemory")
-            remove_right_corner_settings("renderFPS")
-
-            remove_persistent_settings("render")
-            remove_persistent_settings("display")
-            remove_persistent_settings("camera")
-            remove_persistent_settings("framerate")
-            remove_persistent_settings("lighting")
-            remove_persistent_settings("settings")
-            remove_persistent_settings("waypoint")
 
     async def load_usd_to_viewport(self):
-        # Asynchronously open the USD stage
-
         asyncio.ensure_future(self.loading_screen())
 
         file_path = core_services.get_usd_path()
-        #file_path = core_services.get_nucleus_usd_path()
 
         print(f"Attempting to load USD file: {file_path}")
 
@@ -293,18 +264,11 @@ class ULExtension(omni.ext.IExt):
             print(error)
             raise SystemExit("Coould not load USD file: {file_path}")
 
-        # for i in range(35):
-        #    await omni.kit.app.get_app().next_update_async()
         self.stage = omni.usd.get_context().get_stage()
 
-        # await omni.kit.app.get_app().next_update_async()
         self.post_usd_load_operations()
 
     def post_usd_load_operations(self):
-        # self.setup_viewport_settings()
-        # Operations to execute after the USD has been loaded
-
-        # self.initialize_camera_prim_paths ()
         self._camera_changer.initialize_camera_prim_paths()
 
         if not ui.Workspace.get_window("Markups"):
@@ -324,7 +288,6 @@ class ULExtension(omni.ext.IExt):
 
     def on_startup(self, ext_id):
 
-
         global partner_secure_data
 
         self._ext_id = ext_id
@@ -334,6 +297,7 @@ class ULExtension(omni.ext.IExt):
         self.loading_stage = False  # Flag to indicate if a stage loading operation is in progress
 
         partner_secure_data = gdn_services.get_partner_secure_data()
+
 
         self.create_new_toolbar()
         self.stage_stream = omni.usd.get_context().get_stage_event_stream()

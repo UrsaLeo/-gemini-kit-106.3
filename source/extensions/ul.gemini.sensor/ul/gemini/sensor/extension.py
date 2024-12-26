@@ -96,6 +96,8 @@ except Exception as e:
     logger.error("Thread failure")
 
 
+
+
 class MyExtension(omni.ext.IExt):
     def __init__(self):
         super().__init__()

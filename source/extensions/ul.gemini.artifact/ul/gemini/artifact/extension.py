@@ -1004,11 +1004,16 @@ class MyExtension(omni.ext.IExt):
 
             if self._artifacts_window is None:
                 window_flags = ui.WINDOW_FLAGS_NO_RESIZE
-                self._artifacts_window = ui.Window("Attachment", width=320, height=280,flags=window_flags)
+                self._artifacts_window = ui.Window("Attachment", width=320, height=280, flags=window_flags)
                 create_window_model()
             else:
                 create_window_model()
             self._artifacts_window.visible = True
+
+            # Close Markup when Artifact opens
+            markup_window = ui.Workspace.get_window("Markups")
+            if markup_window and markup_window.visible:
+                markup_window.visible = False
         window_context()
 
     def on_startup(self, ext_id):
