@@ -31,14 +31,6 @@ import omni.ui.scene
 
 from omni.kit.widget.viewport import ViewportWidget
 
-
-
-
-# viewport_api = ViewportWidget.viewport_api
-# if viewport_api is not None:
-#     usd_context_name = viewport_api.camera_path
-###############################################################
-
 import ul.gemini.services.gdn_services as gdn_services  # import get_partner_secure_data,get_integration_entity_type_list,get_rfi_details,get_submittals_details,get_procore_document_structure,get_source_list,should_open_artifact_window
 import ul.gemini.services.artifact_services as artifact_services
 import ul.gemini.services.core_services as core_services
@@ -82,39 +74,6 @@ class ULExtension(omni.ext.IExt):
     _camera_changer = CameraChanger() #CR: Remove
     _stage_subscription = None
 
-
-
-
-    #################################################################################
-    # def __init__(self):
-    #     super().__init__()
-
-    #     self.markup_window = ui.Workspace.get_window("Markups")
-    #     self.annotation_window = ui.Window("Annotation")
-    #     self.last_focus_change_time = 0
-
-    #     # Check focus changes
-    #     self.annotation_window.set_focused_changed_fn(self._on_focused_changed)
-    #     measure_window = ui.Window("Annotation")
-    #     measure_window.set_focused_changed_fn(self._on_focused_changed)
-
-    #     viewport_api = get_active_viewport_window().viewport_api
-
-    #     self.__scene_view = omni.ui.scene.SceneView()
-    #     self.__camera_manip = ViewportCameraManipulator(viewport_api)
-    #     with self.__scene_view.scene:
-    #         self.__scene_view.model = self.__camera_manip.model
-
-    #     zoom_speed_z = 0.1
-    #     self.__scene_view.model.set_floats('world_speed', [1.0, 1.0, zoom_speed_z])
-
-    #     fly_speed_x_y = 0.3
-    #     fly_speed_z = 0.1
-    #     self.__scene_view.model.set_floats('fly_speed', [fly_speed_x_y, fly_speed_x_y, fly_speed_z])
-
-
-    ########################################################################################
-
     #CR: Combine all start up UI settings
 
     _file_menu_list = [MenuItemDescription(name="UrsaLeo AI Assit - Comming Soon")]
@@ -130,18 +89,6 @@ class ULExtension(omni.ext.IExt):
         MenuLayout.Menu("Layout", remove=True),
     ]
     omni.kit.menu.utils.add_layout(_menu_layout)
-
-    # def _on_focused_changed(self, focused: bool):
-    #     current_time = time.time()
-    #     if current_time - self.last_focus_change_time < 0.2:
-    #         return  # Avoid too frequent focus change handling
-
-    #     self.last_focus_change_time = current_time
-
-    #     if focused:
-    #         self.markup_window.visible = True
-    #     else:
-    #         self.markup_window.visible = False
 
     async def loading_screen(self):
         window_flags = ui.WINDOW_FLAGS_NO_RESIZE
@@ -168,26 +115,8 @@ class ULExtension(omni.ext.IExt):
                 self.image = ui.Image(loading_screen_path, fill_policy=ui.FillPolicy.STRETCH)
         self._window.visible = True
 
-
-#######################################################################################
-
         settings = carb.settings.get_settings()
         settings.set("/app/viewport/content.emptyStageOnStart", True)
-        # settings.set("/app/frameRateLimit", 60)
-        # # Enable vsync for smoother rendering
-        # settings.set("/renderer/vsync", True)
-        # settings.set("/rtx/enabled", True)
-        # settings.set("/rtx/pathtracing/enable", False)
-        # settings.set("/rtx/aa/samples", 2)
-        # settings.set("/rtx/shadows/maxDistance", 50)
-        # settings.set("/renderer/textures/maxTextureResolution", 1024)
-        # settings.set("/renderer/resolutionScale", 0.75)
-        # print("Performance settings applied successfully!")
-
-#CR: Is this needed, Remove or Put it in to KIT file
-        # settings = carb.settings.get_settings()
-        # settings.set("/app/viewport/content.emptyStageOnStart", True)
-#########################################################################################
 
     def setup_viewport_settings(self):
         win = ui.Workspace.get_window("Main ToolBar")
@@ -215,13 +144,8 @@ class ULExtension(omni.ext.IExt):
         #Initialize Markup here, since corresponding Tollbar button was removed
         markup_window = MarkupListWindow()
         markup_window.visible = True
-        # def init_measure():
-        # manager = omni.kit.app.get_app().get_extension_manager()
-        # manager.set_extension_enabled_immediate("omni.kit.tool.measure", True)
-        # MeasurePanel()
 
         with Toolbar() as tb:
-            # tb.simpleClickAction("Cameras", "Perspective.png", "Change Cameras", lambda : self._camera_changer.change_camera())
             tb.extensionVisibilityAction(
                 "Waypoints",
                 os.path.join(os.path.dirname(__file__), "data", "Icons", "Waypoint.png"),
@@ -230,22 +154,11 @@ class ULExtension(omni.ext.IExt):
                 ["Waypoints"],
                 [],
             )
-            # tb.extensionVisibilityAction(
-            #     "Markups",
-            #     os.path.join(os.path.dirname(__file__), "data", "Icons", "AnnotationIcon.png"),
-            #     "Collaborate with the Markup Tool",
-            #     lambda: MarkupListWindow(),
-            #     ["Markups"],
-            #     [],
-            # )
             tb.extensionVisibilityAction(
                 "Annotation",
                 os.path.join(os.path.dirname(__file__), "data", "Icons", "Measurement.png"),
-                "Take Measurements on the Digital Twin",
-                # lambda: self.set_workspace_visible(),
+                "Take Measurements and add markups",
                 None,
-                #lambda: MarkupListWindow(),
-                #["Measure", "Markups"],
                 ["Annotation"],
                 ["Property", "Attachment"],
                 True,
@@ -303,30 +216,6 @@ class ULExtension(omni.ext.IExt):
 
 
         if event.type == int(omni.usd.StageEventType.ASSETS_LOADED):
-            # import os
-
-            # # Define the source folder (the actual folder you want to link)
-            # source_folder = "c:/Users/anastasiia.sukhanova/AppData/Local/ov/data/exts/v2/omni.kit.markup.core-1.2.20"
-
-            # # Define the target path (location in the _build folder)
-            # build_folder = "c:/Anastasia/106-3/_build/windows-x86_64/release/extscache"
-            # symlink_path = os.path.join(build_folder, "omni.kit.markup.core-1.2.20")
-
-            # try:
-            #     # Check if the symlink already exists
-            #     if os.path.islink(symlink_path) or os.path.exists(symlink_path):
-            #         print(f"Symlink already exists: {symlink_path}")
-            #     else:
-            #         # Create the symbolic link
-            #         os.symlink(source_folder, symlink_path)
-            #         print(f"Symlink created: {symlink_path} -> {source_folder}")
-            # except OSError as e:
-            #     print(f"Failed to create symlink: {e}")
-
-
-
-
-
             print("I am clossing since asset is loaded !!")
             self._stage_subscription.unsubscribe()
             self._stage_subscription = None
@@ -344,23 +233,15 @@ class ULExtension(omni.ext.IExt):
             if markup_window:
                 markup_window.visible = False
 
-
             # we are doing this after asset is loaded to avoid the "render context changed" message
             #init_measure()
 
-            from omni.ui import DockPosition
-
-
+            #Docking markup
             measure_window = ui.Workspace.get_window("Annotation")
             markup_window = ui.Workspace.get_window("Markups")
 
-
             if measure_window and markup_window:
-                print("both win2")
-
                 markup_window.dock_in(measure_window, ui.DockPosition.BOTTOM)
-
-                print(f"Markup Window Docked: {markup_window.docked}")
 
             window = ui.Workspace.get_window("Property")
             if window:
@@ -368,52 +249,8 @@ class ULExtension(omni.ext.IExt):
 
             self._detector = InactivityTracker(30)
 
-            #NOTE! Add commands, since persistent settings in kit file don't work
-            def remove_persistent_settings(val):
-                omni.kit.commands.execute(
-                'ChangeSettingCommand',
-                path=f"/persistent/exts/omni.kit.viewport.menubar.{val}/visible",
-                value=False
-            )
-
-            def remove_right_corner_settings(val):
-                omni.kit.commands.execute(
-                'ChangeSettingCommand',
-                path=f"/persistent/app/viewport/Viewport/Viewport0/hud/{val}/visible",
-                value=False
-            )
-
-            # remove_right_corner_settings("renderResolution")
-            # remove_right_corner_settings("deviceMemory")
-            # remove_right_corner_settings("hostMemory")
-            # remove_right_corner_settings("renderFPS")
-
-            # remove_persistent_settings("render")
-            # remove_persistent_settings("display")
-            # remove_persistent_settings("camera")
-            # remove_persistent_settings("framerate")
-            # remove_persistent_settings("lighting")
-            # remove_persistent_settings("settings")
-            # remove_persistent_settings("waypoint")
-
-
-
-        if event.type == int(omni.usd.StageEventType.SELECTION_CHANGED):
-            all_windows = ui.Workspace.get_windows()
-            print("all win,", all_windows)
-            window_markup = ui.Workspace.get_window("Markups")
-            window_annotation = ui.Workspace.get_window("Annotation")
-
-            # Iterate through all windows
-            for wind in all_windows:
-                dock_id = wind.dock_id  # Get the dock ID of the window
-                print("dock_id", dock_id)
-                selected_index = ui.Workspace.get_selected_window_index(dock_id)
-                print("clickedd", selected_index)
-
 
     async def load_usd_to_viewport(self):
-
         asyncio.ensure_future(self.loading_screen())
 
         file_path = core_services.get_usd_path()

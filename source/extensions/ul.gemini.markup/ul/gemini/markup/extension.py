@@ -91,10 +91,6 @@ class MarkupChangeCallbacks:
         self.on_reset = on_reset
 
 
-        ###################
-        #self.set_focused_changed_fn(self._on_focused_changed)
-
-
 class MarkupExtension(omni.ext.IExt):
     # ext_id is current extension id. It can be used with extension manager to query additional information, like where
     # this extension is located on filesystem.
@@ -168,21 +164,6 @@ class MarkupExtension(omni.ext.IExt):
         g_singleton = self
         self.__dirty_paths: "set[Sdf.Path]" = set()
         asyncio.ensure_future(self.deferred_startup())
-
-
-        # with ui.Window("Parent", width=400, height=400) as parent_window:
-        #     with ui.VStack(spacing=10):
-        #         # Add the main markup window
-        #         with ui.Frame():
-        #             ui.Label("Additional Information1", alignment=ui.Alignment.CENTER)
-
-        #             # from omni.kit.markup.core.widgets.list_window import MarkupListWindow
-        #             # win = MarkupListWindow()
-        #             # win._build_widget()  # Embed the markup window
-        #         # Add another widget (e.g., additional controls or a status bar)
-        #         ui.Label("Additional Information", alignment=ui.Alignment.CENTER)
-
-        #self.parent_window = parent_window
 
     def __init_hotkeys(self):
         self._hotkey_reg = None

@@ -144,10 +144,8 @@ def build_frame_header(markup: ViewportMarkup, collapsed: bool, text: str, id: s
                 markup_inst.begin_edit_markup(markup, set_editing_markup=False)
 
         flags = (
-            #ui.WINDOW_FLAGS_POPUP
             ui.WINDOW_FLAGS_NO_TITLE_BAR
             | ui.WINDOW_FLAGS_NO_RESIZE
-            #| ui.WINDOW_FLAGS_NO_DOCKING
             | ui.WINDOW_FLAGS_NO_CLOSE
             | ui.WINDOW_FLAGS_NO_SCROLLBAR
         )
@@ -229,8 +227,6 @@ class MarkupListWindow(ui.Window):
 
         flags = (
             ui.WINDOW_FLAGS_NO_TITLE_BAR
-            # | ui.WINDOW_FLAGS_POPUP
-            #| ui.WINDOW_FLAGS_NO_DOCKING
             | ui.WINDOW_FLAGS_NO_CLOSE
             | ui.WINDOW_FLAGS_NO_SCROLLBAR
             | ui.WINDOW_FLAGS_NO_COLLAPSE
@@ -244,8 +240,6 @@ class MarkupListWindow(ui.Window):
 
         if (not self._settings.get(SETTINGS_LIST_WINDOW_ALLOW_RESIZE)): # pragma: no cover
             flags |= ui.WINDOW_FLAGS_NO_RESIZE
-
-        #self.annotation_window = ui.Workspace.get_window("Annotation")
 
         super().__init__(
             "Markups",

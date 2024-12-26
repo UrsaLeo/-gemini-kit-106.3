@@ -24,9 +24,7 @@ from .tools import (
     MultiPointModel,
     AngleModel,
     AreaModel,
-    DiameterModel,
-    #MarkupModel,
-    # VolumeModel
+    DiameterModel
 )
 
 from ..common import MeasureState, MeasureMode, MeasureCreationState
@@ -95,9 +93,7 @@ class MeasureCreateManipulator(sc.Manipulator):
             MeasureMode.MULTI_POINT: MultiPointModel(api),
             MeasureMode.ANGLE: AngleModel(api),
             MeasureMode.AREA: AreaModel(api),
-            MeasureMode.DIAMETER: DiameterModel(api),
-            #MeasureMode.MARKUP: MarkupModel(api),
-            # MeasureMode.VOLUME: VolumeModel(api)
+            MeasureMode.DIAMETER: DiameterModel(api)
         }
 
         self._current_tool: Optional[ViewportModeModel] = None

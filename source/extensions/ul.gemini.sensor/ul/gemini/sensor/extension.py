@@ -710,12 +710,6 @@ class MyExtension(omni.ext.IExt):
 
         self._tree_view.model = self._sensor_model
 
-    ###############
-    def __stage_on_focused_changed(self, focused: bool):
-        if focused:
-            markup_window = ui.Workspace.get_window("Markups")
-            markup_window.visible = False
-
     def _open_sensor_window(self):
         """
         This function opens the sensor window and creates the window model.
@@ -754,12 +748,6 @@ class MyExtension(omni.ext.IExt):
                 title="Sensors",
                 resizable=True
                 )
-
-            #########################
-            # self.sensor_window = ui.Workspace.get_window("Sensors")
-            # if self._sensor_window:
-            #     self._sensor_window.set_focused_changed_fn(self.__stage_on_focused_changed)
-                ########################
 
             self._sensor_window.set_width_changed_fn(lambda new_width: adjust_column_widths(new_width))
             create_window_model(self)

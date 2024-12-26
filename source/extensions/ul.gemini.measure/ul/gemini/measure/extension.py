@@ -69,7 +69,6 @@ class Extension(omni.ext.IExt):
         return self._viewport or None
 
     def on_startup(self, ext_id) -> None:
-        #self._markup_list_window = MarkupListWindow()
         sections = ext_id.split("-")
         self._ext_name = sections[0]
 
@@ -115,12 +114,6 @@ class Extension(omni.ext.IExt):
         self._register_hotkeys(self._ext_name)
 
     def on_shutdown(self) -> None:
-
-        # self._markup_list_window._on_close_window()
-        # self._markup_list_window = None
-        # window_markup = ui.Workspace.get_window("Markups")
-        # window_markup.visible = False
-
         ui.Workspace.set_show_window_fn(EXTENSION_NAME, None)
         if self._visibility_sub is not None:
             ui.Workspace.remove_window_visibility_changed_callback(self._visibility_sub)

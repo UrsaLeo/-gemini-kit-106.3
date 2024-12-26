@@ -85,8 +85,6 @@ class SubPanelBase(metaclass=ABCMeta):
         return
 
 
-
-
 class MarkupPanel(SubPanelBase):
     def __init__(self):
         super().__init__("Markup")
@@ -106,14 +104,12 @@ class MarkupPanel(SubPanelBase):
 
         return _frame
 
-
     def _set_defaults(self) -> None:
         return super()._set_defaults()
 
     @property
     def text_size(self) -> LabelSize:
         pass
-
 
 
 class GlobalPanel(SubPanelBase):
