@@ -6,26 +6,26 @@
 SETLOCAL
 set OMNI_REPO_ROOT="%~dp0"
 
-if "%1" == "build" (
-    echo Checking if 'modified' folder exists in: %OMNI_REPO_ROOT%\modified
-    if exist "%OMNI_REPO_ROOT%modified" (
-        echo 'modified' folder found. Checking contents of measure_markup...
-        dir "%OMNI_REPO_ROOT%modified\measure_markup"
-        if exist "%OMNI_REPO_ROOT%modified\measure_markup\*" (
-            echo Files found. Copying files...
-            copy /y "%OMNI_REPO_ROOT%modified\measure_markup\*" "%OMNI_REPO_ROOT%_build\windows-x86_64\release\extscache"
-            if %errorlevel% neq 0 (
-                echo Error copying files.
-            ) else (
-                echo Files copied to _build\extscache.
-            )
-        ) else (
-            echo No files found in 'modified\measure_markup'.
-        )
-    ) else (
-        echo No 'modified' folder found, skipping extension copy.
-    )
-)
+@REM if "%1" == "build" (
+@REM     echo Checking if 'modified' folder exists in: %OMNI_REPO_ROOT%\modified
+@REM     if exist "%OMNI_REPO_ROOT%modified" (
+@REM         echo 'modified' folder found. Checking contents of measure_markup...
+@REM         dir "%OMNI_REPO_ROOT%modified\measure_markup"
+@REM         if exist "%OMNI_REPO_ROOT%modified\measure_markup\*" (
+@REM             echo Files found. Copying files...
+@REM             copy /y "%OMNI_REPO_ROOT%modified\measure_markup\*" "%OMNI_REPO_ROOT%_build\windows-x86_64\release\extscache"
+@REM             if %errorlevel% neq 0 (
+@REM                 echo Error copying files.
+@REM             ) else (
+@REM                 echo Files copied to _build\extscache.
+@REM             )
+@REM         ) else (
+@REM             echo No files found in 'modified\measure_markup'.
+@REM         )
+@REM     ) else (
+@REM         echo No 'modified' folder found, skipping extension copy.
+@REM     )
+@REM )
 
 call "%~dp0tools\packman\python.bat" "%~dp0tools\repoman\repoman.py" %*
 if %errorlevel% neq 0 ( goto Error )

@@ -41,6 +41,7 @@ source/apps/data/models
 source/isaac-dependencies
 modified/isaac-dependencies
 modified/isaac-050/
+modified/measure_markup
 **/Characters
 source/**/Characters/
 source/**/Anims/

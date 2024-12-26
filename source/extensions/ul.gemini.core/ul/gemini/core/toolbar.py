@@ -154,8 +154,16 @@ class ExtensionVisibilityAction:
 
         if "Annotation" in self.show_windows:
             sensor_window = ui.Workspace.get_window("Sensors")
-            if sensor_window.visible:
+            if sensor_window and sensor_window.visible:
                 sensor_window.visible = False
+
+            exploder_window = ui.Workspace.get_window("Model Exploder")
+            if exploder_window and exploder_window.visible:
+                exploder_window.visible = False
+
+            ai_window = ui.Workspace.get_window("Gemini AI")
+            if ai_window and ai_window.visible:
+                ai_window.visible = False
 
         if any(item in self.show_windows for item in ["VR", "Model Exploder"]):
 

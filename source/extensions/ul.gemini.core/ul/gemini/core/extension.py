@@ -11,7 +11,8 @@ import omni.usd
 from pxr import Usd, UsdGeom, Sdf, Gf
 from omni.usd import get_context
 from omni.kit.viewport.utility import get_active_viewport, create_viewport_window, get_active_viewport_window
-from omni.kit.markup.core.widgets.list_window import MarkupListWindow
+#from omni.kit.markup.core.widgets.list_window import MarkupListWindow
+from ul.gemini.markup.widgets.list_window import MarkupListWindow
 from omni.kit.window.section.ui.section_tool_window import SectionToolWindow
 
 # from omni.kit.tool.measure.interface.panel import MeasurePanel
@@ -300,16 +301,6 @@ class ULExtension(omni.ext.IExt):
         def init_measure():
             self._manager.set_extension_enabled_immediate("omni.kit.tool.measure", True)
 
-        # if (not self._window.visible):
-        #     print("I am getting in to asset loading...")
-        #     if  event.type == int(omni.usd.StageEventType.ASSETS_LOADING):
-        #         self._stage_subscription.unsubscribe()
-
-        #         self._window.visible = True
-        #         self._stage_subscription = self.stage_stream.create_subscription_to_pop(
-        #         self.on_stage_event, name="MyExtensionOnStageEvent"
-        # )
-
 
         if event.type == int(omni.usd.StageEventType.ASSETS_LOADED):
             # import os
@@ -337,51 +328,27 @@ class ULExtension(omni.ext.IExt):
 
 
             print("I am clossing since asset is loaded !!")
-            # self._window.visible = False
             self._stage_subscription.unsubscribe()
             self._stage_subscription = None
             self._window.visible = False
 
             sensor_window = ui.Workspace.get_window("Sensors")
-            sensor_window.visible = False
+            if sensor_window:
+                sensor_window.visible = False
 
             annotation_window = ui.Workspace.get_window("Annotation")
-            annotation_window.visible = False
+            if annotation_window:
+                annotation_window.visible = False
 
             markup_window = ui.Workspace.get_window("Markups")
-            markup_window.visible = False
+            if markup_window:
+                markup_window.visible = False
 
 
             # we are doing this after asset is loaded to avoid the "render context changed" message
             #init_measure()
 
             from omni.ui import DockPosition
-
-            # Get references to the target windows
-            #measure_window = ui.Workspace.get_window("Annotation")
-
-            # measure_window = ui.Window("Annotation")
-            # markup_window = ui.Window("Markups")
-
-            # # def _on_focused_changed(focused: bool):
-            # #     if not focused:
-            # #         print("not infocus")
-            # #         markup_window.visible = False
-
-            # # Ensure both windows are available
-            # if measure_window and markup_window:
-            #     #measure_window.set_focused_changed_fn(_on_focused_changed)
-            #     print("Both windows are available.")
-            #     print(f"Annotation Window Docked: {measure_window.docked}")
-            #     print(f"Markup Window Docked: {markup_window.docked}")
-
-            #     # Use the dock_in_window method to dock "Markups" relative to "Annotation"
-            #     success = markup_window.dock_in_window("Annotation", DockPosition.BOTTOM, ratio=0.5)
-
-            #     if success:
-            #         print("Markup window successfully docked below the Annotation window.")
-            #     else:
-            #         print("Failed to dock the Markup window.")
 
 
             measure_window = ui.Workspace.get_window("Annotation")
@@ -391,29 +358,9 @@ class ULExtension(omni.ext.IExt):
             if measure_window and markup_window:
                 print("both win2")
 
-                #markup_window.undock()
-                # if measure_window.visible:
-                #     markup_window.visible = True
                 markup_window.dock_in(measure_window, ui.DockPosition.BOTTOM)
 
-                #markup_window.dock_tab_bar_visible = True
-                #markup_window.dock_tab_bar_enabled = True
                 print(f"Markup Window Docked: {markup_window.docked}")
-
-            # workspace = ui.Workspace.get_current_workspace()
-            # parent_window = workspace.create_dockable_window("Parent Window", width=800, height=600)
-
-            # markup_window = ui.Workspace.get_window("Markups")
-            # measure_window = ui.Workspace.get_window("Measure")
-
-            # if markup_window and measure_window:
-            #     markup_window.dock_in(parent_window, ui.DockPosition.TOP, 0.5)
-            #     measure_window.dock_in(parent_window, ui.DockPosition.BOTTOM, 0.5)
-
-
-                # if markup_window.docked:
-                #     markup_window.visible = True
-
 
             window = ui.Workspace.get_window("Property")
             if window:
@@ -466,28 +413,10 @@ class ULExtension(omni.ext.IExt):
 
 
     async def load_usd_to_viewport(self):
-        # Asynchronously open the USD stage
-
-        # viewport_api = get_active_viewport_window().viewport_api
-
-        # self.__scene_view = omni.ui.scene.SceneView()
-        # self.__camera_manip = ViewportCameraManipulator(viewport_api)
-        # with self.__scene_view.scene:
-        #     self.__scene_view.model = self.__camera_manip.model
-
-        # zoom_speed_z = 0.1
-        # self.__scene_view.model.set_floats('world_speed', [1.0, 1.0, zoom_speed_z])
-
-        # fly_speed_x_y = 0.3
-        # fly_speed_z = 0.1
-        # self.__scene_view.model.set_floats('fly_speed', [fly_speed_x_y, fly_speed_x_y, fly_speed_z])
-
-        # self.__scene_view.model.set_floats('move', [30, 60, 90])
 
         asyncio.ensure_future(self.loading_screen())
 
         file_path = core_services.get_usd_path()
-        #file_path = core_services.get_nucleus_usd_path()
 
         print(f"Attempting to load USD file: {file_path}")
 
@@ -498,18 +427,11 @@ class ULExtension(omni.ext.IExt):
             print(error)
             raise SystemExit("Coould not load USD file: {file_path}")
 
-        # for i in range(35):
-        #    await omni.kit.app.get_app().next_update_async()
         self.stage = omni.usd.get_context().get_stage()
 
-        # await omni.kit.app.get_app().next_update_async()
         self.post_usd_load_operations()
 
     def post_usd_load_operations(self):
-        # self.setup_viewport_settings()
-        # Operations to execute after the USD has been loaded
-
-        # self.initialize_camera_prim_paths ()
         self._camera_changer.initialize_camera_prim_paths()
 
         if not ui.Workspace.get_window("Markups"):
