@@ -8,8 +8,6 @@
 #
 
 from typing import Optional
-import os
-import time
 
 from carb import log_warn
 from pxr import UsdGeom
@@ -33,7 +31,6 @@ from omni.kit.markup.core.widgets.list_window import MarkupListWindow
 from omni.kit.markup.core.extension import MarkupExtension
 
 
-
 class MeasurePanel(ui.Window):
     WINDOW_WIDTH = 465
     WINDOW_HEIGHT = 800
@@ -42,7 +39,6 @@ class MeasurePanel(ui.Window):
     SPACING = 9
 
     def __init__(self):
-        print("initpanel2")
         self.is_markup_visible = False
         self.last_focus_change_time = 0
 
@@ -51,8 +47,6 @@ class MeasurePanel(ui.Window):
         self._pn_placement: Optional[PlacementPanel] = None
         self._pn_display: Optional[DisplayPanel] = None
         self._pn_manage: Optional[ManagePanel] = None
-###############
-        #self._pn_markup: Optional[MarkupPanel] = None
 
         super().__init__(
             EXTENSION_NAME,
@@ -80,8 +74,6 @@ class MeasurePanel(ui.Window):
         self.set_width_changed_fn(self._width_changed)
         self.set_height_changed_fn(self._height_changed)
 
-
-
         StateMachine().add_tool_state_changed_fn(self._on_tool_state_changed)
 
         self._viewport_handle = get_active_viewport_window()
@@ -93,17 +85,9 @@ class MeasurePanel(ui.Window):
 
         # Assign itself and sub panels to the reference manager
         ReferenceManager().ui_panel = self
-
         self._window_updated = False
-        #self.markup_window = None
-
-
-
-
-
 
     # ------ UI ------
-
     def _on_markup_button_clicked(self):
         markup_window = ui.Workspace.get_window("Markups")
         attachment_window = ui.Workspace.get_window("Attachment")
@@ -118,6 +102,9 @@ class MeasurePanel(ui.Window):
         if vr_window and vr_window.visible:
             vr_window.visible = False
 
+        ai_window = ui.Workspace.get_window("Gemini AI")
+        if ai_window and ai_window.visible:
+            ai_window.visible = False
 
         if not markup_window:
             MarkupListWindow()  # Create the window if it doesn't exist
@@ -139,28 +126,14 @@ class MeasurePanel(ui.Window):
                     self._pn_placement.visible = False  # only occurs on app startup
                     self._pn_display = DisplayPanel()
                     self._pn_manage = ManagePanel()
-                    #self._pn_markup = MarkupPanel()
 
-                    #with ui.HStack(spacing = 10):
                     ui.Button(
                         tooltip="Toggle Markup Window",
                         text="Open/Close Markup Window",
                         width=70, height=50,
                         clicked_fn=lambda: self._on_markup_button_clicked(),
                         alignment=ui.Alignment.CENTER
-                        #clicked_fn=lambda: MarkupListWindow(),
                     )
-                        # ui.Button(
-                        #     tooltip="close",
-                        #     text="Close Markup",
-                        #     width=50, height=50,
-                        #     clicked_fn=lambda: self._on_close_button_clicked()
-                        #     #clicked_fn=lambda: MarkupListWindow(),
-                        # )
-                    # with ui.Frame():
-                    #     MarkupListWindow()
-
-
 
         # Attach to global callbacks
         self._pn_global.add_measure_selected_fn(self._on_measure_selected)
@@ -221,125 +194,31 @@ class MeasurePanel(ui.Window):
             asyncio.ensure_future(__delay_re_position())
 
     def __on_focused_changed(self, focused: bool):
-        # all_windows = [ui.Window("Sensors"), ui.Window("Stage"), ui.Window("Annotation")]
-        # print("all win,", all_windows)
-        # self.markup_window = ui.Workspace.get_window("Markups")
-        # markup_window = ui.Workspace.get_window("Markups")
-
-        # for win in all_windows:
-        #     if win.title !="Annotation":
-        #         print("wintit", win.title)
-        #         markup_window.visible = True
-        #     else:
-        #         print("winannot", win.title)
-        #         markup_window.visible = False
-
-        # all_windows = ui.Workspace.get_windows()
-        # print("All Windows:", all_windows)
-
-        # Check the focus state for each window
-        # for win in all_windows:
-        #     if win.title == "Annotation" and focused:
-        #         print("Annotation window focused. Showing markup window.")
-        #         if markup_window:
-        #             markup_window.visible = True  # Show the markup window
-        #     else:
-        #         print(f"Window {win.title} lost focus or is not Annotation. Hiding markup window.")
-        #         if markup_window:
-        #             markup_window.visible = False  # Hide the markup window
-
-
-        # if not sensor_window.focused:
-        #     print("markup_window.focus",sensor_window.focused)
-        #     markup_window.visible = True
-        #     #MarkupListWindow()
-        #     #markup_window.visible = False
-        #     #self._on_markup_button_clicked()
-        #     #markup_window.visible = True
-        # else:
-        #     markup_window.visible = False
-
-
-
-        # if not focused:
-        #     if markup_window.visible:
-        #         print("Annotation lost focus, hiding Markups window.")
-        #         markup_window.visible = False
         markup_window = ui.Workspace.get_window("Markups")
         attachment_window = ui.Workspace.get_window("Attachment")
         if focused:
             if not attachment_window.visible:
                 markup_window.visible = True
 
-
-            # current_time = time.time()
-            # if current_time - self.last_focus_change_time < 1:
-            #     return  # Avoid too frequent focus change handling
-
-            # self.last_focus_change_time = current_time
-
-            # if focused:
-
-            # else:
-            #    markup_window.visible = False
-
-
             if HotkeyManager().hotkey_context.get() != MEASURE_WINDOW_VISIBLE_CONTEXT:
                 HotkeyManager().hotkey_context.push(MEASURE_WINDOW_VISIBLE_CONTEXT)
-
-
-            # if not markup_window.visible:
-            #     print("Markups window focused, making it visible.")
-            #     markup_window.visible = True
 
         elif not self.visible:
             HotkeyManager().remove_hotkey_context(MEASURE_WINDOW_VISIBLE_CONTEXT)
 
         elif not focused:
-            #pass
-
-           ######################
             self.stage_window = ui.Window("Stage")
             if self.stage_window:
-
                 self.stage_window.set_focused_changed_fn(self.__stage_on_focused_changed)
-
-            # self.sensor_window = ui.Workspace.get_window("Sensors")
-            # if self.sensor_window:
-            #     self.sensor_window.set_focused_changed_fn(self.__stage_on_focused_changed)
-
-            ###########################
-            if focused:
-                markup_window.visible = True
-
-
-
-            # markup_window.visible = False
-            #markup_ext = MarkupExtension()
-            #markup_ext.on_shutdown()
-            #markup_window.visible = False
-
-
-            #markup_window = ui.Window("Markups")
-            # if markup_window.visible:
-            #     print("Annotation lost focus, hiding Markups window.")
-            #self.markup_window.visible = False
-                #self.is_markup_visible = False
-            # if markup_window.visible:
-            #     print("Annotation lost focus, hiding Markups window.")
-            #     markup_window.visible = False
-
 
     def __stage_on_focused_changed(self, focused: bool):
         if focused:
             markup_window = ui.Workspace.get_window("Markups")
             markup_window.visible = False
 
-
     def __on_panel_selected_changed(self, selected: bool):
         if not selected:
             StateMachine().reset_state_to_default()
-
 
     def _on_objects_changed(self, notice, sender) -> None:
         """

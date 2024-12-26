@@ -217,7 +217,6 @@ class MarkupListWindow(ui.Window):
     SPACING = 9
 
     def __init__(self):
-        print("init local333")
         self._settings = carb.settings.get_settings()
         self._markup_instance = cast("MarkupExtension ", get_markup_extension_instance())
         self._markup_count = 0
@@ -323,11 +322,6 @@ class MarkupListWindow(ui.Window):
     @property
     def widgets(self) -> "list[MarkupEntryWidget]":
         return self._widgets[:]
-
-    def __stage_on_focused_changed(self, focused: bool):
-        if focused:
-            markup_window = ui.Workspace.get_window("Markups")
-            self.visible = False
 
     def destroy(self):
         if self._hotkey_context:

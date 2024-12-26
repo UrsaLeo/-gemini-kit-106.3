@@ -77,6 +77,7 @@ class MarkupChangeCallbacks:
     def __dummy(*_) -> None: # pragma: no cover
         pass
 
+
     def __init__(
         self,
         on_markup_created: Callable = __dummy,
@@ -623,6 +624,10 @@ class MarkupExtension(omni.ext.IExt):
 
                 if not self._markups and self._edit_end_fn:
                     self._edit_end_fn()
+
+        markup_window = ui.Workspace.get_window("Markups")
+        markup_window.focus()
+        markup_window.visible = True
 
     def export_markups(self):
         if self._export_fn:
