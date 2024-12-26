@@ -157,7 +157,7 @@ class ULExtension(omni.ext.IExt):
             tb.extensionVisibilityAction(
                 "Annotation",
                 os.path.join(os.path.dirname(__file__), "data", "Icons", "Measurement.png"),
-                "Take Measurements and add markups",
+                "Take Measurements and Add Markups",
                 None,
                 ["Annotation"],
                 ["Property", "Attachment"],
