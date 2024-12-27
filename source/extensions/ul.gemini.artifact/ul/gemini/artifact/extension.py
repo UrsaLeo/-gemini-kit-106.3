@@ -8,6 +8,7 @@ import ul.gemini.services.utils as utils
 from ul.gemini.artifact.procore_ui import ProcoreModel, ProcoreDelegate, CommandModel
 from ul.gemini.artifact.entity_ui import EntityModel,DelegateModel
 import os
+from omni.kit.viewport.utility import get_active_viewport_window
 
 partner_secure_data =  artifact_services.get_partner_secure_data()
 
@@ -37,17 +38,33 @@ label_style = {
     "Label:hovered": {"background_color": cl("#b6d3d8")},
 }
 
-enabled_detach_style = style={"color": cl.white,"background_color": cl.transparent,
-                            "Tooltip": {"color": cl("#ffffff"),"background_color": cl("#4f4e4e"),
-                                        "margin_width": 0.5 ,
-                                        "margin_height": 0.5 , "border_width":0.5, "border_color": cl.white, "padding": 5.0 }
-                            }
+enabled_detach_style = style = {
+    "color": cl.white,
+    "background_color": cl("#282828"),
+    "Tooltip": {
+        "color": cl("#ffffff"),
+        "background_color": cl("#4f4e4e"),
+        "margin_width": 0.5 ,
+        "margin_height": 0.5 ,
+        "border_width": 0.5,
+        "border_color": cl.white,
+        "padding": 5.0
+    }
+}
 
-disabled_detach_style = style={"color": cl.grey,"background_color": cl.transparent,
-                            "Tooltip": {"color": cl("#ffffff"),"background_color": cl("#4f4e4e"),
-                                        "margin_width": 0.5 ,
-                                        "margin_height": 0.5 , "border_width":0.5, "border_color": cl.white, "padding": 5.0 }
-                            }
+disabled_detach_style = style = {
+    "color": cl.grey,
+    "background_color": cl("#282828"),
+    "Tooltip": {
+        "color": cl("#ffffff"),
+        "background_color": cl("#4f4e4e"),
+        "margin_width": 0.5 ,
+        "margin_height": 0.5 ,
+        "border_width":0.5,
+        "border_color": cl.white,
+        "padding": 5.0
+    }
+}
 
 checkbox_style = {"margin": 7.0, "padding": 5.0,"color": cl("#76D300"),"border_radius": 0, "background_color": cl(0.25)}
 
@@ -59,7 +76,6 @@ def some_public_function(x: int):
 
 
 class MyExtension(omni.ext.IExt):
-
     def __init__(self):
         super().__init__()
         self._artifacts_window = None
@@ -230,17 +246,55 @@ class MyExtension(omni.ext.IExt):
     def _procore_window_buttons(self):
         global _selected_to_attach
         print("Button selcted to attach")
-        with ui.HStack():
-            ui.Button("Cancel",clicked_fn=self._close_procore_window,style={"color": cl.white, "background_color": cl.transparent,
-                                                                            "Tooltip": {"color": cl("#ffffff"),"background_color": cl("#4f4e4e"), "margin_width": 0.5 ,
-                                                                                        "margin_height": 0.5 , "border_width":0.5, "border_color": cl.white, "padding": 5.0 }},
-                                                                                        tooltip="Cancel")
-            ui.Line(name="default", width= 20, alignment=ui.Alignment.H_CENTER, style={"border_width":1, "color": cl.green})
-            ui.Button("Attach Selected",style={ "color": cl.white, "background_color": cl.transparent,
-                                                            "Tooltip": {"color": cl("#ffffff"),"background_color": cl("#4f4e4e"), "margin_width": 0.5 ,
-                                                            "margin_height": 0.5 , "border_width":0.5, "border_color": cl.white, "padding": 5.0 }
-                                                        }, clicked_fn=lambda: self._attach_according_to_entity_Selection(self._entity_selection),
-                                                    tooltip="Attach Selected")
+        with ui.HStack(height=0, alignment=ui.Alignment.CENTER_BOTTOM, style={"margin": 5.0, "spacing": 10.0}):
+            ui.Button(
+                "Cancel",
+                clicked_fn=self._close_procore_window,
+                style={
+                    "font_size": 14,
+                    "color": cl("#FFFFFF"),
+                    "border_radius": 5.0,
+                    "border_width": 1.0,
+                    "padding": 5.0,
+                    "width": 50,
+                    "height": 30,
+
+                    "Tooltip": {
+                        "color": cl("#ffffff"),
+                        "background_color": cl("#4f4e4e"),
+                        "margin_width": 0.5,
+                        "margin_height": 0.5 ,
+                        "border_width":0.5,
+                        "border_color": cl.white,
+                        "padding": 5.0
+                        }
+                    },
+            tooltip="Cancel"
+        )
+            #ui.Line(name="default", width= 20, alignment=ui.Alignment.H_CENTER, style={"border_width":1, "color": cl.green})
+            ui.Button(
+                    "Attach Selected",
+                    style={
+                        "font_size": 14,
+                        "color": cl("#FFFFFF"),
+                        "border_radius": 5.0,
+                        "border_width": 1.0,
+                        "padding": 5.0,
+                        "width": 50,
+                        "height": 30,
+
+                        "Tooltip": {
+                            "color": cl("#ffffff"),
+                            "background_color": cl("#4f4e4e"),
+                            "margin_width": 0.5 ,
+                            "margin_height": 0.5 ,
+                            "border_width":0.5,
+                            "border_color": cl.white,
+                            "padding": 5.0
+                            }
+                    }, clicked_fn=lambda: self._attach_according_to_entity_Selection(self._entity_selection),
+                tooltip="Attach Selected"
+            )
 
 
     def _search_based_entity(self,search_text:str,entity_type):
@@ -589,7 +643,19 @@ class MyExtension(omni.ext.IExt):
                 window_flags |= ui.WINDOW_FLAGS_MODAL
                 window_flags |= ui.WINDOW_FLAGS_NO_CLOSE
                 window_flags |= ui.WINDOW_FLAGS_NO_MOVE
-                self._procore_window = ui.Window((f"Attach to:"), width=800, height=720, flags=window_flags)
+
+                viewport_window = get_active_viewport_window()
+                position_x = viewport_window.width / 2 - viewport_window.width * .30
+                position_y = viewport_window.height / 2 - viewport_window.height * .40
+
+                self._procore_window = ui.Window(
+                    (f"Attach to:"),
+                    width=800,
+                    height=750,
+                    flags=window_flags,
+                    position_x=position_x,
+                    position_y=position_y,
+                )
                 create_procore_model()
             else:
                 create_procore_model()
