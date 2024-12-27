@@ -637,7 +637,7 @@ class MyExtension(omni.ext.IExt):
         style_button = {
             "Button": {
                 "background_color": cl.transparent,
-                "alignment" : ui.Alignment.CENTER,
+                "alignment" : ui.Alignment.CENTER_BOTTOM,
                 "margin": 0.7,
                 "padding": 2.0
             },
@@ -651,7 +651,7 @@ class MyExtension(omni.ext.IExt):
         selection_style = {
             "Button": {
                 "background_color": cl("#282828"),
-                "alignment" : ui.Alignment.CENTER,
+                "alignment" : ui.Alignment.CENTER_BOTTOM,
                 "margin": -0.01,
                 "padding": 2.0,
 
@@ -704,21 +704,21 @@ class MyExtension(omni.ext.IExt):
         rfi_frame = None
         if len(rfis) == 0:
             rfi_frame = ui.ScrollingFrame(
-                        height=210,
+                        height=300,
                         horizontal_scrollbar_policy = ui.ScrollBarPolicy.SCROLLBAR_ALWAYS_OFF,
                         vertical_scrollbar_policy = ui.ScrollBarPolicy.SCROLLBAR_ALWAYS_OFF,
                         style=scroll_frame_style
                     )
         elif len(rfis) <= 6:
             rfi_frame = ui.ScrollingFrame(
-                        height=210,
+                        height=300,
                         horizontal_scrollbar_policy = ui.ScrollBarPolicy.SCROLLBAR_ALWAYS_OFF,
                         vertical_scrollbar_policy = ui.ScrollBarPolicy.SCROLLBAR_ALWAYS_OFF,
                         style=scroll_frame_style
                     )
         else:
             rfi_frame = ui.ScrollingFrame(
-                        height=210,
+                        height=300,
                         horizontal_scrollbar_policy = ui.ScrollBarPolicy.SCROLLBAR_ALWAYS_OFF,
                         vertical_scrollbar_policy = ui.ScrollBarPolicy.SCROLLBAR_ALWAYS_ON,
                         style=scroll_frame_style
@@ -794,21 +794,21 @@ class MyExtension(omni.ext.IExt):
         document_frame = None
         if len(documents) == 0:
             document_frame = ui.ScrollingFrame(
-                    height=210,
+                    height=300,
                     horizontal_scrollbar_policy = ui.ScrollBarPolicy.SCROLLBAR_ALWAYS_OFF,
                     vertical_scrollbar_policy = ui.ScrollBarPolicy.SCROLLBAR_ALWAYS_OFF,
                     style=scroll_frame_style
                 )
         elif len(documents) <= 6:
             document_frame = ui.ScrollingFrame(
-                    height=210,
+                    height=300,
                     horizontal_scrollbar_policy = ui.ScrollBarPolicy.SCROLLBAR_ALWAYS_OFF,
                     vertical_scrollbar_policy = ui.ScrollBarPolicy.SCROLLBAR_ALWAYS_OFF,
                     style=scroll_frame_style
                 )
         else:
             document_frame = ui.ScrollingFrame(
-                    height=210,
+                    height=300,
                     horizontal_scrollbar_policy = ui.ScrollBarPolicy.SCROLLBAR_ALWAYS_OFF,
                     vertical_scrollbar_policy = ui.ScrollBarPolicy.SCROLLBAR_ALWAYS_ON,
                     style=scroll_frame_style
@@ -863,21 +863,21 @@ class MyExtension(omni.ext.IExt):
         submittal_frame = None
         if len(submittals) == 0:
             submittal_frame = ui.ScrollingFrame(
-                        height=210,
+                        height=300,
                         horizontal_scrollbar_policy = ui.ScrollBarPolicy.SCROLLBAR_ALWAYS_OFF,
                         vertical_scrollbar_policy = ui.ScrollBarPolicy.SCROLLBAR_ALWAYS_OFF,
                         style=scroll_frame_style
                     )
         elif len(submittals) <= 6:
             submittal_frame = ui.ScrollingFrame(
-                        height=210,
+                        height=300,
                         horizontal_scrollbar_policy = ui.ScrollBarPolicy.SCROLLBAR_ALWAYS_OFF,
                         vertical_scrollbar_policy = ui.ScrollBarPolicy.SCROLLBAR_ALWAYS_OFF,
                         style=scroll_frame_style
                     )
         else:
             submittal_frame = ui.ScrollingFrame(
-                        height=210,
+                        height=300,
                         horizontal_scrollbar_policy = ui.ScrollBarPolicy.SCROLLBAR_ALWAYS_OFF,
                         vertical_scrollbar_policy = ui.ScrollBarPolicy.SCROLLBAR_ALWAYS_ON,
                         style=scroll_frame_style
@@ -969,15 +969,44 @@ class MyExtension(omni.ext.IExt):
 
     def _button_main(self):
         global disabled_detach_style
-        with ui.HStack(height=0, alignment=ui.Alignment.CENTER, style = {"margin": 5.0}):
-            self._detach_button_enabling = ui.Button("Detach Selected",clicked_fn= lambda: self._on_detach(self._entity_selection,self._selected_prim_path),style=disabled_detach_style, enabled=False)
 
-            ui.Line(name="default", width= 20, alignment=ui.Alignment.H_CENTER, style={"border_width":1, "color": cl("#76D300")})
-            btn = ui.Button("Attach New", style={ "color": cl.white,  "background_color": cl.transparent,"Tooltip": {"color": cl("#ffffff"),"background_color": cl("#4f4e4e"), "margin_width": 0.5 ,
-                                                            "margin_height": 0.5 , "border_width":0.5, "border_color": cl.white, "padding": 5.0 }},clicked_fn=self._on_attach_new,tooltip="Attach New")
-            if "authToken" not in partner_secure_data:
-                btn.enabled = False
-                btn.style = disabled_detach_style
+        with ui.HStack(height=0, alignment=ui.Alignment.CENTER_BOTTOM, style={"margin": 5.0, "spacing": 10.0}):
+            # Detach Button
+            self._detach_button_enabling = ui.Button(
+                "Detach Selected",
+                clicked_fn=lambda: self._on_detach(self._entity_selection, self._selected_prim_path),
+                style={
+                    "font_size": 14,
+                    "color": cl("#FFFFFF"),
+                    "border_radius": 5.0,
+                    "border_width": 1.0,
+                    "padding": 5.0,
+                    "width": 50,
+                    "height": 30,
+                },
+                enabled=False,
+            )
+
+            # Attach Button
+            btn = ui.Button(
+                "Attach New",
+                style={
+                    "font_size": 14,
+                    "color": cl.white,
+                    "border_radius": 5.0,
+                    "border_width": 1.0,
+                    "padding": 5.0,
+                    "width": 50,
+                    "height": 30,
+                },
+                clicked_fn=self._on_attach_new,
+                tooltip="Attach New",
+            )
+
+        if "authToken" not in partner_secure_data:
+            btn.enabled = False
+            btn.style = disabled_detach_style
+
 
     def _artifact_window_builder(self):
         def window_context():
@@ -992,12 +1021,12 @@ class MyExtension(omni.ext.IExt):
                             trimmed_prim_path = self._selected_prim_path.split("/World",1)[-1]
                             trimmed_prim_path = utils.truncate_path(trimmed_prim_path,65)
                             print(f"Trimmed path: {trimmed_prim_path}")
-                            ui.Label(f"Attach document to this prim: '{trimmed_prim_path}'",tooltip=self._selected_prim_path, height=0, style={"margin": 5.0, "padding": 5.0})
+                            ui.Label(f"Attach document to this prim:\n{trimmed_prim_path}",tooltip=self._selected_prim_path, height=0, style={"margin": 5.0, "padding": 5.0})
                             with ui.VStack():
                                 with ui.HStack(height=0):
                                     self._button_builder()
                                 ui.Spacer()
-                                with ui.VStack(height=210, style={"background_color": cl("#00000")}):
+                                with ui.VStack(height=300, style={"background_color": cl("#00000")}):
                                     self._load_entity_data_window()
                                 if self._entity_selection is not None:
                                     self._button_main()
