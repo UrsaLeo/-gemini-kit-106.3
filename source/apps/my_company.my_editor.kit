@@ -55,7 +55,7 @@ template_name = "kit_base_editor"
 "omni.kit.window.content_browser" = {} # Add content browser to UI
 "omni.kit.window.property" = {} # Property editor window
 "omni.kit.window.stage" = {}  # Stage tree
-"omni.kit.window.status_bar" = {}  # Status Bar
+#"omni.kit.window.status_bar" = {}  # Status Bar
 "omni.kit.window.toolbar" = {}  # Manipular Toolbar
 "omni.physx.stageupdate" = {} # Physics runtime support - will pull in physx dependencies.
 "omni.rtx.settings.core" = {} # RTX Settings
@@ -95,8 +95,8 @@ template_name = "kit_base_editor"
 
 
 [settings]
-app.livestream.port = 49400
-exts."omni.services.transport.server.http".port = 8511
+app.livestream.port = 49100
+exts."omni.services.transport.server.http".port = 8011
 
 app.extensions.installUntrustedExtensions = true
 app.layout.default = "${app}/data/layout7.json"
@@ -119,7 +119,7 @@ app.window.displayModeLock = true
 app.window.fullscreen = false
 
 app.font.file = "${fonts}/OpenSans-SemiBold.ttf"
-app.font.size = 20
+app.font.size = 14
 app.renderer.enabled = "rtx"
 app.renderer.active = "rtx"
 
@@ -151,6 +151,7 @@ window.title = "My Editor"
 #exts."omni.kit.viewport.window".window.height = 1080
 
 window.showStatusBar = false
+app.window.showStatusBar = false
 viewport.showSettingMenu = false
 viewport.showCameraMenu = false
 viewport.showRendererMenu = false
