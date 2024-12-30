@@ -449,7 +449,7 @@ class MyExtension(omni.ext.IExt):
         global procore_data
 
         with ui.ScrollingFrame(
-            height=600,
+            height=365,
             horizontal_scrollbar_policy=ui.ScrollBarPolicy.SCROLLBAR_ALWAYS_OFF,
             vertical_scrollbar_policy=ui.ScrollBarPolicy.SCROLLBAR_ALWAYS_ON,
             style_type_name_override="TreeView",
@@ -551,7 +551,7 @@ class MyExtension(omni.ext.IExt):
             entity_model_obj = utils.define_entity_item(rfis,"RFI")
             if len(rfis) == 0:
                 with ui.ScrollingFrame(
-                        height=600,
+                        height=365,
                         horizontal_scrollbar_policy=ui.ScrollBarPolicy.SCROLLBAR_ALWAYS_OFF,
                         vertical_scrollbar_policy=ui.ScrollBarPolicy.SCROLLBAR_ALWAYS_OFF,
                         style_type_name_override="TreeView",
@@ -561,7 +561,7 @@ class MyExtension(omni.ext.IExt):
                         ui.TreeView(self._entity_model,delegate=self._delegate,root_visible=False,header_visible=True, style={"TreeView.Item": {"margin": 4}},selection_changed_fn=self._submittal_or_rfi_selection_change)
             elif len(rfis) <= 17:
                 with ui.ScrollingFrame(
-                        height=600,
+                        height=365,
                         horizontal_scrollbar_policy=ui.ScrollBarPolicy.SCROLLBAR_ALWAYS_OFF,
                         vertical_scrollbar_policy=ui.ScrollBarPolicy.SCROLLBAR_ALWAYS_OFF,
                         style_type_name_override="TreeView",
@@ -571,7 +571,7 @@ class MyExtension(omni.ext.IExt):
                         ui.TreeView(self._entity_model,delegate=self._delegate,root_visible=False,header_visible=True, style={"TreeView.Item": {"margin": 4}},selection_changed_fn=self._submittal_or_rfi_selection_change)
             else:
                 with ui.ScrollingFrame(
-                        height=600,
+                        height=365,
                         horizontal_scrollbar_policy=ui.ScrollBarPolicy.SCROLLBAR_ALWAYS_OFF,
                         vertical_scrollbar_policy=ui.ScrollBarPolicy.SCROLLBAR_ALWAYS_ON,
                         style_type_name_override="TreeView",
@@ -585,7 +585,7 @@ class MyExtension(omni.ext.IExt):
             entity_model_obj = utils.define_entity_item(submittals, "SUBMITTAL")
             if len(submittals) == 0:
                 with ui.ScrollingFrame(
-                        height=600,
+                        height=365,
                         horizontal_scrollbar_policy=ui.ScrollBarPolicy.SCROLLBAR_ALWAYS_OFF,
                         vertical_scrollbar_policy=ui.ScrollBarPolicy.SCROLLBAR_ALWAYS_OFF,
                         style_type_name_override="TreeView",
@@ -595,7 +595,7 @@ class MyExtension(omni.ext.IExt):
                         ui.TreeView(self._entity_model,delegate=self._delegate,root_visible=False,header_visible=True, style={"TreeView.Item": {"margin": 4}},selection_changed_fn=self._submittal_or_rfi_selection_change)
             elif len(submittals) <= 17:
                 with ui.ScrollingFrame(
-                        height=600,
+                        height=365,
                         horizontal_scrollbar_policy=ui.ScrollBarPolicy.SCROLLBAR_ALWAYS_OFF,
                         vertical_scrollbar_policy=ui.ScrollBarPolicy.SCROLLBAR_ALWAYS_OFF,
                         style_type_name_override="TreeView",
@@ -605,7 +605,7 @@ class MyExtension(omni.ext.IExt):
                         ui.TreeView(self._entity_model,delegate=self._delegate,root_visible=False,header_visible=True, style={"TreeView.Item": {"margin": 4}},selection_changed_fn=self._submittal_or_rfi_selection_change)
             else:
                 with ui.ScrollingFrame(
-                        height=600,
+                        height=365,
                         horizontal_scrollbar_policy=ui.ScrollBarPolicy.SCROLLBAR_ALWAYS_OFF,
                         vertical_scrollbar_policy=ui.ScrollBarPolicy.SCROLLBAR_ALWAYS_ON,
                         style_type_name_override="TreeView",
@@ -630,7 +630,10 @@ class MyExtension(omni.ext.IExt):
             def create_procore_model():
                 print("Creating procore window")
                 with self._procore_window.frame:
-                    with ui.ScrollingFrame(horizontal_scrollbar_policy=ui.ScrollBarPolicy.SCROLLBAR_ALWAYS_OFF):
+                    with ui.ScrollingFrame(
+                        horizontal_scrollbar_policy=ui.ScrollBarPolicy.SCROLLBAR_ALWAYS_OFF,
+                        vertical_scrollbar_policy=ui.ScrollBarPolicy.SCROLLBAR_ALWAYS_OFF
+                    ):
                         with ui.VStack(height=0):
                             self._procore_title_bar()
                             self._search_bar()
@@ -642,16 +645,16 @@ class MyExtension(omni.ext.IExt):
                 window_flags |= ui.WINDOW_FLAGS_NO_SCROLLBAR
                 window_flags |= ui.WINDOW_FLAGS_MODAL
                 window_flags |= ui.WINDOW_FLAGS_NO_CLOSE
-                window_flags |= ui.WINDOW_FLAGS_NO_MOVE
+                #window_flags |= ui.WINDOW_FLAGS_NO_MOVE
 
                 viewport_window = get_active_viewport_window()
-                position_x = viewport_window.width / 2 - viewport_window.width * .30
-                position_y = viewport_window.height / 2 - viewport_window.height * .40
+                position_x = viewport_window.width / 2 - 300
+                position_y = viewport_window.height / 2 - 225
 
                 self._procore_window = ui.Window(
                     (f"Attach to:"),
-                    width=800,
-                    height=750,
+                    width=600,
+                    height=500,
                     flags=window_flags,
                     position_x=position_x,
                     position_y=position_y,
@@ -770,21 +773,21 @@ class MyExtension(omni.ext.IExt):
         rfi_frame = None
         if len(rfis) == 0:
             rfi_frame = ui.ScrollingFrame(
-                        height=300,
+                        height=191,
                         horizontal_scrollbar_policy = ui.ScrollBarPolicy.SCROLLBAR_ALWAYS_OFF,
                         vertical_scrollbar_policy = ui.ScrollBarPolicy.SCROLLBAR_ALWAYS_OFF,
                         style=scroll_frame_style
                     )
         elif len(rfis) <= 6:
             rfi_frame = ui.ScrollingFrame(
-                        height=300,
+                        height=191,
                         horizontal_scrollbar_policy = ui.ScrollBarPolicy.SCROLLBAR_ALWAYS_OFF,
                         vertical_scrollbar_policy = ui.ScrollBarPolicy.SCROLLBAR_ALWAYS_OFF,
                         style=scroll_frame_style
                     )
         else:
             rfi_frame = ui.ScrollingFrame(
-                        height=300,
+                        height=191,
                         horizontal_scrollbar_policy = ui.ScrollBarPolicy.SCROLLBAR_ALWAYS_OFF,
                         vertical_scrollbar_policy = ui.ScrollBarPolicy.SCROLLBAR_ALWAYS_ON,
                         style=scroll_frame_style
@@ -860,21 +863,21 @@ class MyExtension(omni.ext.IExt):
         document_frame = None
         if len(documents) == 0:
             document_frame = ui.ScrollingFrame(
-                    height=300,
+                    height=191,
                     horizontal_scrollbar_policy = ui.ScrollBarPolicy.SCROLLBAR_ALWAYS_OFF,
                     vertical_scrollbar_policy = ui.ScrollBarPolicy.SCROLLBAR_ALWAYS_OFF,
                     style=scroll_frame_style
                 )
         elif len(documents) <= 6:
             document_frame = ui.ScrollingFrame(
-                    height=300,
+                    height=191,
                     horizontal_scrollbar_policy = ui.ScrollBarPolicy.SCROLLBAR_ALWAYS_OFF,
                     vertical_scrollbar_policy = ui.ScrollBarPolicy.SCROLLBAR_ALWAYS_OFF,
                     style=scroll_frame_style
                 )
         else:
             document_frame = ui.ScrollingFrame(
-                    height=300,
+                    height=191,
                     horizontal_scrollbar_policy = ui.ScrollBarPolicy.SCROLLBAR_ALWAYS_OFF,
                     vertical_scrollbar_policy = ui.ScrollBarPolicy.SCROLLBAR_ALWAYS_ON,
                     style=scroll_frame_style
@@ -929,21 +932,21 @@ class MyExtension(omni.ext.IExt):
         submittal_frame = None
         if len(submittals) == 0:
             submittal_frame = ui.ScrollingFrame(
-                        height=300,
+                        height=191,
                         horizontal_scrollbar_policy = ui.ScrollBarPolicy.SCROLLBAR_ALWAYS_OFF,
                         vertical_scrollbar_policy = ui.ScrollBarPolicy.SCROLLBAR_ALWAYS_OFF,
                         style=scroll_frame_style
                     )
         elif len(submittals) <= 6:
             submittal_frame = ui.ScrollingFrame(
-                        height=300,
+                        height=191,
                         horizontal_scrollbar_policy = ui.ScrollBarPolicy.SCROLLBAR_ALWAYS_OFF,
                         vertical_scrollbar_policy = ui.ScrollBarPolicy.SCROLLBAR_ALWAYS_OFF,
                         style=scroll_frame_style
                     )
         else:
             submittal_frame = ui.ScrollingFrame(
-                        height=300,
+                        height=191,
                         horizontal_scrollbar_policy = ui.ScrollBarPolicy.SCROLLBAR_ALWAYS_OFF,
                         vertical_scrollbar_policy = ui.ScrollBarPolicy.SCROLLBAR_ALWAYS_ON,
                         style=scroll_frame_style
@@ -1092,7 +1095,7 @@ class MyExtension(omni.ext.IExt):
                                 with ui.HStack(height=0):
                                     self._button_builder()
                                 ui.Spacer()
-                                with ui.VStack(height=300, style={"background_color": cl("#00000")}):
+                                with ui.VStack(height=191, style={"background_color": cl("#00000")}):
                                     self._load_entity_data_window()
                                 if self._entity_selection is not None:
                                     self._button_main()
