@@ -96,6 +96,10 @@ class ULExtension(omni.ext.IExt):
         window_flags |= ui.WINDOW_FLAGS_MODAL
         window_flags |= ui.WINDOW_FLAGS_NO_CLOSE
         window_flags |= ui.WINDOW_FLAGS_NO_MOVE
+        
+        main_window_width = int(ui.Workspace.get_main_window_width())
+        main_window_height = int(ui.Workspace.get_main_window_height())
+        print("wwidth",  main_window_width, main_window_height)
 
         viewport_window = get_active_viewport_window()
         position_x = viewport_window.width / 2 - viewport_window.width * .425
