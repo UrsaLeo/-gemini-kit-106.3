@@ -98,17 +98,17 @@ class ULExtension(omni.ext.IExt):
         window_flags |= ui.WINDOW_FLAGS_NO_MOVE
 
         viewport_window = get_active_viewport_window()
-        position_x = viewport_window.width / 2 - viewport_window.width * .37
-        position_y = viewport_window.height / 2 - viewport_window.height * .44
+        position_x = viewport_window.width / 2 - viewport_window.width * .425
+        #position_y = viewport_window.height / 2 - viewport_window.height * 1
 
         self._window = ui.Window(
             "Rendering the Digital Twin",
-            width=viewport_window.height * 0.75,
-            height=viewport_window.height * 0.75,
+            width=viewport_window.height * 0.54,
+            height=viewport_window.height * 0.54,
 
             flags=window_flags,
             position_x=position_x,
-            position_y=position_y,
+            position_y=40,
         )
         with self._window.frame:
             with ui.VStack():
