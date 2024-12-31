@@ -96,10 +96,6 @@ class ULExtension(omni.ext.IExt):
         window_flags |= ui.WINDOW_FLAGS_MODAL
         window_flags |= ui.WINDOW_FLAGS_NO_CLOSE
         window_flags |= ui.WINDOW_FLAGS_NO_MOVE
-        
-        main_window_width = int(ui.Workspace.get_main_window_width())
-        main_window_height = int(ui.Workspace.get_main_window_height())
-        print("wwidth",  main_window_width, main_window_height)
 
         viewport_window = get_active_viewport_window()
         position_x = viewport_window.width / 2 - viewport_window.width * .425
@@ -148,13 +144,17 @@ class ULExtension(omni.ext.IExt):
         #Initialize Markup here, since corresponding Tollbar button was removed
         markup_window = MarkupListWindow()
         markup_window.visible = True
+        
+        viewport_window = get_active_viewport_window()
+        waypoint_window = WaypointListWindow()
+        waypoint_window.height = viewport_window.height / 3 * 1.45
 
         with Toolbar() as tb:
             tb.extensionVisibilityAction(
                 "Waypoints",
                 os.path.join(os.path.dirname(__file__), "data", "Icons", "Waypoint.png"),
                 "Waypoints",
-                lambda: WaypointListWindow(),
+                lambda: waypoint_window,
                 ["Waypoints"],
                 [],
             )

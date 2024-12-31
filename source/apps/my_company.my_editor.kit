@@ -98,6 +98,8 @@ template_name = "kit_base_editor"
 app.livestream.port = 49100
 exts."omni.services.transport.server.http".port = 8011
 
+exts."omni.kit.environment.sunstudy".window.width = 860
+
 app.extensions.installUntrustedExtensions = true
 app.layout.default = "${app}/data/layout7.json"
 app.kit.editor.setup = true
@@ -131,6 +133,7 @@ exts."omni.kit.waypoint.core".enable_hotkeys = true
 exts."ul.gemini.measure".enable_hotkeys = true
 exts."omni.kit.tool.measure".enable_hotkeys = true
 
+
 exts."omni.kit.viewport.navigation.markup".visible = false
 
 
@@ -145,10 +148,12 @@ hangDetector.timeout = 120
 #renderer.skipWhileMinimized = true
 window.title = "My Editor"
 
-#renderer.resolution.height = 1080
-#renderer.resolution.width = 1920
-#exts."omni.kit.viewport.window".window.width = 1920
-#exts."omni.kit.viewport.window".window.height = 1080
+renderer.resolution.height = 1080
+renderer.resolution.width = 1920
+app.renderer.resolution.height = 1080
+app.renderer.resolution.width = 1920
+exts."omni.kit.viewport.window".window.width = 1920
+exts."omni.kit.viewport.window".window.height = 1080
 
 window.showStatusBar = false
 app.window.showStatusBar = false
@@ -198,9 +203,7 @@ rtx.ecoMode.enabled = true
 folders.'++' = [  # Search paths for extensions.
 	"${app}/../exts",
 	"${app}/../extscache/",
-	"modified/sunstudy_webrtc",
-	#"modified/measure_markup",
-	#"modified/measure_markup/omni.kit.tool.measure",
+	"modified/sunstudy_webrtc"
 ]
 
 

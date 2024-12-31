@@ -773,21 +773,21 @@ class MyExtension(omni.ext.IExt):
         rfi_frame = None
         if len(rfis) == 0:
             rfi_frame = ui.ScrollingFrame(
-                        height=191,
+                        height=208,
                         horizontal_scrollbar_policy = ui.ScrollBarPolicy.SCROLLBAR_ALWAYS_OFF,
                         vertical_scrollbar_policy = ui.ScrollBarPolicy.SCROLLBAR_ALWAYS_OFF,
                         style=scroll_frame_style
                     )
         elif len(rfis) <= 6:
             rfi_frame = ui.ScrollingFrame(
-                        height=191,
+                        height=208,
                         horizontal_scrollbar_policy = ui.ScrollBarPolicy.SCROLLBAR_ALWAYS_OFF,
                         vertical_scrollbar_policy = ui.ScrollBarPolicy.SCROLLBAR_ALWAYS_OFF,
                         style=scroll_frame_style
                     )
         else:
             rfi_frame = ui.ScrollingFrame(
-                        height=191,
+                        height=208,
                         horizontal_scrollbar_policy = ui.ScrollBarPolicy.SCROLLBAR_ALWAYS_OFF,
                         vertical_scrollbar_policy = ui.ScrollBarPolicy.SCROLLBAR_ALWAYS_ON,
                         style=scroll_frame_style
@@ -863,21 +863,21 @@ class MyExtension(omni.ext.IExt):
         document_frame = None
         if len(documents) == 0:
             document_frame = ui.ScrollingFrame(
-                    height=191,
+                    height=208,
                     horizontal_scrollbar_policy = ui.ScrollBarPolicy.SCROLLBAR_ALWAYS_OFF,
                     vertical_scrollbar_policy = ui.ScrollBarPolicy.SCROLLBAR_ALWAYS_OFF,
                     style=scroll_frame_style
                 )
         elif len(documents) <= 6:
             document_frame = ui.ScrollingFrame(
-                    height=191,
+                    height=208,
                     horizontal_scrollbar_policy = ui.ScrollBarPolicy.SCROLLBAR_ALWAYS_OFF,
                     vertical_scrollbar_policy = ui.ScrollBarPolicy.SCROLLBAR_ALWAYS_OFF,
                     style=scroll_frame_style
                 )
         else:
             document_frame = ui.ScrollingFrame(
-                    height=191,
+                    height=208,
                     horizontal_scrollbar_policy = ui.ScrollBarPolicy.SCROLLBAR_ALWAYS_OFF,
                     vertical_scrollbar_policy = ui.ScrollBarPolicy.SCROLLBAR_ALWAYS_ON,
                     style=scroll_frame_style
@@ -932,21 +932,21 @@ class MyExtension(omni.ext.IExt):
         submittal_frame = None
         if len(submittals) == 0:
             submittal_frame = ui.ScrollingFrame(
-                        height=191,
+                        height=208,
                         horizontal_scrollbar_policy = ui.ScrollBarPolicy.SCROLLBAR_ALWAYS_OFF,
                         vertical_scrollbar_policy = ui.ScrollBarPolicy.SCROLLBAR_ALWAYS_OFF,
                         style=scroll_frame_style
                     )
         elif len(submittals) <= 6:
             submittal_frame = ui.ScrollingFrame(
-                        height=191,
+                        height=208,
                         horizontal_scrollbar_policy = ui.ScrollBarPolicy.SCROLLBAR_ALWAYS_OFF,
                         vertical_scrollbar_policy = ui.ScrollBarPolicy.SCROLLBAR_ALWAYS_OFF,
                         style=scroll_frame_style
                     )
         else:
             submittal_frame = ui.ScrollingFrame(
-                        height=191,
+                        height=208,
                         horizontal_scrollbar_policy = ui.ScrollBarPolicy.SCROLLBAR_ALWAYS_OFF,
                         vertical_scrollbar_policy = ui.ScrollBarPolicy.SCROLLBAR_ALWAYS_ON,
                         style=scroll_frame_style
@@ -1095,7 +1095,7 @@ class MyExtension(omni.ext.IExt):
                                 with ui.HStack(height=0):
                                     self._button_builder()
                                 ui.Spacer()
-                                with ui.VStack(height=191, style={"background_color": cl("#00000")}):
+                                with ui.VStack(height=208, style={"background_color": cl("#00000")}):
                                     self._load_entity_data_window()
                                 if self._entity_selection is not None:
                                     self._button_main()
