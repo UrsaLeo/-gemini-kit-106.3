@@ -16,6 +16,9 @@ class InactivityTracker:
         self.first_notification_sent = False
         self.second_notification_sent = False
         self.busy_file_path = "C:\\TwinServer\\Twin\\apps\\data\\Busy.txt"  # Path to Busy.txt
+        print(f"First load inactivity_threshold {self.inactivity_threshold}")
+        print(f"First inactivity inactivity_threshold {self.first_notification_time}")
+        print(f"First second inactivity_threshold {self.second_notification_time}")
 
         asyncio.ensure_future(self._check_inactivity())
 
@@ -61,11 +64,10 @@ class InactivityTracker:
             inactivity_duration = current_time - self.last_activity_time
 
             if inactivity_duration > self.first_notification_time and not self.first_notification_sent:
-                self.send_notification(f"You was AFK for 5 minutes. Do you want to end your session?")
                 self.first_notification_sent = True
 
             if inactivity_duration > self.second_notification_time and not self.second_notification_sent:
-                self.send_notification(f"You was AFK for 10 minutes. Your session will end in 5 minutes.")
+                self.send_notification(f"You was AFK for 20 minutes. Your session will end in 10 minutes.")
                 self.second_notification_sent = True
 
             if inactivity_duration > self.inactivity_threshold:

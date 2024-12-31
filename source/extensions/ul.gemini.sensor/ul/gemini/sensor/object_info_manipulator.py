@@ -66,6 +66,9 @@ class ObjInfoManipulator(sc.Manipulator):
                     if new_unit == "Degrees Celsius":
                         new_unit = "°C"
 
+                    if len(kafka_message) == 2:
+                        new_unit = "Fake data"
+
                     new_value = str(
                         round(custom_data.get("reading", 0), 2)
                     ) if "reading" in custom_data else "None"
