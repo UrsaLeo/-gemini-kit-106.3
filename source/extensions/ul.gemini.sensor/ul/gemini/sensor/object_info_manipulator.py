@@ -66,8 +66,8 @@ class ObjInfoManipulator(sc.Manipulator):
                     if new_unit == "Degrees Celsius":
                         new_unit = "°C"
 
-                    if len(kafka_message) == 2:
-                        new_unit = "Fake data"
+                    new_value_unit = ""
+                    new_fake_unit = ""
 
                     new_value = str(
                         round(custom_data.get("reading", 0), 2)
@@ -107,15 +107,30 @@ class ObjInfoManipulator(sc.Manipulator):
                     distance = get_distance(position, camera_pos)
                     changed_size = get_changed_size(distance)
 
-                    with sc.Transform(transform=sc.Matrix44.get_translation_matrix(0, 100, 0)):
-                        self.value_label = sc.Label(
-                            new_value, size=changed_size, alignment=ui.Alignment.CENTER, color=cl.white
-                        )
+                    if len(kafka_message) == 2:
+                        new_fake_unit = "Mock Data"
+                        new_value_unit = f"{new_value} {new_unit}"
 
-                    with sc.Transform(transform=sc.Matrix44.get_translation_matrix(0, 40, 0)):
-                        self.name_label = sc.Label(
-                            new_unit, size=changed_size, alignment=ui.Alignment.CENTER, color=cl.white
-                        )
+                        with sc.Transform(transform=sc.Matrix44.get_translation_matrix(0, 100, 0)):
+                            self.value_label = sc.Label(
+                                new_value_unit, size=changed_size, alignment=ui.Alignment.CENTER, color=cl.white
+                            )
+
+                        with sc.Transform(transform=sc.Matrix44.get_translation_matrix(0, 40, 0)):
+                            self.name_label = sc.Label(
+                                new_fake_unit, size=changed_size, alignment=ui.Alignment.CENTER, color=cl.white
+                            )
+
+                    else:
+                        with sc.Transform(transform=sc.Matrix44.get_translation_matrix(0, 100, 0)):
+                            self.value_label = sc.Label(
+                                new_value, size=changed_size, alignment=ui.Alignment.CENTER, color=cl.white
+                            )
+
+                        with sc.Transform(transform=sc.Matrix44.get_translation_matrix(0, 40, 0)):
+                            self.name_label = sc.Label(
+                                new_unit, size=changed_size, alignment=ui.Alignment.CENTER, color=cl.white
+                            )
 
                 with sc.Transform(look_at=sc.Transform.LookAt.CAMERA):
                     sc.Image(
