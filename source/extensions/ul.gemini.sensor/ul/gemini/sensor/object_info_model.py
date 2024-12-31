@@ -1,6 +1,7 @@
 from pxr import Tf
 from pxr import Usd
 from pxr import UsdGeom
+import omni.ui as ui
 
 from omni.ui import scene as sc
 import omni.usd

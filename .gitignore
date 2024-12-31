@@ -41,9 +41,15 @@ source/apps/data/models
 source/isaac-dependencies
 modified/isaac-dependencies
 modified/isaac-050/
+modified/measure_markup
 **/Characters
 source/**/Characters/
 source/**/Anims/
 templates/
+my_temp/
+
+
+**/toolbar copy.py
+**/Nav_Loading2.png
 
 **/.usd

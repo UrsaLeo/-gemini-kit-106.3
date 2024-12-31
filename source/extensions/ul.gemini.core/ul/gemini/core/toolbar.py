@@ -12,6 +12,8 @@ import requests
 
 base_path = os.path.join(os.path.dirname(__file__), "data", "Icons")
 
+button_click_count = 0
+
 
 # Used to add a simple button with the given clicked_fn to the toolbar
 class SimpleClickAction:
@@ -76,29 +78,81 @@ class ExtensionVisibilityAction:
         )
 
     def clicked_fn(self):
-
         if not self.initialized and self.init_fn:
             self.init_fn()
             self.initialized = True
 
-        if self.extension_visible:
-            self.hide_extension_windows()
+        global button_click_count
+        if "Model Exploder" in self.show_windows:
+            button_click_count += 1
 
+        # Change visibility for Model Exploder to avoid double click issue, since it is initially visible
+        if button_click_count == 1:
+            window = ui.Workspace.get_window("Model Exploder")
+            if window:
+                window.visible = False
+                button_click_count += 1
+
+        any_visible = any(
+            ui.Workspace.get_window(window).visible
+            for window in self.show_windows
+            if ui.Workspace.get_window(window) is not None
+        )
+
+        if any_visible:
+            self.hide_extension_windows()
         else:
             self.show_extension_windows()
 
+        if "Sensors" in self.show_windows:
+            annotation_window = ui.Workspace.get_window("Annotation")
+            if annotation_window.visible:
+                annotation_window.visible = False
+            markup_window = ui.Workspace.get_window("Markups")
+            if markup_window.visible:
+                markup_window.visible = False
+
+        if "Annotation" in self.show_windows or "Waypoints" in self.show_windows:
+            sensor_window = ui.Workspace.get_window("Sensors")
+            if sensor_window and sensor_window.visible:
+                sensor_window.visible = False
+
+            exploder_window = ui.Workspace.get_window("Model Exploder")
+            if exploder_window and exploder_window.visible:
+                exploder_window.visible = False
+
+            ai_window = ui.Workspace.get_window("Gemini AI")
+            if ai_window and ai_window.visible:
+                ai_window.visible = False
+
+        if any(item in self.show_windows for item in ["VR", "Model Exploder"]):
+
+            markup_window = ui.Workspace.get_window("Markups")
+            if markup_window.visible:
+                markup_window.visible = False
+
     def show_extension_windows(self):
-        for window in self.show_windows:
-            window = ui.Workspace.get_window(window)
+        main_windows = ["Sun Study", "Waypoints"]
+
+        # Hide the other window in 'main_windows' and reset its visibility state
+        for window_name in main_windows:
+            window = ui.Workspace.get_window(window_name)
+            if window:
+                if window_name in self.show_windows:
+                    window.visible = True
+                    self.extension_visible = True
+                else:
+                    window.visible = False
+                    for action in Toolbar._actions:
+                        if isinstance(action, ExtensionVisibilityAction) and action.show_windows == [window_name]:
+                            action.extension_visible = False
+
+        # Show the windows specific to the current extension
+        for window_name in self.show_windows:
+            window = ui.Workspace.get_window(window_name)
             if window:
                 window.visible = True
 
-        # hide other windows
-        for window in self.hide_windows:
-            window = ui.Workspace.get_window(window)
-            if window:
-                if window.visible:
-                    window.visible = False
         self.extension_visible = True
 
     def hide_extension_windows(self):
@@ -106,14 +160,18 @@ class ExtensionVisibilityAction:
             return
         for window in self.show_windows:
             window = ui.Workspace.get_window(window)
-            if window:
+            if window and window.visible:
                 window.visible = False
         self.extension_visible = False
 
+        if "Annotation" in self.show_windows:
+            markup_window = ui.Workspace.get_window("Markups")
+            if markup_window.visible:
+                markup_window.visible = False
+
+
 class Toolbar:
-
     _simple_toolbar = None
-
     _actions = []
 
     def __enter__(self):
@@ -167,13 +225,16 @@ class Toolbar:
 
     def show_chatbot_window(self):
         windows = ui.Workspace.get_windows()
-        # print(f"windows object :{windows}")
         # Check if "AI Assist" window already exists
         window_name = "Gemini AI"
         ai_assist_window = next((window for window in windows if window.title == window_name), None)
 
         if ai_assist_window:
             ai_assist_window.visible = True
+
+            markup_window = ui.Workspace.get_window("Markups")
+            if markup_window and markup_window.visible:
+                markup_window.visible = False
 
         else:
             # If the window does not exist, create a new one

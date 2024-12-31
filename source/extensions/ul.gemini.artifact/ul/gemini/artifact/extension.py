@@ -8,6 +8,7 @@ import ul.gemini.services.utils as utils
 from ul.gemini.artifact.procore_ui import ProcoreModel, ProcoreDelegate, CommandModel
 from ul.gemini.artifact.entity_ui import EntityModel,DelegateModel
 import os
+from omni.kit.viewport.utility import get_active_viewport_window
 
 partner_secure_data =  artifact_services.get_partner_secure_data()
 
@@ -37,17 +38,33 @@ label_style = {
     "Label:hovered": {"background_color": cl("#b6d3d8")},
 }
 
-enabled_detach_style = style={"color": cl.white,"background_color": cl.transparent,
-                            "Tooltip": {"color": cl("#ffffff"),"background_color": cl("#4f4e4e"),
-                                        "margin_width": 0.5 ,
-                                        "margin_height": 0.5 , "border_width":0.5, "border_color": cl.white, "padding": 5.0 }
-                            }
+enabled_detach_style = style = {
+    "color": cl.white,
+    "background_color": cl("#282828"),
+    "Tooltip": {
+        "color": cl("#ffffff"),
+        "background_color": cl("#4f4e4e"),
+        "margin_width": 0.5 ,
+        "margin_height": 0.5 ,
+        "border_width": 0.5,
+        "border_color": cl.white,
+        "padding": 5.0
+    }
+}
 
-disabled_detach_style = style={"color": cl.grey,"background_color": cl.transparent,
-                            "Tooltip": {"color": cl("#ffffff"),"background_color": cl("#4f4e4e"),
-                                        "margin_width": 0.5 ,
-                                        "margin_height": 0.5 , "border_width":0.5, "border_color": cl.white, "padding": 5.0 }
-                            }
+disabled_detach_style = style = {
+    "color": cl.grey,
+    "background_color": cl("#282828"),
+    "Tooltip": {
+        "color": cl("#ffffff"),
+        "background_color": cl("#4f4e4e"),
+        "margin_width": 0.5 ,
+        "margin_height": 0.5 ,
+        "border_width":0.5,
+        "border_color": cl.white,
+        "padding": 5.0
+    }
+}
 
 checkbox_style = {"margin": 7.0, "padding": 5.0,"color": cl("#76D300"),"border_radius": 0, "background_color": cl(0.25)}
 
@@ -59,7 +76,6 @@ def some_public_function(x: int):
 
 
 class MyExtension(omni.ext.IExt):
-
     def __init__(self):
         super().__init__()
         self._artifacts_window = None
@@ -230,17 +246,55 @@ class MyExtension(omni.ext.IExt):
     def _procore_window_buttons(self):
         global _selected_to_attach
         print("Button selcted to attach")
-        with ui.HStack():
-            ui.Button("Cancel",clicked_fn=self._close_procore_window,style={"color": cl.white, "background_color": cl.transparent,
-                                                                            "Tooltip": {"color": cl("#ffffff"),"background_color": cl("#4f4e4e"), "margin_width": 0.5 ,
-                                                                                        "margin_height": 0.5 , "border_width":0.5, "border_color": cl.white, "padding": 5.0 }},
-                                                                                        tooltip="Cancel")
-            ui.Line(name="default", width= 20, alignment=ui.Alignment.H_CENTER, style={"border_width":1, "color": cl.green})
-            ui.Button("Attach Selected",style={ "color": cl.white, "background_color": cl.transparent,
-                                                            "Tooltip": {"color": cl("#ffffff"),"background_color": cl("#4f4e4e"), "margin_width": 0.5 ,
-                                                            "margin_height": 0.5 , "border_width":0.5, "border_color": cl.white, "padding": 5.0 }
-                                                        }, clicked_fn=lambda: self._attach_according_to_entity_Selection(self._entity_selection),
-                                                    tooltip="Attach Selected")
+        with ui.HStack(height=0, alignment=ui.Alignment.CENTER_BOTTOM, style={"margin": 5.0, "spacing": 10.0}):
+            ui.Button(
+                "Cancel",
+                clicked_fn=self._close_procore_window,
+                style={
+                    "font_size": 14,
+                    "color": cl("#FFFFFF"),
+                    "border_radius": 5.0,
+                    "border_width": 1.0,
+                    "padding": 5.0,
+                    "width": 50,
+                    "height": 30,
+
+                    "Tooltip": {
+                        "color": cl("#ffffff"),
+                        "background_color": cl("#4f4e4e"),
+                        "margin_width": 0.5,
+                        "margin_height": 0.5 ,
+                        "border_width":0.5,
+                        "border_color": cl.white,
+                        "padding": 5.0
+                        }
+                    },
+            tooltip="Cancel"
+        )
+            #ui.Line(name="default", width= 20, alignment=ui.Alignment.H_CENTER, style={"border_width":1, "color": cl.green})
+            ui.Button(
+                    "Attach Selected",
+                    style={
+                        "font_size": 14,
+                        "color": cl("#FFFFFF"),
+                        "border_radius": 5.0,
+                        "border_width": 1.0,
+                        "padding": 5.0,
+                        "width": 50,
+                        "height": 30,
+
+                        "Tooltip": {
+                            "color": cl("#ffffff"),
+                            "background_color": cl("#4f4e4e"),
+                            "margin_width": 0.5 ,
+                            "margin_height": 0.5 ,
+                            "border_width":0.5,
+                            "border_color": cl.white,
+                            "padding": 5.0
+                            }
+                    }, clicked_fn=lambda: self._attach_according_to_entity_Selection(self._entity_selection),
+                tooltip="Attach Selected"
+            )
 
 
     def _search_based_entity(self,search_text:str,entity_type):
@@ -395,7 +449,7 @@ class MyExtension(omni.ext.IExt):
         global procore_data
 
         with ui.ScrollingFrame(
-            height=600,
+            height=365,
             horizontal_scrollbar_policy=ui.ScrollBarPolicy.SCROLLBAR_ALWAYS_OFF,
             vertical_scrollbar_policy=ui.ScrollBarPolicy.SCROLLBAR_ALWAYS_ON,
             style_type_name_override="TreeView",
@@ -497,7 +551,7 @@ class MyExtension(omni.ext.IExt):
             entity_model_obj = utils.define_entity_item(rfis,"RFI")
             if len(rfis) == 0:
                 with ui.ScrollingFrame(
-                        height=600,
+                        height=365,
                         horizontal_scrollbar_policy=ui.ScrollBarPolicy.SCROLLBAR_ALWAYS_OFF,
                         vertical_scrollbar_policy=ui.ScrollBarPolicy.SCROLLBAR_ALWAYS_OFF,
                         style_type_name_override="TreeView",
@@ -507,7 +561,7 @@ class MyExtension(omni.ext.IExt):
                         ui.TreeView(self._entity_model,delegate=self._delegate,root_visible=False,header_visible=True, style={"TreeView.Item": {"margin": 4}},selection_changed_fn=self._submittal_or_rfi_selection_change)
             elif len(rfis) <= 17:
                 with ui.ScrollingFrame(
-                        height=600,
+                        height=365,
                         horizontal_scrollbar_policy=ui.ScrollBarPolicy.SCROLLBAR_ALWAYS_OFF,
                         vertical_scrollbar_policy=ui.ScrollBarPolicy.SCROLLBAR_ALWAYS_OFF,
                         style_type_name_override="TreeView",
@@ -517,7 +571,7 @@ class MyExtension(omni.ext.IExt):
                         ui.TreeView(self._entity_model,delegate=self._delegate,root_visible=False,header_visible=True, style={"TreeView.Item": {"margin": 4}},selection_changed_fn=self._submittal_or_rfi_selection_change)
             else:
                 with ui.ScrollingFrame(
-                        height=600,
+                        height=365,
                         horizontal_scrollbar_policy=ui.ScrollBarPolicy.SCROLLBAR_ALWAYS_OFF,
                         vertical_scrollbar_policy=ui.ScrollBarPolicy.SCROLLBAR_ALWAYS_ON,
                         style_type_name_override="TreeView",
@@ -531,7 +585,7 @@ class MyExtension(omni.ext.IExt):
             entity_model_obj = utils.define_entity_item(submittals, "SUBMITTAL")
             if len(submittals) == 0:
                 with ui.ScrollingFrame(
-                        height=600,
+                        height=365,
                         horizontal_scrollbar_policy=ui.ScrollBarPolicy.SCROLLBAR_ALWAYS_OFF,
                         vertical_scrollbar_policy=ui.ScrollBarPolicy.SCROLLBAR_ALWAYS_OFF,
                         style_type_name_override="TreeView",
@@ -541,7 +595,7 @@ class MyExtension(omni.ext.IExt):
                         ui.TreeView(self._entity_model,delegate=self._delegate,root_visible=False,header_visible=True, style={"TreeView.Item": {"margin": 4}},selection_changed_fn=self._submittal_or_rfi_selection_change)
             elif len(submittals) <= 17:
                 with ui.ScrollingFrame(
-                        height=600,
+                        height=365,
                         horizontal_scrollbar_policy=ui.ScrollBarPolicy.SCROLLBAR_ALWAYS_OFF,
                         vertical_scrollbar_policy=ui.ScrollBarPolicy.SCROLLBAR_ALWAYS_OFF,
                         style_type_name_override="TreeView",
@@ -551,7 +605,7 @@ class MyExtension(omni.ext.IExt):
                         ui.TreeView(self._entity_model,delegate=self._delegate,root_visible=False,header_visible=True, style={"TreeView.Item": {"margin": 4}},selection_changed_fn=self._submittal_or_rfi_selection_change)
             else:
                 with ui.ScrollingFrame(
-                        height=600,
+                        height=365,
                         horizontal_scrollbar_policy=ui.ScrollBarPolicy.SCROLLBAR_ALWAYS_OFF,
                         vertical_scrollbar_policy=ui.ScrollBarPolicy.SCROLLBAR_ALWAYS_ON,
                         style_type_name_override="TreeView",
@@ -576,7 +630,10 @@ class MyExtension(omni.ext.IExt):
             def create_procore_model():
                 print("Creating procore window")
                 with self._procore_window.frame:
-                    with ui.ScrollingFrame(horizontal_scrollbar_policy=ui.ScrollBarPolicy.SCROLLBAR_ALWAYS_OFF):
+                    with ui.ScrollingFrame(
+                        horizontal_scrollbar_policy=ui.ScrollBarPolicy.SCROLLBAR_ALWAYS_OFF,
+                        vertical_scrollbar_policy=ui.ScrollBarPolicy.SCROLLBAR_ALWAYS_OFF
+                    ):
                         with ui.VStack(height=0):
                             self._procore_title_bar()
                             self._search_bar()
@@ -588,8 +645,20 @@ class MyExtension(omni.ext.IExt):
                 window_flags |= ui.WINDOW_FLAGS_NO_SCROLLBAR
                 window_flags |= ui.WINDOW_FLAGS_MODAL
                 window_flags |= ui.WINDOW_FLAGS_NO_CLOSE
-                window_flags |= ui.WINDOW_FLAGS_NO_MOVE
-                self._procore_window = ui.Window((f"Attach to:"), width=800, height=720, flags=window_flags)
+                #window_flags |= ui.WINDOW_FLAGS_NO_MOVE
+
+                viewport_window = get_active_viewport_window()
+                position_x = viewport_window.width / 2 - 300
+                position_y = viewport_window.height / 2 - 225
+
+                self._procore_window = ui.Window(
+                    (f"Attach to:"),
+                    width=600,
+                    height=500,
+                    flags=window_flags,
+                    position_x=position_x,
+                    position_y=position_y,
+                )
                 create_procore_model()
             else:
                 create_procore_model()
@@ -637,7 +706,7 @@ class MyExtension(omni.ext.IExt):
         style_button = {
             "Button": {
                 "background_color": cl.transparent,
-                "alignment" : ui.Alignment.CENTER,
+                "alignment" : ui.Alignment.CENTER_BOTTOM,
                 "margin": 0.7,
                 "padding": 2.0
             },
@@ -651,7 +720,7 @@ class MyExtension(omni.ext.IExt):
         selection_style = {
             "Button": {
                 "background_color": cl("#282828"),
-                "alignment" : ui.Alignment.CENTER,
+                "alignment" : ui.Alignment.CENTER_BOTTOM,
                 "margin": -0.01,
                 "padding": 2.0,
 
@@ -704,21 +773,21 @@ class MyExtension(omni.ext.IExt):
         rfi_frame = None
         if len(rfis) == 0:
             rfi_frame = ui.ScrollingFrame(
-                        height=210,
+                        height=208,
                         horizontal_scrollbar_policy = ui.ScrollBarPolicy.SCROLLBAR_ALWAYS_OFF,
                         vertical_scrollbar_policy = ui.ScrollBarPolicy.SCROLLBAR_ALWAYS_OFF,
                         style=scroll_frame_style
                     )
         elif len(rfis) <= 6:
             rfi_frame = ui.ScrollingFrame(
-                        height=210,
+                        height=208,
                         horizontal_scrollbar_policy = ui.ScrollBarPolicy.SCROLLBAR_ALWAYS_OFF,
                         vertical_scrollbar_policy = ui.ScrollBarPolicy.SCROLLBAR_ALWAYS_OFF,
                         style=scroll_frame_style
                     )
         else:
             rfi_frame = ui.ScrollingFrame(
-                        height=210,
+                        height=208,
                         horizontal_scrollbar_policy = ui.ScrollBarPolicy.SCROLLBAR_ALWAYS_OFF,
                         vertical_scrollbar_policy = ui.ScrollBarPolicy.SCROLLBAR_ALWAYS_ON,
                         style=scroll_frame_style
@@ -794,21 +863,21 @@ class MyExtension(omni.ext.IExt):
         document_frame = None
         if len(documents) == 0:
             document_frame = ui.ScrollingFrame(
-                    height=210,
+                    height=208,
                     horizontal_scrollbar_policy = ui.ScrollBarPolicy.SCROLLBAR_ALWAYS_OFF,
                     vertical_scrollbar_policy = ui.ScrollBarPolicy.SCROLLBAR_ALWAYS_OFF,
                     style=scroll_frame_style
                 )
         elif len(documents) <= 6:
             document_frame = ui.ScrollingFrame(
-                    height=210,
+                    height=208,
                     horizontal_scrollbar_policy = ui.ScrollBarPolicy.SCROLLBAR_ALWAYS_OFF,
                     vertical_scrollbar_policy = ui.ScrollBarPolicy.SCROLLBAR_ALWAYS_OFF,
                     style=scroll_frame_style
                 )
         else:
             document_frame = ui.ScrollingFrame(
-                    height=210,
+                    height=208,
                     horizontal_scrollbar_policy = ui.ScrollBarPolicy.SCROLLBAR_ALWAYS_OFF,
                     vertical_scrollbar_policy = ui.ScrollBarPolicy.SCROLLBAR_ALWAYS_ON,
                     style=scroll_frame_style
@@ -863,21 +932,21 @@ class MyExtension(omni.ext.IExt):
         submittal_frame = None
         if len(submittals) == 0:
             submittal_frame = ui.ScrollingFrame(
-                        height=210,
+                        height=208,
                         horizontal_scrollbar_policy = ui.ScrollBarPolicy.SCROLLBAR_ALWAYS_OFF,
                         vertical_scrollbar_policy = ui.ScrollBarPolicy.SCROLLBAR_ALWAYS_OFF,
                         style=scroll_frame_style
                     )
         elif len(submittals) <= 6:
             submittal_frame = ui.ScrollingFrame(
-                        height=210,
+                        height=208,
                         horizontal_scrollbar_policy = ui.ScrollBarPolicy.SCROLLBAR_ALWAYS_OFF,
                         vertical_scrollbar_policy = ui.ScrollBarPolicy.SCROLLBAR_ALWAYS_OFF,
                         style=scroll_frame_style
                     )
         else:
             submittal_frame = ui.ScrollingFrame(
-                        height=210,
+                        height=208,
                         horizontal_scrollbar_policy = ui.ScrollBarPolicy.SCROLLBAR_ALWAYS_OFF,
                         vertical_scrollbar_policy = ui.ScrollBarPolicy.SCROLLBAR_ALWAYS_ON,
                         style=scroll_frame_style
@@ -969,15 +1038,44 @@ class MyExtension(omni.ext.IExt):
 
     def _button_main(self):
         global disabled_detach_style
-        with ui.HStack(height=0, alignment=ui.Alignment.CENTER, style = {"margin": 5.0}):
-            self._detach_button_enabling = ui.Button("Detach Selected",clicked_fn= lambda: self._on_detach(self._entity_selection,self._selected_prim_path),style=disabled_detach_style, enabled=False)
 
-            ui.Line(name="default", width= 20, alignment=ui.Alignment.H_CENTER, style={"border_width":1, "color": cl("#76D300")})
-            btn = ui.Button("Attach New", style={ "color": cl.white,  "background_color": cl.transparent,"Tooltip": {"color": cl("#ffffff"),"background_color": cl("#4f4e4e"), "margin_width": 0.5 ,
-                                                            "margin_height": 0.5 , "border_width":0.5, "border_color": cl.white, "padding": 5.0 }},clicked_fn=self._on_attach_new,tooltip="Attach New")
-            if "authToken" not in partner_secure_data:
-                btn.enabled = False
-                btn.style = disabled_detach_style
+        with ui.HStack(height=0, alignment=ui.Alignment.CENTER_BOTTOM, style={"margin": 5.0, "spacing": 10.0}):
+            # Detach Button
+            self._detach_button_enabling = ui.Button(
+                "Detach Selected",
+                clicked_fn=lambda: self._on_detach(self._entity_selection, self._selected_prim_path),
+                style={
+                    "font_size": 14,
+                    "color": cl("#FFFFFF"),
+                    "border_radius": 5.0,
+                    "border_width": 1.0,
+                    "padding": 5.0,
+                    "width": 50,
+                    "height": 30,
+                },
+                enabled=False,
+            )
+
+            # Attach Button
+            btn = ui.Button(
+                "Attach New",
+                style={
+                    "font_size": 14,
+                    "color": cl.white,
+                    "border_radius": 5.0,
+                    "border_width": 1.0,
+                    "padding": 5.0,
+                    "width": 50,
+                    "height": 30,
+                },
+                clicked_fn=self._on_attach_new,
+                tooltip="Attach New",
+            )
+
+        if "authToken" not in partner_secure_data:
+            btn.enabled = False
+            btn.style = disabled_detach_style
+
 
     def _artifact_window_builder(self):
         def window_context():
@@ -992,23 +1090,28 @@ class MyExtension(omni.ext.IExt):
                             trimmed_prim_path = self._selected_prim_path.split("/World",1)[-1]
                             trimmed_prim_path = utils.truncate_path(trimmed_prim_path,65)
                             print(f"Trimmed path: {trimmed_prim_path}")
-                            ui.Label(f"Attach document to this prim: '{trimmed_prim_path}'",tooltip=self._selected_prim_path, height=0, style={"margin": 5.0, "padding": 5.0})
+                            ui.Label(f"Attach document to this prim:\n{trimmed_prim_path}",tooltip=self._selected_prim_path, height=0, style={"margin": 5.0, "padding": 5.0})
                             with ui.VStack():
                                 with ui.HStack(height=0):
                                     self._button_builder()
                                 ui.Spacer()
-                                with ui.VStack(height=210, style={"background_color": cl("#00000")}):
+                                with ui.VStack(height=208, style={"background_color": cl("#00000")}):
                                     self._load_entity_data_window()
                                 if self._entity_selection is not None:
                                     self._button_main()
 
             if self._artifacts_window is None:
                 window_flags = ui.WINDOW_FLAGS_NO_RESIZE
-                self._artifacts_window = ui.Window("Attachment", width=320, height=280,flags=window_flags)
+                self._artifacts_window = ui.Window("Attachment", width=320, height=280, flags=window_flags)
                 create_window_model()
             else:
                 create_window_model()
             self._artifacts_window.visible = True
+
+            # Close Markup when Artifact opens
+            markup_window = ui.Workspace.get_window("Markups")
+            if markup_window and markup_window.visible:
+                markup_window.visible = False
         window_context()
 
     def on_startup(self, ext_id):

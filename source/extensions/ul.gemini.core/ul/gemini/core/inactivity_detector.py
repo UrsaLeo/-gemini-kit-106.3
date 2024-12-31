@@ -52,7 +52,7 @@ class InactivityTracker:
         # Check for Busy.txt file existence before starting inactivity tracking
         # !need to implement autoshutdown when this is in Dead state on remote solution
         while not os.path.exists(self.busy_file_path):
-            print("Busy.txt not found, waiting 10 seconds before checking again...")  # Log message for testing
+            #print("Busy.txt not found, waiting 10 seconds before checking again...")  # Log message for testing
             self._reset_timer()
             await asyncio.sleep(10)  # Wait 10 seconds before checking again
 
