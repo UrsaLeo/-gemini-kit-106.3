@@ -224,93 +224,15 @@ def run_selected_image(image_id: str, dev_bundle: bool, extra_args: List[str], v
     #     "--network=host",  # Host networking to simplify local testing of app streaming.
     #     image_id,
     # ]
-#     docker_run_cmd = [
-#     "docker",
-#     "run",
-#     "--gpus=all",
-#     "--memory=16g",
-#     "--cpus=4",
-#     "--env", f"OM_KIT_VERBOSE={1 if verbose else 0}",
-#     "--env", f"NVDA_KIT_ARGS={nvda_kit_args}",
-#     "--env", f"NVDA_KIT_NUCLEUS={nvda_kit_nucleus}",
-#     "--mount",  # RTX Shader Cache
-#     "type=volume,src=omniverse_shader_cache,dst=/home/ubuntu/.cache/ov,volume-driver=local",
-#     "--mount",  # Kit Extension Cache
-#     "type=volume,src=omniverse_extension_cache,dst=/home/ubuntu/.local/share/ov,volume-driver=local",
-#     "--network=bridge",  # Host networking to simplify local testing of app streaming.
-#     "-p", "50000-50017:47995-48012/udp",  # Map UDP ports to host ports for first stream
-#     "-p", "50000-50017:47995-48012/tcp",  # Map TCP ports for first stream
-#     "-p", "51000-51007:49000-49007/udp",  # Map second stream's UDP ports
-#     "-p", "51000-51007:49000-49007/tcp",  # Map second stream's TCP ports
-#     "-p", "8211:8211/tcp",  # Map port 8211
-#     #"-p", "8111:8111/tcp",  # Map port 8111
-#     "-p", "49100:49100/tcp",  # Map port 49100
-#     image_id,
-# ]
 
-    # docker_run_cmd = [
-    #     "docker",
-    #     "run",
-    #     "--gpus=all",
-    #     "--memory=16g",
-    #     "--cpus=4",
-    #     "--env", f"OM_KIT_VERBOSE={1 if verbose else 0}",
-    #     "--env", f"NVDA_KIT_ARGS={nvda_kit_args}",
-    #     "--env", f"NVDA_KIT_NUCLEUS={nvda_kit_nucleus}",
-    #     "--mount",  # RTX Shader Cache
-    #     "type=volume,src=omniverse_shader_cache,dst=/home/ubuntu/.cache/ov,volume-driver=local",
-    #     "--mount",  # Kit Extension Cache
-    #     "type=volume,src=omniverse_extension_cache,dst=/home/ubuntu/.local/share/ov,volume-driver=local",
-    #     "--network=bridge",  # Host networking to simplify local testing of app streaming.
-
-    #     # Second stream's port mappings
-    #     "-p", "52000-52017:47995-48012/udp",  # Map UDP ports for second stream
-    #     "-p", "52000-52017:47995-48012/tcp",  # Map TCP ports for second stream
-    #     "-p", "53000-53007:49000-49007/udp",  # Map UDP ports for second stream's extended range
-    #     "-p", "53000-53007:49000-49007/tcp",  # Map TCP ports for second stream's extended range
-
-    #     # Additional ports that might be needed for other services
-    #     "-p", "8011:8011/tcp",  # Map port 8211
-    #     #"-p", "8311:8111/tcp",  # Map port 8111
-    #     "-p", "49200:49200/tcp",  # Map port 49100
-
-    #     image_id,
-    # ]
-
-#     docker_run_cmd = [
-#     "docker",
-#     "run",
-#     "--gpus=all",
-#    "--memory=16g",
-#     "--cpus=4",
-#     "--gpus=all",
-#     "--env", f"OM_KIT_VERBOSE={1 if verbose else 0}",
-#     "--env", f"NVDA_KIT_ARGS={nvda_kit_args}",
-#     "--env", f"NVDA_KIT_NUCLEUS={nvda_kit_nucleus}",
-#     "--mount",  # RTX Shader Cache
-#     "type=volume,src=omniverse_shader_cache,dst=/home/ubuntu/.cache/ov,volume-driver=local",
-#     "--mount",  # Kit Extension Cache
-#     "type=volume,src=omniverse_extension_cache,dst=/home/ubuntu/.local/share/ov,volume-driver=local",
-#     "--network=bridge",  # Host networking to simplify local testing of app streaming.
-
-#     # Third stream's port mappings
-#     # "-p", "54000-54017:47995-48012/udp",  # Map UDP ports for third stream
-#     # "-p", "54000-54017:47995-48012/tcp",  # Map TCP ports for third stream
-#     # "-p", "55000-55007:49000-49007/udp",  # Map UDP extended range for third stream
-#     # "-p", "55000-55007:49000-49007/tcp",  # Map TCP extended range for third stream
-
-#     # Additional ports
-#     "-p", "8411:8011/tcp",  # Map port 8211
-#     #"-p", "8111:8111/tcp",  # Map port 8111
-#     "-p", "49300:49300/tcp",  # Map port 49100
-
-#     image_id,
-# ]
-
-
-    import subprocess
     import re
     import time
+
+    # These lines change turnserver ip - use them if you want to launch docker images from another instance
+    nvda_kit_args += (
+    "--/exts/omni.services.streamclient.webrtc/ice_servers/1/urls/0='turn:44.229.65.21:3478?transport=udp' "
+    "--/exts/omni.services.streamclient.webrtc/ice_servers/1/urls/1='turn:44.229.65.21:3478?transport=tcp' "
+    )
 
     docker_run_cmd = [
         "docker",
@@ -321,7 +243,11 @@ def run_selected_image(image_id: str, dev_bundle: bool, extra_args: List[str], v
         "--env", f"NVDA_KIT_NUCLEUS={nvda_kit_nucleus}",
         "--mount", "type=volume,src=omniverse_shader_cache,dst=/home/ubuntu/.cache/ov,volume-driver=local",
         "--mount", "type=volume,src=omniverse_extension_cache,dst=/home/ubuntu/.local/share/ov,volume-driver=local",
+
+        #"--mount", "type=bind,src=/home/ubuntu/-gemini-kit-106.3/source/apps/data/app_data.json,dst=/apps/data/app_data.json,readonly=false",
+        "-v", "/home/ubuntu/-gemini-kit-106.3/source/apps/data:/apps/data",
         "--network=bridge",
+        
     ]
 
     def extract_port_from_container(container_name, kit_file_path, pattern, port_name, default_message):
@@ -387,7 +313,9 @@ def run_selected_image(image_id: str, dev_bundle: bool, extra_args: List[str], v
             docker_run_cmd.extend([
                 "-p", f"{http_port}:{http_port}/tcp", 
                 "-p", f"{webrtc_port}:{webrtc_port}/tcp",
-                image_id
+                image_id,
+                #"/bin/bash -c", "sed -i 's/9332e77d-fb20-4221-8cf2-9a2c8ef80e22/afc3e440-0798-4ac3-bfcf-206bc3eef3f3/' apps/data/app_data.json && /app/kit/kit",
+                
             ])
         else:
             print("Ports are not properly defined. Docker command will not include port bindings.")
@@ -779,3 +707,83 @@ def setup_repo_tool(parser: argparse.ArgumentParser, config: Dict) -> Optional[C
             sys.exit(0)
 
     return run_repo_tool
+
+
+# def setup_repo_tool(parser: argparse.ArgumentParser, config: Dict) -> Optional[Callable]:
+#     """Entry point for 'repo_launch' tool"""
+
+#     parser.description = "Simple tool to launch Kit applications"
+#     add_args(parser)
+#     add_package_arg(parser)
+#     add_name_arg(parser)
+
+#     # Modify --image argument to accept multiple images
+#     parser.add_argument(
+#         "--image",
+#         type=str,
+#         nargs='+',  # Accept one or more image names
+#         help="Specify one or more Docker image names to launch directly (e.g., '8311_49300:latest')"
+#     )
+
+#     # Get list of kit apps on filesystem.
+#     app_names = discover_kit_files(KIT_APP_PATH)
+
+#     subparsers = parser.add_subparsers()
+#     for app in app_names:
+#         subparser = subparsers.add_parser(app)
+#         subparser.set_defaults(app_name=app)
+#         # Add --dev-bundle and --container args
+#         add_args(subparser)
+
+#     def run_repo_tool(options: argparse.Namespace, config_dict: Dict):
+#         app_name = None
+#         config = "release"
+#         dev_bundle = False
+
+#         # Providing a kit file is optional, otherwise we present a select
+#         app_name = options.app_name
+#         dev_bundle = options.dev_bundle
+
+#         try:
+#             # If --image is provided, bypass other logic and directly launch the containers
+#             if options.image:
+#                 # Sequentially iterate over all images provided in the options
+#                 for image_name in options.image:
+#                     console.print(f"Launching container for image: {image_name}", style=INFO_COLOR)
+                    
+#                     # Use the existing `launch_container` method instead of `docker run`
+#                     launch_container(image_name, dev_bundle, options.extra_args, options.verbose)
+#                 return
+
+#             # Launching from a distributed package
+#             console.print("\[ctrl+c to Exit]", style=INFO_COLOR)
+#             if options.from_package:
+#                 package_path = expand_package(options.from_package)
+#                 launch_kit(app_name, package_path, config_dict, dev_bundle, options.extra_args)
+
+#             # Launching a locally built application
+#             else:
+#                 repo_folders = config_dict["repo"]["folders"]
+#                 build_path = Path(repo_folders.get("build", "_build"))
+#                 build_path = Path(f"{build_path}/{get_host_platform()}/{config}/")
+
+#                 # Launch a containerized app
+#                 if options.container:
+#                     if platform.system() != "Linux":
+#                         error_message = "Currently container launch workflows are only supported on Linux hosts."
+#                         print(error_message)
+#                         raise QuietExpectedError(error_message)
+#                     # Check if the host is correctly configured. We require a NVIDIA GPU to be present.
+#                     nvidia_driver_check()
+#                     launch_container(app_name, dev_bundle, options.extra_args, options.verbose)
+#                     return
+
+#                 # Launch the thing, or query the user and then launch the thing.
+#                 launch_kit(app_name, build_path, config_dict, dev_bundle, options.extra_args)
+
+#         except (KeyboardInterrupt, SystemExit):
+#             console.print("Exiting", style=INFO_COLOR)
+#             # exit(0) for now due to non-zero exit reporting.
+#             sys.exit(0)
+
+#     return run_repo_tool
