@@ -3196,7 +3196,7 @@
                                 5 != r.appLevelProtocol && this.overrideSignallingInfo)
                             )
                                 if (
-                                    ((t.signalConnectionInfo.port = 49100),
+                                    ((t.signalConnectionInfo.port = 49300),
                                     (t.signalConnectionInfo.protocol = "https"),
                                     r.ip.includes(".com") || r.ip.includes(".net"))
                                 )
@@ -3220,7 +3220,7 @@
                                 if (2 == r.usage) {
                                     let i = { ip: r.ip, port: r.port };
                                     t.mediaConnectionInfo.push(i),
-                                        (t.signalConnectionInfo.port = 49100),
+                                        (t.signalConnectionInfo.port = 49300),
                                         (t.signalConnectionInfo.protocol = "https");
                                     let s = r.ip.split(".");
                                     t.signalConnectionInfo.ip = s[0] + "-" + s[1] + "-" + s[2] + "-" + s[3];
@@ -3741,7 +3741,7 @@
                                 subSessionId: this.subSessionId,
                                 appId: parseInt(e.appId),
                                 state: "ready_for_connection",
-                                signalConnectionInfo: { ip: "", port: 49100, protocol: "http" },
+                                signalConnectionInfo: { ip: "", port: 49300, protocol: "http" },
                                 mediaConnectionInfo: [],
                                 streamInfo: [],
                                 appLaunchMode: e.appLaunchMode ? e.appLaunchMode : 0,

@@ -711,8 +711,12 @@ def setup_repo_tool(parser: argparse.ArgumentParser, config: Dict) -> Optional[C
     add_package_arg(parser)
     add_name_arg(parser)
 
-    # Currently unused
-    # tool_config = config.get("repo_launch", {})
+    # Add --image argument to specify a Docker image
+    parser.add_argument(
+        "--image",
+        type=str,
+        help="Specify the Docker image name to launch directly (e.g., '8311_49300:latest')"
+    )
 
     # Get list of kit apps on filesystem.
     app_names = discover_kit_files(KIT_APP_PATH)
@@ -734,6 +738,15 @@ def setup_repo_tool(parser: argparse.ArgumentParser, config: Dict) -> Optional[C
         dev_bundle = options.dev_bundle
 
         try:
+            # If --image is provided, bypass other logic and directly launch the container
+            if options.image:
+                image_name = options.image
+                console.print(f"Launching container for image: {image_name}", style=INFO_COLOR)
+                
+                # Use the existing `launch_container` method instead of `docker run`
+                launch_container(image_name, dev_bundle, options.extra_args, options.verbose)
+                return
+
             # Launching from a distributed package
             console.print("\[ctrl+c to Exit]", style=INFO_COLOR)
             if options.from_package:
