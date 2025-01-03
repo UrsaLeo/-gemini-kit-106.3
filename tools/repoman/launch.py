@@ -6,6 +6,8 @@ import platform
 import shutil
 import subprocess
 import sys
+import re
+import time
 from collections import defaultdict
 from glob import glob
 from pathlib import Path
@@ -207,45 +209,34 @@ def run_selected_image(image_id: str, dev_bundle: bool, extra_args: List[str], v
     # and always map those in? Or should this be configurable via CLI args/toml file?
     nvda_kit_args = os.environ.get("NVDA_KIT_ARGS", "")
     nvda_kit_nucleus = os.environ.get("NVDA_KIT_NUCLEUS", "")
-    # docker_run_cmd = [
-    #     "docker",
-    #     "run",
-    #     "--gpus=all",
-    #     "--env",
-    #     f"OM_KIT_VERBOSE={1 if verbose else 0}",
-    #     "--env",
-    #     f"NVDA_KIT_ARGS={nvda_kit_args}",
-    #     "--env",
-    #     f"NVDA_KIT_NUCLEUS={nvda_kit_nucleus}",
-    #     "--mount",  # RTX Shader Cache
-    #     "type=volume,src=omniverse_shader_cache,dst=/home/ubuntu/.cache/ov,volume-driver=local",
-    #     "--mount",  # Kit Extension Cache
-    #     "type=volume,src=omniverse_extension_cache,dst=/home/ubuntu/.local/share/ov,volume-driver=local",
-    #     "--network=host",  # Host networking to simplify local testing of app streaming.
-    #     image_id,
-    # ]
 
-    import re
-    import time
+    
 
     # These lines change turnserver ip - use them if you want to launch docker images from another instance
     nvda_kit_args += (
-    "--/exts/omni.services.streamclient.webrtc/ice_servers/1/urls/0='turn:44.229.65.21:3478?transport=udp' "
-    "--/exts/omni.services.streamclient.webrtc/ice_servers/1/urls/1='turn:44.229.65.21:3478?transport=tcp' "
+    "--/exts/omni.services.streamclient.webrtc/ice_servers/1/urls/0='turn:50.18.6.120:3478?transport=udp' "
+    "--/exts/omni.services.streamclient.webrtc/ice_servers/1/urls/1='turn:50.18.6.120:3478?transport=tcp' "
     )
+    
+    #nvda_kit_nucleus += "twinVersionId": "bb9da2c6-4a1d-4efa-8c0f-222b44bbf136",
+    
 
     docker_run_cmd = [
         "docker",
         "run",
         "--gpus=all",
+        
+        #"cp", "/home/ubuntu/omnivere/-gemini-kit-106.3/source/apps/data/app_data.json /apps/data/"
         "--env", f"OM_KIT_VERBOSE={1}",
         "--env", f"NVDA_KIT_ARGS={nvda_kit_args}",
         "--env", f"NVDA_KIT_NUCLEUS={nvda_kit_nucleus}",
         "--mount", "type=volume,src=omniverse_shader_cache,dst=/home/ubuntu/.cache/ov,volume-driver=local",
         "--mount", "type=volume,src=omniverse_extension_cache,dst=/home/ubuntu/.local/share/ov,volume-driver=local",
+        
+        "--mount", "type=bind,src=/home/ubuntu/omnivere/-gemini-kit-106.3/source/apps/data/,dst=/apps/data/,readonly=false,bind-propagation=rslave",
+        
 
-        #"--mount", "type=bind,src=/home/ubuntu/-gemini-kit-106.3/source/apps/data/app_data.json,dst=/apps/data/app_data.json,readonly=false",
-        "-v", "/home/ubuntu/-gemini-kit-106.3/source/apps/data:/apps/data",
+        #"-v", "/home/ubuntu/omnivere/-gemini-kit-106.3/source/apps/data:/apps/data",
         "--network=bridge",
         
     ]
@@ -311,11 +302,17 @@ def run_selected_image(image_id: str, dev_bundle: bool, extra_args: List[str], v
 
         if http_port and webrtc_port:
             docker_run_cmd.extend([
+                "--detach",
                 "-p", f"{http_port}:{http_port}/tcp", 
                 "-p", f"{webrtc_port}:{webrtc_port}/tcp",
+                #"-v", "/home/ubuntu/omnivere/-gemini-kit-106.3/source/apps/data/app_data.json:/apps/data/app_data.json",
                 image_id,
-                #"/bin/bash -c", "sed -i 's/9332e77d-fb20-4221-8cf2-9a2c8ef80e22/afc3e440-0798-4ac3-bfcf-206bc3eef3f3/' apps/data/app_data.json && /app/kit/kit",
+                #"--mount", f"type=bind,src=/home/ubuntu/omnivere/-gemini-kit-106.3/source/apps/data/,dst=/apps/data/,readonly=false,bind-propagation=rshared",
+                # "/bin/bash",
+                # "-c", 
+                #"--mount", "type=bind,src=/app/apps/data/,dst=/home/ubuntu/omnivere/-gemini-kit-106.3/source/apps/data/,readonly=false,bind-propagation=rshared",
                 
+                #"sed -i \"s/9332e77d-fb20-4221-8cf2-9a2c8ef80e22/afc3e440-0798-4ac3-bfcf-206bc3eef3f3/\" /apps/data/app_data.json && /app/kit/kit"
             ])
         else:
             print("Ports are not properly defined. Docker command will not include port bindings.")
@@ -339,10 +336,57 @@ def run_selected_image(image_id: str, dev_bundle: bool, extra_args: List[str], v
     if extra_args:
         docker_run_cmd += extra_args
 
-    _ = _run_process(
+    # _ = _run_process(
+    #     docker_run_cmd,
+    #     exit_on_error=False,
+    # )
+    
+    
+    result = subprocess.run(
         docker_run_cmd,
-        exit_on_error=False,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+        text=True
     )
+    container_id = ""  
+    # Check if the command succeeded
+    if result.returncode == 0:
+        container_id = result.stdout.strip()  # The output contains the container ID
+        print(f"Container started with ID: {container_id}")
+        # return container_id
+    else:
+        print(f"Failed to start container. Error: {result.stderr}")
+        # return None
+        
+    #container_id = "your_container_id_or_name"
+    new_image_name = "new_image_name"
+    file_to_edit = "apps/data/app_data.json"
+    search_string = "9332e77d-fb20-4221-8cf2-9a2c8ef80e22"
+    replace_string = "ed02afb1-ac52-4275-a1dd-c072487d9d16"
+
+    # Run sed inside the container
+    try:
+        subprocess.run(
+            [
+                "docker", "exec", "-it", container_id, "/bin/bash", "-c",
+                f"sed -i 's/{search_string}/{replace_string}/' {file_to_edit}"
+            ],
+            check=True
+        )
+        print(f"Successfully updated {file_to_edit} in container {container_id}.")
+    except subprocess.CalledProcessError as e:
+        print(f"Failed to update file: {e}")
+        exit(1)
+        
+    # try:
+    #     subprocess.run(
+    #         ["docker", "commit", container_id, new_image_name],
+    #         check=True
+    #     )
+    #     print(f"Successfully committed container {container_id} as new image {new_image_name}.")
+    # except subprocess.CalledProcessError as e:
+    #     print(f"Failed to commit container: {e}")
+    #     exit(1)
 
 
 def nvidia_driver_check():
@@ -645,6 +689,9 @@ def setup_repo_tool(parser: argparse.ArgumentParser, config: Dict) -> Optional[C
         type=str,
         help="Specify the Docker image name to launch directly (e.g., '8311_49300:latest')"
     )
+    #"--name", "my_container"
+    #f"sed -i \"s/9332e77d-fb20-4221-8cf2-9a2c8ef80e22/afc3e440-0798-4ac3-bfcf-206bc3eef3f3/\" my_container:/apps/data/app_data.json",
+                
 
     # Get list of kit apps on filesystem.
     app_names = discover_kit_files(KIT_APP_PATH)
@@ -666,6 +713,34 @@ def setup_repo_tool(parser: argparse.ArgumentParser, config: Dict) -> Optional[C
         dev_bundle = options.dev_bundle
 
         try:
+            def get_running_container_id(container_name_or_partial_id=None):
+                try:
+                    # Get the list of running containers
+                    result = subprocess.run(
+                        ["docker", "ps", "--format", "{{.ID}} {{.Names}}"],
+                        stdout=subprocess.PIPE,
+                        check=True,
+                        text=True
+                    )
+                    
+                    # Process the output
+                    containers = result.stdout.strip().splitlines()
+                    if container_name_or_partial_id:
+                        # Find the specific container by name or partial ID
+                        for container in containers:
+                            container_id, container_name = container.split(maxsplit=1)
+                            if container_name_or_partial_id in container_name or container_name_or_partial_id in container_id:
+                                return container_id
+                        raise ValueError(f"No running container matches '{container_name_or_partial_id}'.")
+                    else:
+                        # Return the first running container if no filter is provided
+                        if containers:
+                            return containers[0].split()[0]
+                        else:
+                            raise ValueError("No running containers found.")
+                except subprocess.CalledProcessError as e:
+                    print(f"Failed to get running containers: {e}")
+                    return None
             # If --image is provided, bypass other logic and directly launch the container
             if options.image:
                 image_name = options.image
@@ -686,9 +761,15 @@ def setup_repo_tool(parser: argparse.ArgumentParser, config: Dict) -> Optional[C
                 repo_folders = config_dict["repo"]["folders"]
                 build_path = Path(repo_folders.get("build", "_build"))
                 build_path = Path(f"{build_path}/{get_host_platform()}/{config}/")
+                
+                
+                
 
                 # Launch a containerized app
                 if options.container:
+                    # Example Usage
+                    
+                        
                     if platform.system() != "Linux":
                         error_message = "Currently container launch workflows are only supported on Linux hosts."
                         print(error_message)
@@ -696,7 +777,16 @@ def setup_repo_tool(parser: argparse.ArgumentParser, config: Dict) -> Optional[C
                     # Check if the host is correctly configured. We require a NVIDIA GPU to be present.
                     nvidia_driver_check()
                     launch_container(app_name, dev_bundle, options.extra_args, options.verbose)
+                    
                     return
+                
+                container_id = get_running_container_id()  # Get the first running container
+                # OR specify a container name or partial ID
+                # container_id = get_running_container_id("container_name_or_id_part")
+                if container_id:
+                    print(f"Running container ID: {container_id}")
+                else:
+                    print("No running containers found.")
 
                 # Launch the thing, or query the user and then launch the thing.
                 launch_kit(app_name, build_path, config_dict, dev_bundle, options.extra_args)
@@ -722,8 +812,9 @@ def setup_repo_tool(parser: argparse.ArgumentParser, config: Dict) -> Optional[C
 #         "--image",
 #         type=str,
 #         nargs='+',  # Accept one or more image names
-#         help="Specify one or more Docker image names to launch directly (e.g., '8311_49300:latest')"
-#     )
+#         help="Specify one or more Docker image names to launch directly (e.g., '8311_49300:latest 8211_49300:latest')"
+#     ) 
+#     #repo.sh launch --container --image 8311_49300:latest 8311_49300:latest 8311_49300:latest
 
 #     # Get list of kit apps on filesystem.
 #     app_names = discover_kit_files(KIT_APP_PATH)
@@ -745,15 +836,70 @@ def setup_repo_tool(parser: argparse.ArgumentParser, config: Dict) -> Optional[C
 #         dev_bundle = options.dev_bundle
 
 #         try:
-#             # If --image is provided, bypass other logic and directly launch the containers
+#             #If --image is provided, bypass other logic and directly launch the containers
 #             if options.image:
 #                 # Sequentially iterate over all images provided in the options
+#                 # for image_name in options.image:
+#                 #     console.print(f"Launching container for image: {image_name}", style=INFO_COLOR)
+                    
+#                 #     # Use the existing `launch_container` method instead of `docker run`
+#                 #     launch_container(image_name, dev_bundle, options.extra_args, options.verbose)
+#                 # return
+                
+#                 # for image_name in options.image:
+#                 #     console.print(f"Launching container for image: {image_name}", style=INFO_COLOR)
+
+#                 #     # Extract the image name without the tag (to use for the container name, if necessary)
+#                 #     container_name = f"container_{image_name.replace(':', '_')}"  # This creates a unique container name
+
+#                 #     # Use subprocess.run to launch the container sequentially
+#                 #     process = subprocess.run(
+#                 #         ["docker", "run", "-d", "--name", container_name, image_name],
+#                 #         stdout=subprocess.PIPE,
+#                 #         stderr=subprocess.PIPE
+#                 #     )
+
+#                 #     # Optionally, you can check for success/failure and handle accordingly
+#                 #     if process.returncode != 0:
+#                 #         console.print(f"Error launching container {image_name}: {process.stderr.decode()}", style="bold red")
+#                 #     else:
+#                 #         console.print(f"Container {container_name} launched successfully.", style="bold green")
+                
+#                 # Sequentially iterate over all images provided in the options
+                
+                
+                
 #                 for image_name in options.image:
+#                     container_name = image_name.replace(":", "_")
 #                     console.print(f"Launching container for image: {image_name}", style=INFO_COLOR)
                     
-#                     # Use the existing `launch_container` method instead of `docker run`
-#                     launch_container(image_name, dev_bundle, options.extra_args, options.verbose)
-#                 return
+#                     # Launch the container using subprocess
+#                     process = subprocess.Popen(
+#                         [
+#                             "docker", "run", "-d", "--name", container_name, image_name,
+#                             #"--mount", "type=bind,src=src=/home/ubuntu/omnivere/-gemini-kit-106.3/source/apps/data/app_data.json,dst=/apps/data/app_data.json,bind-propagation=rshared"
+#                         ],
+#                         stdout=subprocess.PIPE,
+#                         stderr=subprocess.PIPE
+#                     )
+
+#                     # Capture stdout and stderr to debug any issues
+#                     stdout, stderr = process.communicate()
+
+#                     # Print out stdout and stderr from the Docker run command
+#                     if process.returncode == 0:
+#                         console.print(f"Container {image_name} launched successfully.", style=INFO_COLOR)
+#                     else:
+#                         console.print(f"Error launching container {image_name}: {stderr.decode()}")
+                        
+#                     # Optionally check the container logs for more details
+#                     # logs = subprocess.check_output(["docker", "logs", image_name])
+#                     # console.print(f"Container logs for {image_name}:\n{logs.decode()}", style=INFO_COLOR)
+
+
+#                 return  # Exit early after launching all containers.
+
+
 
 #             # Launching from a distributed package
 #             console.print("\[ctrl+c to Exit]", style=INFO_COLOR)
